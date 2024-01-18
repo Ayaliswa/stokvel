@@ -8,7 +8,7 @@
             "name": "stokvel",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_screen"
+            "program": "lib/main_screen.dart"
         },
         {
             "name": "stokvel (profile mode)",
