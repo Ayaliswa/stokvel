@@ -31,12 +31,6 @@ class Stokvel extends StatelessWidget {
             backgroundColor: Colors.transparent,
             body: Container(
               padding: const EdgeInsets.symmetric(vertical: 30),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  colors: [Colors.grey[900], Colors.grey[700], Colors.grey[00]],
-                ),
-              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
