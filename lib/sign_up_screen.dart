@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "login_screen.dart";
+import "recovery_questions_screen.dart";
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -7,6 +7,7 @@ class SignUpScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Sign Up Screen",
       home: Scaffold(
         appBar: AppBar(
@@ -27,10 +28,10 @@ class SignUpScreen extends StatelessWidget {
                 style: TextStyle(fontSize: 24),
               ),
               const SizedBox(height: 20),
-              Image.asset(
+              /*Image.asset(
                 "assets/icon.png",
                 height: MediaQuery.of(context).size.height / 3,
-              ),
+              ),*/
               const SizedBox(height: 20),
               const Align(
                 alignment: Alignment.centerLeft,
@@ -123,7 +124,8 @@ class SignUpScreen extends StatelessWidget {
                       // Navigate to login screen
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => RecoveryQuestionsScreen()),
                       );
                     },
                     child: const Text(

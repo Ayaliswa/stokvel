@@ -6,6 +6,7 @@ class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "Login Screen",
       home: Scaffold(
         appBar: AppBar(
@@ -28,7 +29,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20.0),
-            Expanded(
+            /* Expanded(
               flex: 1,
               child: Container(
                 decoration: const BoxDecoration(
@@ -38,7 +39,7 @@ class LoginScreen extends StatelessWidget {
                   ),
                 ),
               ),
-            ),
+            ),*/
             const SizedBox(height: 20.0),
             const Align(
               alignment: Alignment.centerLeft,
