@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +20,7 @@ class LoginScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const Text(
               "Welcome Back",
@@ -29,17 +30,17 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20.0),
-            /* Expanded(
+            Expanded(
               flex: 1,
               child: Container(
                 decoration: const BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage("assets/icon.png"),
+                    image: AssetImage("images/icon.png"),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-            ),*/
+            ),
             const SizedBox(height: 20.0),
             const Align(
               alignment: Alignment.centerLeft,

@@ -2,7 +2,7 @@ import "package:flutter/material.dart";
 import "login_screen.dart";
 
 class RecoveryQuestionsScreen extends StatefulWidget {
-  const RecoveryQuestionsScreen({Key? key}) : super(key: key);
+  const RecoveryQuestionsScreen({super.key});
 
   @override
   _RecoveryQuestionsScreenState createState() =>
@@ -13,6 +13,7 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
   final List<String> _questions = [
     'What is your favorite color?',
     'What is your mother\'s maiden name?',
+    'What is your first girlfriend/boyfriend surname?',
     'What is the name of your first pet?',
     'What is your favorite food?',
     'What is your favorite movie?',
@@ -34,7 +35,7 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
       // Navigate to login screen
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
     }
   }
@@ -46,24 +47,25 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
       title: "Recovery Question Screen",
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Recovery Question'),
+          title: const Text('Recovery Question'),
         ),
         body: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: 16.0),
-              Text(
+              const SizedBox(height: 16.0),
+              const Text(
                 'Choose three questions below and answer in the space provided below, after each question press next to answer next question.',
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               Text(
                 'Question ${_currentQuestionIndex + 1}',
-                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                    fontSize: 24.0, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               DropdownButtonFormField<String>(
                 value: _selectedQuestions[_currentQuestionIndex],
                 items: _questions
@@ -77,20 +79,20 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
                     _selectedQuestions[_currentQuestionIndex] = "value";
                   });
                 },
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Question',
                   hintText: 'Choose a question here',
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               TextField(
                 controller: _answerControllers[_currentQuestionIndex],
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Answer',
                   hintText: 'Enter your answer here',
                 ),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _nextQuestion,
                 child: Text(_currentQuestionIndex < 2 ? 'Next' : 'Finish'),
