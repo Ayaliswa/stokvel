@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "recovery_questions_screen.dart";
+import "login_screen.dart";
 
 class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
@@ -69,23 +70,25 @@ class SignUpScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const TextField(
-                        decoration: InputDecoration(
-                          hintText: "create username",
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Username",
-                          labelStyle:
-                              TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.person, color: Colors.black),
-                          border: OutlineInputBorder(),
+                      const SingleChildScrollView(
+                        child: TextField(
+                          decoration: InputDecoration(
+                            hintText: "create username",
+                            hintStyle:
+                                TextStyle(color: Colors.grey, fontSize: 16),
+                            labelText: "Username",
+                            labelStyle:
+                                TextStyle(color: Colors.black, fontSize: 18),
+                            prefixIcon: Icon(Icons.person, color: Colors.black),
+                            border: OutlineInputBorder(),
+                          ),
+                          textAlign: TextAlign.start,
                         ),
-                        textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
                       const TextField(
                         decoration: InputDecoration(
-                          hintText: "+268 76------",
+                          hintText: "+268 7......",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Phone",
@@ -164,11 +167,12 @@ class SignUpScreen extends StatelessWidget {
                             horizontal: 16, vertical: 8),
                         child: ElevatedButton(
                           onPressed: () {
-                            // Navigate to sign up screen
+                            // Navigate to password recovery questions screen
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const SignUpScreen()),
+                                  builder: (context) =>
+                                      const RecoveryQuestionsScreen()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -188,11 +192,12 @@ class SignUpScreen extends StatelessWidget {
                           TextButton(
                             onPressed: () {
                               // Navigate to login screen
-                              Navigator.push(
-                                context,
+                              Navigator.of(context).push(
                                 MaterialPageRoute(
-                                    builder: (context) =>
-                                        const RecoveryQuestionsScreen()),
+                                  builder: (BuildContext context) {
+                                    return const LoginScreen();
+                                  },
+                                ),
                               );
                             },
                             child: const Text(

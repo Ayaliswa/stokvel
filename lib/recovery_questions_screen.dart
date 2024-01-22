@@ -48,58 +48,73 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
           title: const Text('Recovery Question'),
+          backgroundColor: Colors.blue,
         ),
-        body: SizedBox(
-          width: 400,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
+        body: Center(
+          child: SizedBox(
+            width: 400,
             child: SingleChildScrollView(
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'Choose three questions below and answer in the space provided below, after each question press next to answer next question.',
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Question ${_currentQuestionIndex + 1}',
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 16.0),
-                  DropdownButtonFormField<String>(
-                    value: _selectedQuestions[_currentQuestionIndex],
-                    items: _questions
-                        .map((question) => DropdownMenuItem(
-                              value: question,
-                              child: Text(question),
-                            ))
-                        .toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        _selectedQuestions[_currentQuestionIndex] = "value";
-                      });
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Question',
-                      hintText: 'Choose a question here',
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 16.0),
+                        const Text(
+                          'Choose three questions below and answer in the space provided below, after each question press next to answer next question.',
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text(
+                          'Question ${_currentQuestionIndex + 1}',
+                          style: const TextStyle(
+                              fontSize: 24.0, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(height: 16.0),
+                        DropdownButtonFormField<String>(
+                          value: _selectedQuestions[_currentQuestionIndex],
+                          items: _questions
+                              .map((question) => DropdownMenuItem(
+                                    value: question,
+                                    child: Text(question),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              _selectedQuestions[_currentQuestionIndex] =
+                                  "value";
+                            });
+                          },
+                          decoration: const InputDecoration(
+                            labelText: 'Question',
+                            hintText: 'Choose a question here',
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        TextField(
+                          controller: _answerControllers[_currentQuestionIndex],
+                          decoration: const InputDecoration(
+                            labelText: 'Answer',
+                            hintText: 'Enter your answer here',
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: _nextQuestion,
+                          child: Text(
+                              _currentQuestionIndex < 2 ? 'Next' : 'Finish'),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextField(
-                    controller: _answerControllers[_currentQuestionIndex],
-                    decoration: const InputDecoration(
-                      labelText: 'Answer',
-                      hintText: 'Enter your answer here',
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  ElevatedButton(
-                    onPressed: _nextQuestion,
-                    child: Text(_currentQuestionIndex < 2 ? 'Next' : 'Finish'),
                   ),
                 ],
               ),

@@ -56,125 +56,138 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text('Reset Password'),
+        backgroundColor: Colors.blue,
       ),
-      body: SizedBox(
-        width: 400,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _isPasswordChanged
-              ? Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Change Password',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16.0),
-                    Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'New Password',
-                              hintText: 'Enter new password',
+      body: Center(
+        child: SizedBox(
+          width: 400,
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: _isPasswordChanged
+                      ? Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Change Password',
+                              style: Theme.of(context).textTheme.titleLarge,
                             ),
-                            obscureText: true,
-                            onChanged: (value) {
-                              setState(() {
-                                _newPassword = value;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 16.0),
-                          TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Confirm New Password',
-                              hintText: 'Re-enter your new password',
+                            const SizedBox(height: 16.0),
+                            Form(
+                              key: _formKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'New Password',
+                                      hintText: 'Enter new password',
+                                    ),
+                                    obscureText: true,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _newPassword = value;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 16.0),
+                                  TextFormField(
+                                    decoration: const InputDecoration(
+                                      labelText: 'Confirm New Password',
+                                      hintText: 'Re-enter your new password',
+                                    ),
+                                    obscureText: true,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        _confirmNewPassword = value;
+                                      });
+                                    },
+                                  ),
+                                  const SizedBox(height: 16.0),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (_newPassword == _confirmNewPassword) {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Success'),
+                                            content: const Text(
+                                                'Password changed successfully'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) => AlertDialog(
+                                            title: const Text('Error'),
+                                            content: const Text(
+                                                'Passwords do not match'),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('OK'),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    child: const Text('Change Password'),
+                                  ),
+                                ],
+                              ),
                             ),
-                            obscureText: true,
-                            onChanged: (value) {
-                              setState(() {
-                                _confirmNewPassword = value;
-                              });
-                            },
-                          ),
-                          const SizedBox(height: 16.0),
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_newPassword == _confirmNewPassword) {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Success'),
-                                    content: const Text(
-                                        'Password changed successfully'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } else {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => AlertDialog(
-                                    title: const Text('Error'),
-                                    content:
-                                        const Text('Passwords do not match'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            child: const Text('Change Password'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      'Please answer the following question:',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 16.0),
-                    Text(
-                      _questions[_currentQuestionIndex],
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 16.0),
-                    TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Answer',
-                      ),
-                      onChanged: _onAnswerSubmitted,
-                    ),
-                    const SizedBox(height: 16.0),
-                    ElevatedButton(
-                      onPressed:
-                          _isResetButtonEnabled ? _onResetButtonPressed : null,
-                      child: Text(
-                          _isResetButtonEnabled ? 'Reset Password' : 'Next'),
-                    ),
-                  ],
+                          ],
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Text(
+                              'Please answer the following question:',
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(height: 16.0),
+                            Text(
+                              _questions[_currentQuestionIndex],
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            const SizedBox(height: 16.0),
+                            TextFormField(
+                              decoration: const InputDecoration(
+                                labelText: 'Answer',
+                              ),
+                              onChanged: _onAnswerSubmitted,
+                            ),
+                            const SizedBox(height: 16.0),
+                            ElevatedButton(
+                              onPressed: _isResetButtonEnabled
+                                  ? _onResetButtonPressed
+                                  : null,
+                              child: Text(_isResetButtonEnabled
+                                  ? 'Reset Password'
+                                  : 'Next'),
+                            ),
+                          ],
+                        ),
                 ),
+              ],
+            ),
+          ),
         ),
       ),
     );

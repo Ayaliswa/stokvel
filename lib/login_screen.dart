@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "user_profile_screen.dart";
 import "sign_up_screen.dart";
 import "password_reset_screen.dart";
 
@@ -108,7 +109,7 @@ class LoginScreen extends StatelessWidget {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (BuildContext context) {
-                                    return PasswordResetScreen();
+                                    return const PasswordResetScreen();
                                   },
                                 ),
                               );
@@ -134,7 +135,7 @@ class LoginScreen extends StatelessWidget {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return const LoginScreen();
+                                  return const UserProfileScreen();
                                 },
                               ),
                             );
