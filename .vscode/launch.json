@@ -14,13 +14,15 @@
             "name": "stokvel (profile mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "flutterMode": "profile",
+            "program": "lib/main_screen.dart"
         },
         {
             "name": "stokvel (release mode)",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "release"
+            "flutterMode": "release",
+            "program": "lib/main_screen.dart"
         }
     ]
 }

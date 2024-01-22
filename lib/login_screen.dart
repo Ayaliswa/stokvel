@@ -24,156 +24,161 @@ class LoginScreen extends StatelessWidget {
               );
             },
           ),
-          const Login(),
-        ],
-      ),
-    );
-  }
-}
-
-class Login extends StatelessWidget {
-  const Login({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.transparent,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () =>
-              Navigator.pop(context), // Handle back to previous page navigation
-        ),
-        title: const Text("Stokvel"),
-        backgroundColor: Colors.blue,
-      ),
-      //backgroundColor: Colors.white,
-      body: Container(
-        height: double.infinity,
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 30),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Text(
-                "Welcome Back",
-                style: TextStyle(
-                  fontSize: 28.0,
-                  fontWeight: FontWeight.bold,
-                ),
+          Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pop(context),
               ),
-              const Spacer(),
-              const SizedBox(height: 20.0),
-              const Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "Login",
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20.0),
-              const TextField(
-                decoration: InputDecoration(
-                  hintText: "Enter Username or Phone",
-                  labelText: "Username",
-                  prefixIcon: Icon(Icons.person),
-                  border: OutlineInputBorder(),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20.0),
-              const TextField(
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  labelText: "Password",
-                  prefixIcon: Icon(Icons.lock),
-                  border: OutlineInputBorder(),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 20.0),
-              Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
+              title: const Text("Stokvel"),
+              backgroundColor: Colors.blue,
+            ),
+            body: Center(
+              child: SizedBox(
+                width: 400,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Welcome Back",
+                      style: TextStyle(
+                        fontSize: 28.0,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Image.asset(
+                      "images/icon.png",
+                      height: MediaQuery.of(context).size.height / 3,
+                    ),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        "Login:",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20.0),
+                    const TextField(
+                      decoration: InputDecoration(
+                        hintText: "Username or Phone",
+                        labelText: "Username",
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.person, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(height: 20.0),
+                    const TextField(
+                      decoration: InputDecoration(
+                        hintText: "Password",
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: "Password",
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.lock, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      textAlign: TextAlign.start,
+                    ),
+                    const SizedBox(height: 20.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                          onPressed: () {
+                            // Navigate to login screen
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return PasswordResetScreen();
+                                },
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 2),
+                    Container(
+                      width: 400.0,
+                      height: 40,
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 30, vertical: 8),
+                      child: ElevatedButton(
                         onPressed: () {
                           // Navigate to login screen
                           Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (BuildContext context) {
-                                return const PasswordResetScreen();
+                                return const LoginScreen();
                               },
                             ),
                           );
                         },
-                        child: const Text(
-                          "Forgot Password?",
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.blue,
+                          onPrimary: Colors.white,
+                          side: const BorderSide(color: Colors.white),
+                        ),
+                        child: const Text("LOGIN"),
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Don't have an account?",
                           style: TextStyle(
-                            color: Colors.blue,
+                            color: Colors.black,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20.0),
-              ElevatedButton(
-                onPressed: () {
-                  // Navigate to login screen
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return const LoginScreen();
-                      },
+                        const SizedBox(width: 1),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const SignUpScreen()),
+                            );
+                          },
+                          child: const Text(
+                            "Register",
+                            style: TextStyle(
+                              color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.blue,
-                  onPrimary: Colors.white,
-                  side: const BorderSide(color: Colors.white),
+                  ],
                 ),
-                child: const Text("LOGIN"),
               ),
-              const SizedBox(height: 20.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Don't have an account?",
-                    style: TextStyle(
-                      color: Colors.black,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()),
-                      );
-                    },
-                    child: const Text(
-                      "Register",
-                      style: TextStyle(
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
