@@ -59,6 +59,7 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
           child: SizedBox(
             width: 400,
             child: SingleChildScrollView(
+              padding: const EdgeInsets.all(10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

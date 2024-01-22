@@ -13,12 +13,15 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        title: Row(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Row(
           children: [
             CircleAvatar(
-              radius: 20,
-              backgroundImage: AssetImage(
-                  'images/icon.png'), // Replace with user's profile photo
+              radius: 50,
+              backgroundImage: AssetImage('images/icon.png'),
               backgroundColor: Colors.transparent,
             ),
             SizedBox(width: 10),
@@ -26,7 +29,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'City Stokvel', // Replace with stokvel name
+                  'City United Stokvel(Main Savings)',
                   style: TextStyle(fontSize: 20),
                 ),
                 SizedBox(height: 5),
@@ -40,7 +43,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
         ),
         centerTitle: true,
       ),
-      body: SizedBox(
+      body: const SizedBox(
         width: 400,
         child: Column(
           children: [
