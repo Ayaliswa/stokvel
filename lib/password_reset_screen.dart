@@ -63,9 +63,13 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
           width: 400,
           child: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Image.asset(
+                  "images/icon.png",
+                  height: MediaQuery.of(context).size.height / 3,
+                ),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: _isPasswordChanged
