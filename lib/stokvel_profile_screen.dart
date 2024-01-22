@@ -17,8 +17,8 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           children: [
             CircleAvatar(
               radius: 20,
-              backgroundImage: NetworkImage(
-                  'https://i.imgur.com/BoN9kdC.png'), // Replace with user's profile photo
+              backgroundImage: AssetImage(
+                  'images/icon.png'), // Replace with user's profile photo
               backgroundColor: Colors.transparent,
             ),
             SizedBox(width: 10),

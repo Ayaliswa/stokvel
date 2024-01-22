@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class PasswordResetScreen extends StatefulWidget {
+  const PasswordResetScreen({super.key});
+
   @override
   _PasswordResetScreenState createState() => _PasswordResetScreenState();
 }
@@ -50,10 +52,10 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text('Reset Password'),
+        title: const Text('Reset Password'),
       ),
       body: SizedBox(
         width: 400,
@@ -65,16 +67,16 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   children: [
                     Text(
                       'Change Password',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           TextFormField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'New Password',
                               hintText: 'Enter new password',
                             ),
@@ -85,9 +87,9 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                               });
                             },
                           ),
-                          SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
                           TextFormField(
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               labelText: 'Confirm New Password',
                               hintText: 'Re-enter your new password',
                             ),
@@ -98,23 +100,23 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                               });
                             },
                           ),
-                          SizedBox(height: 16.0),
+                          const SizedBox(height: 16.0),
                           ElevatedButton(
                             onPressed: () {
                               if (_newPassword == _confirmNewPassword) {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: Text('Success'),
-                                    content:
-                                        Text('Password changed successfully'),
+                                    title: const Text('Success'),
+                                    content: const Text(
+                                        'Password changed successfully'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   ),
@@ -123,21 +125,22 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                                 showDialog(
                                   context: context,
                                   builder: (context) => AlertDialog(
-                                    title: Text('Error'),
-                                    content: Text('Passwords do not match'),
+                                    title: const Text('Error'),
+                                    content:
+                                        const Text('Passwords do not match'),
                                     actions: [
                                       TextButton(
                                         onPressed: () {
                                           Navigator.of(context).pop();
                                         },
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                       ),
                                     ],
                                   ),
                                 );
                               }
                             },
-                            child: Text('Change Password'),
+                            child: const Text('Change Password'),
                           ),
                         ],
                       ),
@@ -149,21 +152,21 @@ class _PasswordResetScreenState extends State<PasswordResetScreen> {
                   children: [
                     Text(
                       'Please answer the following question:',
-                      style: Theme.of(context).textTheme.headline6,
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     Text(
                       _questions[_currentQuestionIndex],
-                      style: Theme.of(context).textTheme.subtitle1,
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Answer',
                       ),
                       onChanged: _onAnswerSubmitted,
                     ),
-                    SizedBox(height: 16.0),
+                    const SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed:
                           _isResetButtonEnabled ? _onResetButtonPressed : null,

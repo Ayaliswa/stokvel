@@ -23,12 +23,12 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back),
+            icon: const Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
-          title: Text('Stokvel Form'),
+          title: const Text('Stokvel Form'),
           centerTitle: true,
         ),
         body: SizedBox(

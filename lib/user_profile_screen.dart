@@ -35,8 +35,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 children: [
                   CircleAvatar(
                     radius: 50,
-                    backgroundImage: NetworkImage(
-                        'https://i.imgur.com/BoN9kdC.png'), // Replace with user's profile photo
+                    backgroundImage: AssetImage(
+                        'images/icon.png'), // Replace with user's profile photo
                     backgroundColor: Colors.transparent,
                   ),
                   Column(

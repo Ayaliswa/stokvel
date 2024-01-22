@@ -48,31 +48,16 @@ class MainWelcomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 30),
           child: SizedBox(
             width: 400,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Hello,",
-                  style: TextStyle(
-                    fontSize: 38,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 3.0,
-                        color: Colors.black,
-                        offset: Offset(2.0, 2.0),
-                      ),
-                    ],
-                  ),
-                ),
-                const Center(
-                  child: Text(
-                    "Welcome to City United Stokvel",
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const Text(
+                    "Hello,",
                     style: TextStyle(
-                      fontSize: 36,
-                      color: Colors.blue,
+                      fontSize: 38,
+                      color: Colors.black,
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
@@ -83,75 +68,92 @@ class MainWelcomeScreen extends StatelessWidget {
                       ],
                     ),
                   ),
-                ),
-                const Spacer(),
-                const SizedBox(height: 10),
-                const Text(
-                  "Press the login button to continue to stokvel else register and get started",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
+                  const Center(
+                    child: Text(
+                      "Welcome to City United Stokvel",
+                      style: TextStyle(
+                        fontSize: 36,
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 3.0,
+                            color: Colors.black,
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const Spacer(),
+                  const SizedBox(height: 10),
+                  const Text(
+                    "Press the login button to continue to stokvel else register and get started",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  // const Spacer(),
+                  const SizedBox(height: 20.0),
+                  Container(
+                    width: 400.0,
+                    height: 48,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to login screen
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (BuildContext context) {
+                              return const LoginScreen();
+                            },
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.blue,
+                        onPrimary: Colors.white,
+                        side: const BorderSide(color: Colors.white),
+                      ),
+                      child: const Text("LOGIN"),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: 200.0,
+                    height: 1,
                     color: Colors.black,
+                    margin: const EdgeInsets.symmetric(horizontal: 16),
                   ),
-                ),
-                // const Spacer(),
-                const SizedBox(height: 20.0),
-                Container(
-                  width: 400.0,
-                  height: 48,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to login screen
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return const LoginScreen();
-                          },
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
-                      side: const BorderSide(color: Colors.white),
+                  const SizedBox(height: 16),
+                  Container(
+                    width: 400.0,
+                    height: 48,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // Navigate to sign up screen
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.white,
+                        onPrimary: Colors.blue,
+                        side: const BorderSide(color: Colors.blue),
+                      ),
+                      child: const Text("REGISTER"),
                     ),
-                    child: const Text("LOGIN"),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  width: 200.0,
-                  height: 1,
-                  color: Colors.black,
-                  margin: const EdgeInsets.symmetric(horizontal: 16),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  width: 400.0,
-                  height: 48,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Navigate to sign up screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const SignUpScreen()),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      onPrimary: Colors.blue,
-                      side: const BorderSide(color: Colors.blue),
-                    ),
-                    child: const Text("REGISTER"),
-                  ),
-                ),
-                const SizedBox(height: 40),
-              ],
+                  const SizedBox(height: 40),
+                ],
+              ),
             ),
           ),
         ),
