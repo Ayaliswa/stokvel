@@ -339,7 +339,7 @@ class TermsOfUse extends StatelessWidget {
       ),
       body: const Center(
         child: SizedBox(
-          width: 400,
+          width: 500,
           child: SingleChildScrollView(
             padding: EdgeInsets.all(20),
             child: Column(
@@ -363,19 +363,19 @@ class TermsOfUse extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Welcome to Stokvel banking and chat app! \nBy using this app, you agree to the following terms and conditions:"
-                    "\n\n1. Account Registration: \n\tYou must register an account with us to use our app. You agree to provide accurate and complete information during the registration process."
-                    "\n\n2. User Conduct: \n\tYou agree to use our app only for lawful purposes and in a manner that does not infringe the rights of, or restrict or inhibit the use and enjoyment of, our app by any third party."
-                    "\n\n3. Security: \n\tYou are responsible for maintaining the confidentiality of your account and password and for restricting access to your device. You agree to accept responsibility for all activities that occur under your account or password."
-                    "\n\n4. Intellectual Property: \n\tOur app and its original content, features, and functionality are owned by us and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws."
-                    "\n\n5. Limitation of Liability: \n\tIn no event shall we be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from (i) your access to or use of or inability to access or use the app; (ii) any conduct or content of any third party on the app; (iii) any content obtained from the app; and (iv) unauthorized access, use, or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence), or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose."
-                    "\n\n6. Governing Law: \n\tThese terms and conditions shall be governed by and construed in accordance with the laws of the country in which we are located, without giving effect to any principles of conflicts of law."
-                    "\n\n7. Changes to Terms and Conditions: \n\tWe reserve the right, at our sole discretion, to modify or replace these terms and conditions at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion."
-                    "\n\n8. Contact Us: \n\tIf you have any questions about these terms and conditions, please contact us at [insert contact information]."
+                    "\n\nWelcome to Stokvel banking and chat app! \nBy using this app, you agree to the following terms and conditions:"
+                    "\n\n1. Account Registration: \n      You must register an account with us to use our app. You agree to provide accurate and complete information during the registration process."
+                    "\n\n2. User Conduct: \n      You agree to use our app only for lawful purposes and in a manner that does not infringe the rights of, or restrict or inhibit the use and purpose of, our app by any third party."
+                    "\n\n3. Security: \n      You are responsible for maintaining the confidentiality of your account and password and for restricting access to your device. You agree to accept responsibility for all activities that occur under your account or password."
+                    "\n\n4. Intellectual Property: \n     Our app and its original content, features, and functionality are owned by us and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws."
+                    "\n\n5. Limitation of Liability: \n     In no event shall we be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses, resulting from; \n(i) your access to or use of or inability to access or use the app \n(ii) any conduct or content of any third party on the app \n(iii) any content obtained from the app and \n(iv) unauthorized access, use, or alteration of your transmissions or content, whether based on warranty, contract, tort (including negligence), or any other legal theory, whether or not we have been informed of the possibility of such damage, and even if a remedy set forth herein is found to have failed of its essential purpose."
+                    "\n\n6. Governing Law: \n     These terms and conditions shall be governed by and construed in accordance with the laws of the country in which we are located, without giving effect to any principles of conflicts of law."
+                    "\n\n7. Changes to Terms and Conditions: \n     We reserve the right, at our sole discretion, to modify or replace these terms and conditions at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at our sole discretion."
+                    "\n\n8. Contact Us: \n      If you have any questions about these terms and conditions, please contact us via celphone: +268 76416393 or send us an email at cityunitedstokvel@gmail.com."
                     "\n\n\nThank you for using our app!\n",
                     style: TextStyle(
                       fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w400,
                       color: Colors.black,
                     ),
                   ),

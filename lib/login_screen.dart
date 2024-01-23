@@ -14,7 +14,7 @@ class LoginScreen extends StatelessWidget {
       home: Stack(
         children: <Widget>[
           Image.asset(
-            "images/background4.png",
+            "images/background3.png",
             fit: BoxFit.cover,
             height: double.infinity,
             width: double.infinity,

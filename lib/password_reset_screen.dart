@@ -47,7 +47,7 @@ class PasswordResetScreen extends StatelessWidget {
                 const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "For confirmation that it is you the account owner, please enter your recovery phone number below and receive the OTP to continue reset your password",
+                    "For confirmation that it is you, the account owner, please enter your recovery phone number below and through it you will receive the OTP to continue reset your password",
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -245,7 +245,7 @@ class ChangePassword extends StatelessWidget {
                 const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "Almost Done! Now craete your new password",
+                    "Almost Done!! Now create your new password",
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
