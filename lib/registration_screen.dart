@@ -117,7 +117,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const SizedBox(height: 16),
                       TextFormField(
                         decoration: const InputDecoration(
-                          hintText: 'Enter your postal address',
+                          hintText: 'P O Box 1 CityName',
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: 'Postal Address',
@@ -196,35 +196,53 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 20),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('Processing Data')),
-                                );
-                              }
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (BuildContext context) {
-                                    return const LoginScreen();
-                                  },
-                                ),
+                      const SizedBox(height: 30),
+                      Container(
+                        width: 400.0,
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 8),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Processing Data')),
                               );
-                            },
-                            child: const Text('Submit Form'),
+                            }
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const LoginScreen();
+                                },
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.white),
                           ),
-                          const SizedBox(height: 20),
-                          ElevatedButton(
-                            onPressed: () {
-                              _formKey.currentState!.reset();
-                            },
-                            child: const Text('Clear Form'),
+                          child: const Text('SUBMIT FORM'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: 400.0,
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 8),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _formKey.currentState!.reset();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.blue,
+                            side: const BorderSide(color: Colors.blue),
                           ),
-                        ],
+                          child: const Text('CLEAR FORM'),
+                        ),
                       ),
                     ],
                   ),

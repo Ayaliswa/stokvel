@@ -9,14 +9,7 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  bool _isButtonVisible = false;
   int currentIndex = 1;
-
-  void _showButtons() {
-    setState(() {
-      _isButtonVisible = !_isButtonVisible;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -145,42 +138,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 ),
               ),
             ),
-            Stack(
-              children: [
-                if (_isButtonVisible)
-                  Positioned(
-                    top: 100,
-                    left: 20,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.person),
-                    ),
-                  ),
-                if (_isButtonVisible)
-                  Positioned(
-                    top: 200,
-                    right: 20,
-                    child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.settings),
-                    ),
-                  ),
-              ],
-            ),
-          ],
-        ),
-        floatingActionButton: Column(
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                FloatingActionButton(
-                  backgroundColor: Colors.blue,
-                  onPressed: _showButtons,
-                  child: const Icon(Icons.add),
-                ),
-              ],
-            ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -202,6 +159,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.request_quote),
               label: 'Request',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.group),
+              label: 'Stokvel',
             ),
           ],
         ),

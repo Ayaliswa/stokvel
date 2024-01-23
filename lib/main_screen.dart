@@ -113,8 +113,8 @@ class MainWelcomeScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.blue,
-                      onPrimary: Colors.white,
+                      backgroundColor: Colors.blue,
+                      foregroundColor: Colors.white,
                       side: const BorderSide(color: Colors.white),
                     ),
                     child: const Text("LOGIN"),
@@ -143,8 +143,8 @@ class MainWelcomeScreen extends StatelessWidget {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.white,
-                      onPrimary: Colors.blue,
+                      backgroundColor: Colors.white,
+                      foregroundColor: Colors.blue,
                       side: const BorderSide(color: Colors.blue),
                     ),
                     child: const Text("REGISTER"),

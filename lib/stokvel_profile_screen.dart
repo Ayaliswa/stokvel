@@ -8,6 +8,8 @@ class StokvelProfileScreen extends StatefulWidget {
 }
 
 class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
+  int currentIndex = 1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +61,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      '\$100.00', // Replace with available balance
+                      'E4700.00', // Replace with available balance
                       style: TextStyle(fontSize: 20),
                     ),
                     SizedBox(height: 20),
@@ -69,42 +71,25 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                     ),
                     SizedBox(height: 10),
                     Text(
-                      '\$50.00', // Replace with requested balance
+                      'E950.00', // Replace with requested balance
                       style: TextStyle(fontSize: 20),
                     ),
                   ],
                 ),
-                SizedBox(width: 20),
-                Column(
-                  children: [
-                    Text(
-                      'Amount',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '\$100.00', // Replace with available balance
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 20),
-                    Text(
-                      'Amount',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '\$50.00', // Replace with requested balance
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ],
-                ),
+                Spacer()
               ],
             ),
           ],
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        currentIndex: currentIndex,
+        onTap: (int index) {
+          setState(() {
+            currentIndex = index;
+          });
+        },
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.report),
             label: 'Statement',
@@ -117,13 +102,11 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
             icon: Icon(Icons.request_quote),
             label: 'Request',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.people),
+            label: 'Me',
+          ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Show buttons
-        },
-        child: Icon(Icons.add),
       ),
     );
   }

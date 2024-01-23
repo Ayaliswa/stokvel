@@ -132,7 +132,6 @@ class LoginScreen extends StatelessWidget {
                             horizontal: 30, vertical: 8),
                         child: ElevatedButton(
                           onPressed: () {
-                            // Navigate to login screen
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
@@ -142,8 +141,8 @@ class LoginScreen extends StatelessWidget {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            primary: Colors.blue,
-                            onPrimary: Colors.white,
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
                             side: const BorderSide(color: Colors.white),
                           ),
                           child: const Text("LOGIN"),
