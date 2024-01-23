@@ -167,7 +167,7 @@ class LoginScreen extends StatelessWidget {
                               );
                             },
                             child: const Text(
-                              "Register",
+                              "Register?",
                               style:
                                   TextStyle(color: Colors.blue, fontSize: 16),
                             ),

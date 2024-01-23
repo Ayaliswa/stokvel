@@ -148,7 +148,7 @@ class SignUpScreen extends StatelessWidget {
                         children: [
                           const Checkbox(value: false, onChanged: null),
                           const Text("Accept"),
-                          const SizedBox(width: 1),
+                          const SizedBox(width: 0),
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -208,7 +208,7 @@ class SignUpScreen extends StatelessWidget {
                               );
                             },
                             child: const Text(
-                              "Login",
+                              "Login?",
                               style:
                                   TextStyle(color: Colors.blue, fontSize: 16),
                             ),
@@ -287,7 +287,7 @@ class AddRecoveryPhone extends StatelessWidget {
                     hintText: "enter recovery phone number",
                     labelText: "Recovery Phone",
                     labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                    prefixIcon: Icon(Icons.person, color: Colors.black),
+                    prefixIcon: Icon(Icons.phone, color: Colors.black),
                     border: OutlineInputBorder(),
                   ),
                   textAlign: TextAlign.start,

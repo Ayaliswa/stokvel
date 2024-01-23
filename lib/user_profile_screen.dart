@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'stokvel_profile_screen.dart';
+//import 'stokvel_profile_screen.dart';
+import 'stokvel_registration_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -61,7 +62,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) =>
-                                      const StokvelProfileScreen(),
+                                      const StokvelRegistrationForm(),
                                 ),
                               );
                             },

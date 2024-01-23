@@ -29,22 +29,29 @@ class _RegistrationFormState extends State<RegistrationForm> {
         ),
         body: Center(
           child: SizedBox(
-            width: 400,
+            width: 500,
             child: Center(
               child: Form(
                 key: _formKey,
                 child: SingleChildScrollView(
                   padding: const EdgeInsets.all(10),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
                         'Stokvel Registration Form',
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                          fontSize: 24,
+                          fontSize: 28,
                           fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 3.0,
+                              color: Colors.black,
+                              offset: Offset(2.0, 2.0),
+                            ),
+                          ],
                         ),
                       ),
                       Image.asset(
@@ -141,7 +148,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const SizedBox(height: 16),
                       TextFormField(
                         decoration: const InputDecoration(
-                          hintText: 'Enter your residential address',
+                          hintText: 'where do you stay?',
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: 'Residential Address',
