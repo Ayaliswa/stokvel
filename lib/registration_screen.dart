@@ -218,16 +218,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
                             if (_formKey.currentState!.validate()) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                    content: Text('Processing Data')),
+                                  content: Text('Processing Data'),
+                                ),
+                              );
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return const LoginScreen();
+                                  },
+                                ),
                               );
                             }
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) {
-                                  return const LoginScreen();
-                                },
-                              ),
-                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,

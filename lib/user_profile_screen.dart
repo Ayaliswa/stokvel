@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'stokvel_profile_screen.dart';
 import 'stokvel_registration_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
