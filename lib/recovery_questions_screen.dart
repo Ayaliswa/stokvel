@@ -5,6 +5,7 @@ class RecoveryQuestionsScreen extends StatefulWidget {
   const RecoveryQuestionsScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _RecoveryQuestionsScreenState createState() =>
       _RecoveryQuestionsScreenState();
 }
