@@ -192,7 +192,7 @@ class SignUpScreen extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text("Already have an account?"),
-                          const SizedBox(width: 10),
+                          const SizedBox(width: .5),
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).push(

@@ -160,10 +160,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               icon: Icon(Icons.request_quote),
               label: 'Request',
             ),
-            BottomNavigationBarItem(
+            /*BottomNavigationBarItem(
               icon: Icon(Icons.group),
               label: 'Stokvel',
-            ),
+            ),*/
           ],
         ),
       ),

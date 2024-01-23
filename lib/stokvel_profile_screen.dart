@@ -23,30 +23,6 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
-          title: const Row(
-            children: [
-              CircleAvatar(
-                radius: 50,
-                backgroundImage: AssetImage('images/icon.png'),
-                backgroundColor: Colors.transparent,
-              ),
-              SizedBox(width: 10),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'City United Stokvel(Main Savings)',
-                    style: TextStyle(fontSize: 20),
-                  ),
-                  SizedBox(height: 5),
-                  Text(
-                    'Ayanda, Thomas, Mbuyisa, Asanda, Lusanda, Nothando',
-                    style: TextStyle(fontSize: 16),
-                  ),
-                ],
-              ),
-            ],
-          ),
         ),
         body: const Column(
           children: [
@@ -59,24 +35,52 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage('images/icon.png'),
+                          backgroundColor: Colors.transparent,
+                        ),
+                        SizedBox(width: 10),
                         Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Available Balance',
-                              style:
-                                  TextStyle(color: Colors.green, fontSize: 20),
-                            ),
-                            SizedBox(height: 10),
-                            Text(
-                              'E4700.00',
+                              'City United Stokvel(Main Savings)',
                               style: TextStyle(fontSize: 20),
                             ),
-                            SizedBox(height: 20),
+                            SizedBox(height: 5),
+                            Text(
+                              'Ayanda, Thomas, Mbuyisa, Asanda, Lusanda, Nothando',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  'Available Balance',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E4700.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(width: 20),
+                        Column(
+                          children: [
                             Text(
                               'Requested Balance',
                               style: TextStyle(color: Colors.red, fontSize: 20),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 2),
                             Text(
                               'E950.00',
                               style: TextStyle(fontSize: 20),
@@ -112,10 +116,10 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
               icon: Icon(Icons.request_quote),
               label: 'Request',
             ),
-            BottomNavigationBarItem(
+            /*BottomNavigationBarItem(
               icon: Icon(Icons.people),
               label: 'Me',
-            ),
+            ),*/
           ],
         ),
       ),

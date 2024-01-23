@@ -158,7 +158,7 @@ class LoginScreen extends StatelessWidget {
                               color: Colors.black,
                             ),
                           ),
-                          const SizedBox(width: 1),
+                          const SizedBox(width: .5),
                           TextButton(
                             onPressed: () {
                               Navigator.push(
