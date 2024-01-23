@@ -31,9 +31,9 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                 width: 500,
                 child: Column(
                   children: [
-                    Padding(padding: EdgeInsets.only(left: 10)),
                     Row(
                       children: [
+                        Padding(padding: EdgeInsets.only(left: 20)),
                         CircleAvatar(
                           radius: 50,
                           backgroundImage: AssetImage(

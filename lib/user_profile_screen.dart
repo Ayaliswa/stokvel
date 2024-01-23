@@ -23,8 +23,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           children: [
             Center(
               child: Container(
-                padding: const EdgeInsets.all(10),
-                color: Colors.blue,
+                padding: const EdgeInsets.all(5),
+                color: Colors.blueGrey,
                 child: SizedBox(
                   width: 400,
                   child: Column(
@@ -45,7 +45,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Gama Sisana Bayanda',
+                                'Username goes here',
                                 style: TextStyle(fontSize: 20),
                               ),
                               SizedBox(height: 10),
@@ -56,7 +56,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ],
                           ),
                           const SizedBox(
-                            width: 45,
+                            width: 55,
                           ),
                           IconButton(
                             onPressed: () {
@@ -68,16 +68,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 ),
                               );
                             },
-                            icon: const Icon(Icons.more_vert),
+                            icon: const Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Icon(Icons.more_vert),
+                              ],
+                            ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       DropdownButton<String>(
                         style: const TextStyle(fontSize: 20),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
-                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        padding: const EdgeInsets.only(left: 10, right: 10),
                         isExpanded: true,
                         value: 'City United Stokvel(Main Savings)',
                         onChanged: (String? newValue) {},
@@ -93,7 +98,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           );
                         }).toList(),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 5),
                       const SizedBox(
                         width: 400,
                         child: Center(
@@ -105,7 +110,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                   Text(
                                     'Available Balance',
                                     style: TextStyle(
-                                        color: Colors.white, fontSize: 20),
+                                        color: Colors.green, fontSize: 20),
                                   ),
                                   SizedBox(height: 2),
                                   Text(
