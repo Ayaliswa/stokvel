@@ -70,6 +70,7 @@ class MainWelcomeScreen extends StatelessWidget {
                 const Center(
                   child: Text(
                     "Welcome to City United Stokvel",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 36,
                       color: Colors.blue,

@@ -28,6 +28,7 @@ class PasswordResetScreen extends StatelessWidget {
               children: [
                 const Text(
                   "Reset Password",
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 28.0,
                     fontWeight: FontWeight.bold,

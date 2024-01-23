@@ -41,16 +41,20 @@ class _RegistrationFormState extends State<RegistrationForm> {
                     children: [
                       const Text(
                         'Stokvel Registration Form',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(height: 16),
+                      Image.asset(
+                        "images/icon.png",
+                        height: MediaQuery.of(context).size.height / 3,
+                      ),
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Fill and Submit',
+                          'Fill and Submit:',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

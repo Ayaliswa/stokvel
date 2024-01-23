@@ -46,6 +46,7 @@ class SignUpScreen extends StatelessWidget {
                     children: <Widget>[
                       const Text(
                         "Create Account",
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 28.0,
                           fontWeight: FontWeight.bold,
