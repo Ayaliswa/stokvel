@@ -67,7 +67,11 @@ class SignUpScreen extends StatelessWidget {
                         alignment: Alignment.centerLeft,
                         child: Text(
                           "Register:",
-                          style: TextStyle(fontSize: 18, color: Colors.black),
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
