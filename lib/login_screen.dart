@@ -155,11 +155,9 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           const Text(
                             "Don't have an account?",
-                            style: TextStyle(
-                              color: Colors.black,
-                            ),
+                            style: TextStyle(color: Colors.black, fontSize: 16),
                           ),
-                          const SizedBox(width: .5),
+                          const SizedBox(width: .2),
                           TextButton(
                             onPressed: () {
                               Navigator.push(
@@ -170,9 +168,8 @@ class LoginScreen extends StatelessWidget {
                             },
                             child: const Text(
                               "Register",
-                              style: TextStyle(
-                                color: Colors.blue,
-                              ),
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 16),
                             ),
                           ),
                         ],

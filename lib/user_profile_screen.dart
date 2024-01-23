@@ -26,13 +26,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: const EdgeInsets.all(5),
                 color: Colors.blueGrey,
                 child: SizedBox(
-                  width: 400,
+                  width: 500,
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
+                          const Padding(padding: EdgeInsets.only(left: 20)),
                           const CircleAvatar(
                             radius: 50,
                             backgroundImage: AssetImage('images/icon.png'),
@@ -55,9 +54,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            width: 55,
-                          ),
+                          const Spacer(),
                           IconButton(
                             onPressed: () {
                               Navigator.push(
@@ -82,7 +79,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         style: const TextStyle(fontSize: 20),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
-                        padding: const EdgeInsets.only(left: 10, right: 10),
+                        padding: const EdgeInsets.only(left: 30, right: 30),
                         isExpanded: true,
                         value: 'City United Stokvel(Main Savings)',
                         onChanged: (String? newValue) {},
@@ -99,43 +96,40 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         }).toList(),
                       ),
                       const SizedBox(height: 5),
-                      const SizedBox(
-                        width: 400,
-                        child: Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'Available Balance',
-                                    style: TextStyle(
-                                        color: Colors.green, fontSize: 20),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'E100.00',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 10),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Requested Balance',
-                                    style: TextStyle(
-                                        color: Colors.red, fontSize: 20),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'E50.00',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
+                      const Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  'Available Balance',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E 0.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 10),
+                            Column(
+                              children: [
+                                Text(
+                                  'Requested Balance',
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E 0.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -146,6 +140,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          selectedFontSize: 16,
           currentIndex: currentIndex,
           onTap: (int index) {
             setState(() {

@@ -23,85 +23,91 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
+          backgroundColor: Colors.blue,
         ),
-        body: const Column(
+        body: Column(
           children: [
             Center(
-              child: SizedBox(
-                width: 500,
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Padding(padding: EdgeInsets.only(left: 20)),
-                        CircleAvatar(
-                          radius: 50,
-                          backgroundImage: AssetImage(
-                            'images/icon.png',
-                          ),
-                          backgroundColor: Colors.transparent,
-                        ),
-                        SizedBox(width: 10),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'City United Stokvel(Main Savings)',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                            SizedBox(height: 5),
-                            Text(
-                              'Group members names',
-                              style: TextStyle(fontSize: 16),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                color: Colors.blueGrey,
+                child: const SizedBox(
+                  width: 500,
+                  child: Column(
+                    children: [
+                      Row(
                         children: [
-                          Column(
-                            children: [
-                              Text(
-                                'Available Balance',
-                                style: TextStyle(
-                                    color: Colors.green, fontSize: 20),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'E4700.00',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
+                          Padding(padding: EdgeInsets.only(left: 20)),
+                          CircleAvatar(
+                            radius: 50,
+                            backgroundImage: AssetImage(
+                              'images/icon.png',
+                            ),
+                            backgroundColor: Colors.transparent,
                           ),
-                          SizedBox(width: 20),
+                          SizedBox(width: 10),
                           Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Requested Balance',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 20),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'E950.00',
+                                'City United Stokvel(Main Savings)',
                                 style: TextStyle(fontSize: 20),
+                              ),
+                              SizedBox(height: 5),
+                              Text(
+                                'Group members names',
+                                style: TextStyle(fontSize: 16),
                               ),
                             ],
                           ),
                         ],
                       ),
-                    ),
-                  ],
+                      Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  'Available Balance',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E4700.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            SizedBox(width: 20),
+                            Column(
+                              children: [
+                                Text(
+                                  'Requested Balance',
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E950.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          selectedFontSize: 16,
           currentIndex: currentIndex,
           onTap: (int index) {
             setState(() {

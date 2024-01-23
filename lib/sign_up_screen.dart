@@ -192,8 +192,11 @@ class SignUpScreen extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Already have an account?"),
-                          const SizedBox(width: .5),
+                          const Text(
+                            "Already have an account?",
+                            style: TextStyle(color: Colors.black, fontSize: 16),
+                          ),
+                          const SizedBox(width: .2),
                           TextButton(
                             onPressed: () {
                               Navigator.of(context).push(
@@ -206,7 +209,8 @@ class SignUpScreen extends StatelessWidget {
                             },
                             child: const Text(
                               "Login",
-                              style: TextStyle(color: Colors.blue),
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 16),
                             ),
                           ),
                         ],
