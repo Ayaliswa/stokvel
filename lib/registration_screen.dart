@@ -221,7 +221,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blue,
                             foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.white),
+                            side: const BorderSide(color: Colors.blue),
                           ),
                           child: const Text('SUBMIT FORM'),
                         ),

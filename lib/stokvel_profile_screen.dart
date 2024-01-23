@@ -28,20 +28,22 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           children: [
             Center(
               child: SizedBox(
-                width: 400,
+                width: 500,
                 child: Column(
                   children: [
-                    SizedBox(height: 20),
+                    Padding(padding: EdgeInsets.only(left: 10)),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         CircleAvatar(
                           radius: 50,
-                          backgroundImage: AssetImage('images/icon.png'),
+                          backgroundImage: AssetImage(
+                            'images/icon.png',
+                          ),
                           backgroundColor: Colors.transparent,
                         ),
                         SizedBox(width: 10),
                         Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
@@ -50,45 +52,48 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                             ),
                             SizedBox(height: 5),
                             Text(
-                              'Ayanda, Thomas, Mbuyisa, Asanda, Lusanda, Nothando',
+                              'Group members names',
                               style: TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
-                        Row(
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  'Available Balance',
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 20),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  'E4700.00',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        SizedBox(width: 20),
-                        Column(
-                          children: [
-                            Text(
-                              'Requested Balance',
-                              style: TextStyle(color: Colors.red, fontSize: 20),
-                            ),
-                            SizedBox(height: 2),
-                            Text(
-                              'E950.00',
-                              style: TextStyle(fontSize: 20),
-                            ),
-                          ],
-                        ),
-                        Spacer()
                       ],
+                    ),
+                    Center(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Column(
+                            children: [
+                              Text(
+                                'Available Balance',
+                                style: TextStyle(
+                                    color: Colors.green, fontSize: 20),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'E4700.00',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                          SizedBox(width: 20),
+                          Column(
+                            children: [
+                              Text(
+                                'Requested Balance',
+                                style:
+                                    TextStyle(color: Colors.red, fontSize: 20),
+                              ),
+                              SizedBox(height: 2),
+                              Text(
+                                'E950.00',
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
