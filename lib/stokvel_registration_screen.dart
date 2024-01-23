@@ -12,11 +12,14 @@ class StokvelRegistrationForm extends StatefulWidget {
 
 class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
   final _formKey = GlobalKey<FormState>();
-  final _stokvelNameController = TextEditingController();
-  final _sloganController = TextEditingController();
-  final _bankingDetails1Controller = TextEditingController();
-  final _bankingDetails2Controller = TextEditingController();
-  final _bankingDetails3Controller = TextEditingController();
+  final _stokvelName = TextEditingController();
+  final _slogan = TextEditingController();
+  final _bankName = TextEditingController();
+  final _bankAccountNumber = TextEditingController();
+  final _momoAccountName = TextEditingController();
+  final _momoAccountNumber = TextEditingController();
+  final _eMaliAccountName = TextEditingController();
+  final _eMaliAccountNumber = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -66,11 +69,14 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                     const Text(
                       'Create your stokvel and become admin',
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 30),
                     TextFormField(
-                      controller: _stokvelNameController,
+                      controller: _stokvelName,
                       decoration: const InputDecoration(
                         hintText: 'e.g My Stokvel',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -81,7 +87,7 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
+                        if (value!.isEmpty) {
                           return 'Please enter stokvel name';
                         }
                         return null;
@@ -89,7 +95,7 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _sloganController,
+                      controller: _slogan,
                       decoration: const InputDecoration(
                         hintText: 'saving to change our lives',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -101,21 +107,26 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter slogan';
+                        if (value!.isEmpty) {
+                          return 'Please enter your stokvel vision statement';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 30),
-                    const Text(
-                      'Add Stokvel Commercial Banking Details',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 20),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Commercial Banking:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _bankingDetails1Controller,
+                      controller: _bankName,
                       decoration: const InputDecoration(
                         hintText: 'e.g FNB / Standard Bank / Nedbank ...',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -127,21 +138,64 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter banking platform details';
+                        if (value!.isEmpty) {
+                          return 'Please enter bank name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _bankAccountNumber,
+                      decoration: const InputDecoration(
+                        hintText: 'enter account number',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Account Number',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.numbers, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter bank account number';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 30),
-                    const Text(
-                      'Add Stokvel MOMO Banking Details',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 20),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'MOMO Banking:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _bankingDetails2Controller,
+                      controller: _momoAccountNumber,
+                      decoration: const InputDecoration(
+                        hintText: '+268 76...... / 78......',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Account Number',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.numbers, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter MOMO banking account number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _momoAccountName,
                       decoration: const InputDecoration(
                         hintText: 'name of account holder',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
@@ -149,38 +203,62 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
                         prefixIcon:
-                            Icon(Icons.account_circle, color: Colors.black),
+                            Icon(Icons.supervisor_account, color: Colors.black),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter banking platform details';
+                        if (value!.isEmpty) {
+                          return 'Please enter MOMO banking account name';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 30),
-                    const Text(
-                      'Add Stokvel e-Mali Banking Details',
-                      textAlign: TextAlign.start,
-                      style: TextStyle(fontSize: 20),
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'e-Mali Banking:',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 20),
                     TextFormField(
-                      controller: _bankingDetails3Controller,
+                      controller: _eMaliAccountNumber,
                       decoration: const InputDecoration(
-                        hintText: 'name of account holder ',
+                        hintText: '+268 79.......',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Account Number',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.numbers, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter eMali banking account number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _eMaliAccountName,
+                      decoration: const InputDecoration(
+                        hintText: 'name of account holder',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
                         labelText: 'Account Name',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
                         prefixIcon:
-                            Icon(Icons.account_circle, color: Colors.black),
+                            Icon(Icons.supervisor_account, color: Colors.black),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter banking platform details';
+                        if (value!.isEmpty) {
+                          return 'Please enter eMali banking account name';
                         }
                         return null;
                       },
@@ -194,7 +272,7 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                             if (_formKey.currentState!.validate()) {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Processing Data'),
+                                  content: Text('Processing Data...'),
                                 ),
                               );
                               Navigator.push(
@@ -211,11 +289,14 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
-                            _stokvelNameController.clear();
-                            _sloganController.clear();
-                            _bankingDetails1Controller.clear();
-                            _bankingDetails2Controller.clear();
-                            _bankingDetails3Controller.clear();
+                            _stokvelName.clear();
+                            _slogan.clear();
+                            _bankName.clear();
+                            _bankAccountNumber.clear();
+                            _momoAccountName.clear();
+                            _momoAccountName.clear();
+                            _eMaliAccountNumber.clear();
+                            _eMaliAccountName.clear();
                           },
                           child: const Text('CLEAR FORM'),
                         ),
