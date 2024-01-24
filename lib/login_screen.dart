@@ -3,8 +3,16 @@ import "user_profile_screen.dart";
 import "sign_up_screen.dart";
 import "password_reset_screen.dart";
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -88,18 +96,44 @@ class LoginScreen extends StatelessWidget {
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),
-                      const TextField(
-                        decoration: InputDecoration(
-                          hintText: "Password",
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Password",
-                          labelStyle:
-                              TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.lock, color: Colors.black),
-                          border: OutlineInputBorder(),
+                      TextFormField(
+                          obscureText: true,
+                        : TextField(
+                          obscureText: _obscureText,
+                          decoration: InputDecoration(
+                            hintText: "Password",
+                            hintStyle:
+                                const TextStyle(color: Colors.grey, fontSize: 16),
+                            labelText: "Password",
+                            labelStyle: const TextStyle(
+                                color: Colors.black, fontSize: 18),
+                            prefixIcon:
+                                const Icon(Icons.lock, color: Colors.black),
+                            border: const OutlineInputBorder(),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureText
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                            ),
+                          ),
+                          
+                          textAlign: TextAlign.start,
                         ),
-                        textAlign: TextAlign.start,
+                        validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter a password';
+                            } else if (value.length < 8) {
+                              return 'Password must be at least 8 characters long';
+                            }
+                            return null;
+                          },
                       ),
                       const SizedBox(height: 20.0),
                       Row(

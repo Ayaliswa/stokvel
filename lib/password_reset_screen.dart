@@ -202,8 +202,16 @@ class PasswordResetCode extends StatelessWidget {
   }
 }
 
-class ChangePassword extends StatelessWidget {
+class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _ChangePasswordState createState() => _ChangePasswordState();
+}
+
+class _ChangePasswordState extends State<ChangePassword> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -258,26 +266,52 @@ class ChangePassword extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const TextField(
+                TextField(
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     hintText: "create your new password",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                    hintStyle:
+                        const TextStyle(color: Colors.grey, fontSize: 16),
                     labelText: "New Password",
-                    labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                    prefixIcon: Icon(Icons.key, color: Colors.black),
-                    border: OutlineInputBorder(),
+                    labelStyle:
+                        const TextStyle(color: Colors.black, fontSize: 18),
+                    prefixIcon: const Icon(Icons.key, color: Colors.black),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                   ),
                   textAlign: TextAlign.start,
                 ),
                 const SizedBox(height: 10),
-                const TextField(
+                TextField(
+                  obscureText: _obscureText,
                   decoration: InputDecoration(
                     hintText: "corfirm your password",
-                    hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                    hintStyle:
+                        const TextStyle(color: Colors.grey, fontSize: 16),
                     labelText: "Confirm Password",
-                    labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                    prefixIcon: Icon(Icons.lock, color: Colors.black),
-                    border: OutlineInputBorder(),
+                    labelStyle:
+                        const TextStyle(color: Colors.black, fontSize: 18),
+                    prefixIcon: const Icon(Icons.lock, color: Colors.black),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        _obscureText ? Icons.visibility : Icons.visibility_off,
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          _obscureText = !_obscureText;
+                        });
+                      },
+                    ),
                   ),
                   textAlign: TextAlign.start,
                 ),

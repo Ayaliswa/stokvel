@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'stokvel_profile_screen.dart';
 import 'stokvel_registration_screen.dart';
 import 'registration_screen.dart';
+import 'change_password_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -64,11 +65,32 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               PopupMenuItem(
                                 child: TextButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return const RegistrationForm();
+                                    PopupMenuItem(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return const RegistrationForm();
+                                              },
+                                            ),
+                                          );
                                         },
+                                        child: const Text('Edit Profile'),
+                                      ),
+                                    );
+                                    PopupMenuItem(
+                                      child: TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (BuildContext context) {
+                                                return const ChangePasswordScreen();
+                                              },
+                                            ),
+                                          );
+                                        },
+                                        child: const Text('Change Password'),
                                       ),
                                     );
                                   },

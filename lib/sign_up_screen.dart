@@ -2,8 +2,16 @@ import "package:flutter/material.dart";
 import "registration_screen.dart";
 import "login_screen.dart";
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  bool _obscureText = true;
 
   @override
   Widget build(BuildContext context) {
@@ -105,30 +113,58 @@ class SignUpScreen extends StatelessWidget {
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
-                      const TextField(
+                      TextField(
+                        obscureText: _obscureText,
                         decoration: InputDecoration(
                           hintText: "create password",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
+                              const TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Password",
-                          labelStyle:
-                              TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.vpn_key, color: Colors.black),
-                          border: OutlineInputBorder(),
+                          labelStyle: const TextStyle(
+                              color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              const Icon(Icons.vpn_key, color: Colors.black),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
                         ),
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
-                      const TextField(
+                      TextField(
+                        obscureText: _obscureText,
                         decoration: InputDecoration(
                           hintText: "confirm your password",
                           hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
+                              const TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Confirm Password",
-                          labelStyle:
-                              TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.lock, color: Colors.black),
-                          border: OutlineInputBorder(),
+                          labelStyle: const TextStyle(
+                              color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Colors.black),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
                         ),
                         textAlign: TextAlign.start,
                       ),
