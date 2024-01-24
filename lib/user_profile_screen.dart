@@ -65,36 +65,48 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               PopupMenuItem(
                                 child: TextButton(
                                   onPressed: () {
-                                    PopupMenuItem(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                                return const RegistrationForm();
+                                    (BuildContext context) => <PopupMenuEntry>[
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return const RegistrationForm();
+                                                    },
+                                                  ),
+                                                );
                                               },
+                                              child: const Text('Edit Profile',
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
                                             ),
-                                          );
-                                        },
-                                        child: const Text('Edit Profile'),
-                                      ),
-                                    );
-                                    PopupMenuItem(
-                                      child: TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (BuildContext context) {
-                                                return const ChangePasswordScreen();
+                                          ),
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return const ChangePasswordScreen();
+                                                    },
+                                                  ),
+                                                );
                                               },
+                                              child: const Text(
+                                                  'Change Password',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.green)),
                                             ),
-                                          );
-                                        },
-                                        child: const Text('Change Password'),
-                                      ),
-                                    );
+                                          )
+                                        ];
                                   },
-                                  child: const Text('Me'),
+                                  child: const Text('Me',
+                                      style: TextStyle(color: Colors.black)),
                                 ),
                               ),
                               PopupMenuItem(
@@ -108,7 +120,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text('Stokvel Profile'),
+                                  child: const Text('Stokvel Profile',
+                                      style: TextStyle(color: Colors.black)),
                                 ),
                               ),
                               PopupMenuItem(
@@ -122,7 +135,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       ),
                                     );
                                   },
-                                  child: const Text('Create stokvel'),
+                                  child: const Text('Create stokvel',
+                                      style: TextStyle(color: Colors.black)),
                                 ),
                               ),
                               PopupMenuItem(
@@ -152,7 +166,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                       },
                                     );
                                   },
-                                  child: const Text('Logout'),
+                                  child: const Text('Logout',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.red)),
                                 ),
                               ),
                             ],
@@ -232,6 +249,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             setState(() {
               currentIndex = index;
             });
+            return tabUserPage();
           },
           items: const [
             BottomNavigationBarItem(
@@ -254,5 +272,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
       ),
     );
+  }
+
+  void tabUserPage() {
+    switch (currentIndex) {
+      case 0:
+        print('my transaction history');
+      case 1:
+        print('make transaction here');
+      case 2:
+        print('request & view my request(s) here');
+    }
   }
 }

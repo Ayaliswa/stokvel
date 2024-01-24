@@ -12,6 +12,17 @@ class StokvelProfileScreen extends StatefulWidget {
 class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
   int currentIndex = 1;
 
+  void tabStokvelPage() {
+    switch (currentIndex) {
+      case 0:
+        print('stokvel transaction history');
+      case 1:
+        print('stokvel chat session');
+      case 2:
+        print('view stokvel request here');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -162,6 +173,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
             setState(() {
               currentIndex = index;
             });
+            return tabStokvelPage();
           },
           items: const [
             BottomNavigationBarItem(

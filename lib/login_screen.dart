@@ -97,43 +97,39 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
-                          obscureText: true,
-                        : TextField(
-                          obscureText: _obscureText,
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle:
-                                const TextStyle(color: Colors.grey, fontSize: 16),
-                            labelText: "Password",
-                            labelStyle: const TextStyle(
-                                color: Colors.black, fontSize: 18),
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.black),
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
+                        obscureText: _obscureText,
+                        decoration: InputDecoration(
+                          hintText: "Password",
+                          hintStyle:
+                              const TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: "Password",
+                          labelStyle: const TextStyle(
+                              color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Colors.black),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
                           ),
-                          
-                          textAlign: TextAlign.start,
                         ),
                         validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter a password';
-                            } else if (value.length < 8) {
-                              return 'Password must be at least 8 characters long';
-                            }
-                            return null;
-                          },
+                          if (value!.isEmpty) {
+                            return 'Please enter a password';
+                          } else if (value.length < 8) {
+                            return 'Password must be at least 8 characters long';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),
                       Row(
