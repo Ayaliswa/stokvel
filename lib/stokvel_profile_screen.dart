@@ -12,17 +12,6 @@ class StokvelProfileScreen extends StatefulWidget {
 class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
   int currentIndex = 1;
 
-  void tabStokvelPage() {
-    switch (currentIndex) {
-      case 0:
-        print('stokvel transaction history');
-      case 1:
-        print('stokvel chat session');
-      case 2:
-        print('view stokvel request here');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -172,8 +161,27 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           onTap: (int index) {
             setState(() {
               currentIndex = index;
+              switch (currentIndex) {
+                // Stokvel "Statement" tab
+                case 0:
+                  setState(() {
+                    _statementScreen;
+                  });
+
+                // Stokvel "Chat(s)" tab
+                case 1:
+                  setState(() {
+                    _chatScreen;
+                  });
+
+                //Stokvel "Request(s)" tab
+                case 2:
+                  setState(() {
+                    _requestScreen;
+                  });
+              }
             });
-            return tabStokvelPage();
+            return;
           },
           items: const [
             BottomNavigationBarItem(
@@ -195,6 +203,80 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  // Statement nav bar tab screen
+  Widget _statementScreen() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: Text(
+                'Start a conversation',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Chat nav bar tab screen
+  Widget _chatScreen() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: Text(
+                'Start a conversation',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.all(16),
+          child: TextField(
+            decoration: InputDecoration(
+              hintText: 'Type your message here',
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.send),
+                onPressed: () {},
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _requestScreen() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Container(
+            color: Colors.grey[200],
+            child: const Center(
+              child: Text(
+                'View all stokvel request here',
+                style: TextStyle(fontSize: 24),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
