@@ -243,13 +243,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.grey,
           selectedFontSize: 16,
           currentIndex: currentIndex,
           onTap: (int index) {
             setState(() {
               currentIndex = index;
+              switch (currentIndex) {
+                case 0:
+                  print('my transaction history');
+                case 1:
+                  print('make transaction here');
+                case 2:
+                  print('request & view my request(s) here');
+              }
             });
-            return tabUserPage();
           },
           items: const [
             BottomNavigationBarItem(
@@ -272,16 +280,5 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         ),
       ),
     );
-  }
-
-  void tabUserPage() {
-    switch (currentIndex) {
-      case 0:
-        print('my transaction history');
-      case 1:
-        print('make transaction here');
-      case 2:
-        print('request & view my request(s) here');
-    }
   }
 }

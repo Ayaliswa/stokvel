@@ -20,82 +20,28 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: const Text("Stokvel"),
-          backgroundColor: Colors.blue,
-          actions: <Widget>[
-            PopupMenuButton<String>(
-              onSelected: (String choice) {
-                if (choice == 'My Profile') {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) {
-                        return const UserProfileScreen();
-                      },
-                    ),
-                  );
-                } else if (choice == 'Logout') {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: const Text('Are you sure you want to logout?'),
-                        actions: <Widget>[
-                          TextButton(
-                            child: const Text('No'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            child: const Text('Yes'),
-                            onPressed: () {
-                              SystemNavigator.pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                }
-              },
-              itemBuilder: (BuildContext context) {
-                return ['My Profile', 'Logout'].map((String choice) {
-                  return PopupMenuItem<String>(
-                    value: choice,
-                    child: Text(choice),
-                  );
-                }).toList();
-              },
-            ),
-          ],
-        ),
         body: Column(
           children: [
             Center(
               child: Container(
                 padding: const EdgeInsets.all(5),
                 color: Colors.blueGrey,
-                child: const SizedBox(
+                child: SizedBox(
                   width: 500,
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Padding(padding: EdgeInsets.only(left: 20)),
-                          CircleAvatar(
+                          const Padding(padding: EdgeInsets.only(left: 10)),
+                          const CircleAvatar(
                             radius: 50,
                             backgroundImage: AssetImage(
                               'images/icon.png',
                             ),
                             backgroundColor: Colors.transparent,
                           ),
-                          SizedBox(width: 10),
-                          Column(
+                          const SizedBox(width: 10),
+                          const Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -103,16 +49,64 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                 'City United Stokvel(Main Savings)',
                                 style: TextStyle(fontSize: 20),
                               ),
-                              SizedBox(height: 5),
+                              SizedBox(height: 15),
                               Text(
                                 'Stokvel members names',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ],
                           ),
+                          const Spacer(),
+                          PopupMenuButton<String>(
+                            onSelected: (String choice) {
+                              if (choice == 'My Profile') {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (BuildContext context) {
+                                      return const UserProfileScreen();
+                                    },
+                                  ),
+                                );
+                              } else if (choice == 'Logout') {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Text(
+                                          'Are you sure you want to logout?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: const Text('No'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: const Text('Yes'),
+                                          onPressed: () {
+                                            SystemNavigator.pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              }
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return ['My Profile', 'Logout']
+                                  .map((String choice) {
+                                return PopupMenuItem<String>(
+                                  value: choice,
+                                  child: Text(choice),
+                                );
+                              }).toList();
+                            },
+                          ),
                         ],
                       ),
-                      Center(
+                      const SizedBox(height: 10),
+                      const Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -156,6 +150,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.grey,
           selectedFontSize: 16,
           currentIndex: currentIndex,
           onTap: (int index) {
@@ -164,24 +159,17 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
               switch (currentIndex) {
                 // Stokvel "Statement" tab
                 case 0:
-                  setState(() {
-                    _statementScreen;
-                  });
+                  _statementScreen;
 
                 // Stokvel "Chat(s)" tab
                 case 1:
-                  setState(() {
-                    _chatScreen;
-                  });
+                  _chatScreen;
 
                 //Stokvel "Request(s)" tab
                 case 2:
-                  setState(() {
-                    _requestScreen;
-                  });
+                  _requestScreen;
               }
             });
-            return;
           },
           items: const [
             BottomNavigationBarItem(
@@ -208,75 +196,87 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
 
   // Statement nav bar tab screen
   Widget _statementScreen() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: Text(
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Container(
+              color: Colors.grey[200],
+              child: const Text(
                 'Start a conversation',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   // Chat nav bar tab screen
   Widget _chatScreen() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: Text(
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Container(
+              color: Colors.grey[200],
+              child: const Text(
                 'Start a conversation',
-                style: TextStyle(fontSize: 24),
+                style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
               ),
             ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(16),
-          child: TextField(
-            decoration: InputDecoration(
-              hintText: 'Type your message here',
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.send),
-                onPressed: () {},
+          Container(
+            padding: const EdgeInsets.all(16),
+            child: TextField(
+              decoration: InputDecoration(
+                hintText: 'Type your message here',
+                suffixIcon: IconButton(
+                  icon: const Icon(Icons.send),
+                  onPressed: () {},
+                ),
               ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _requestScreen() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          child: Container(
-            color: Colors.grey[200],
-            child: const Center(
-              child: Text(
-                'View all stokvel request here',
-                style: TextStyle(fontSize: 24),
+    return const Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Text(
+              'View all stokvel request here',
+              style: TextStyle(
+                fontSize: 24,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
