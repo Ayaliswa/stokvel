@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'user_profile_screen.dart';
 
 class StokvelProfileScreen extends StatefulWidget {
   const StokvelProfileScreen({super.key});
@@ -23,7 +25,54 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
             icon: const Icon(Icons.arrow_back),
             onPressed: () => Navigator.pop(context),
           ),
+          title: const Text("Stokvel"),
           backgroundColor: Colors.blue,
+          actions: <Widget>[
+            PopupMenuButton<String>(
+              onSelected: (String choice) {
+                if (choice == 'My Profile') {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) {
+                        return const UserProfileScreen();
+                      },
+                    ),
+                  );
+                } else if (choice == 'Logout') {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: const Text('Are you sure you want to logout?'),
+                        actions: <Widget>[
+                          TextButton(
+                            child: const Text('No'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: const Text('Yes'),
+                            onPressed: () {
+                              SystemNavigator.pop();
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                }
+              },
+              itemBuilder: (BuildContext context) {
+                return ['My Profile', 'Logout'].map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
+            ),
+          ],
         ),
         body: Column(
           children: [
@@ -56,7 +105,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                               ),
                               SizedBox(height: 5),
                               Text(
-                                'Group members names',
+                                'Stokvel members names',
                                 style: TextStyle(fontSize: 16),
                               ),
                             ],
@@ -76,7 +125,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  'E4700.00',
+                                  'E 0.00',
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],
@@ -91,7 +140,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                 ),
                                 SizedBox(height: 2),
                                 Text(
-                                  'E950.00',
+                                  'E 0.00',
                                   style: TextStyle(fontSize: 20),
                                 ),
                               ],

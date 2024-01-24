@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'stokvel_profile_screen.dart';
 import 'stokvel_registration_screen.dart';
+import 'registration_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -55,23 +58,84 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ],
                           ),
                           const Spacer(),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const StokvelRegistrationForm(),
+                          PopupMenuButton(
+                            itemBuilder: (BuildContext context) =>
+                                <PopupMenuEntry>[
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return const RegistrationForm();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Me'),
                                 ),
-                              );
-                            },
-                            icon: const Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Icon(Icons.more_vert),
-                              ],
-                            ),
-                          ),
+                              ),
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return const StokvelProfileScreen();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Stokvel Profile'),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (BuildContext context) {
+                                          return const StokvelRegistrationForm();
+                                        },
+                                      ),
+                                    );
+                                  },
+                                  child: const Text('Create stokvel'),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                child: TextButton(
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'Are you sure you want to logout?'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('No'),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text('Yes'),
+                                              onPressed: () {
+                                                SystemNavigator.pop();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: const Text('Logout'),
+                                ),
+                              ),
+                            ],
+                            icon: const Icon(Icons.more_vert),
+                          )
                         ],
                       ),
                       const SizedBox(height: 5),
