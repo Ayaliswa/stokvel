@@ -325,38 +325,60 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                     Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Processing Data...'),
-                                ),
-                              );
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const StokvelProfileScreen(),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text('CREATE STOKVEL'),
+                        Container(
+                          width: 400.0,
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text('Processing Data...'),
+                                  ),
+                                );
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const StokvelProfileScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.blue,
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.white),
+                            ),
+                            child: const Text('CREATE STOKVEL'),
+                          ),
                         ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            _stokvelName.clear();
-                            _slogan.clear();
-                            _bankName.clear();
-                            _bankAccountNumber.clear();
-                            _momoAccountName.clear();
-                            _momoAccountName.clear();
-                            _eMaliAccountNumber.clear();
-                            _eMaliAccountName.clear();
-                          },
-                          child: const Text('CLEAR FORM'),
+                        const SizedBox(height: 10),
+                        Container(
+                          width: 400.0,
+                          height: 48,
+                          margin: const EdgeInsets.symmetric(
+                              horizontal: 16, vertical: 8),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              _stokvelName.clear();
+                              _slogan.clear();
+                              _bankName.clear();
+                              _bankAccountNumber.clear();
+                              _momoAccountName.clear();
+                              _momoAccountName.clear();
+                              _eMaliAccountNumber.clear();
+                              _eMaliAccountName.clear();
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: Colors.red,
+                              side: const BorderSide(color: Colors.red),
+                            ),
+                            child: const Text('CLEAR FORM'),
+                          ),
                         ),
                       ],
                     ),
