@@ -32,7 +32,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                     padding: const EdgeInsets.all(10),
                     child: Column(
                       children: [
-                        const SizedBox(height: 35.0),
+                        const SizedBox(height: 20.0),
                         Row(
                           children: [
                             const Padding(padding: EdgeInsets.only(left: 10)),
@@ -50,11 +50,15 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                               children: [
                                 Text(
                                   'City United Stokvel',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 SizedBox(height: 15),
                                 Text(
-                                  'Stokvel members names',
+                                  'Member1, Member2, Member3 ',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 16),
                                 ),
                               ],

@@ -33,7 +33,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   width: 500,
                   child: Column(
                     children: [
-                      const SizedBox(height: 35.0),
+                      const SizedBox(height: 20.0),
                       Row(
                         children: [
                           const Padding(padding: EdgeInsets.only(left: 20)),
@@ -51,11 +51,14 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                               Text(
                                 'Username goes here',
                                 maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
                               SizedBox(height: 10),
                               Text(
                                 '+268 7612-3456',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                                 style: TextStyle(fontSize: 20),
                               ),
                             ],

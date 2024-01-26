@@ -180,9 +180,17 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       Row(
                         children: [
                           ElevatedButton.icon(
-                            style: const ButtonStyle(
-                                backgroundColor:
-                                    MaterialStatePropertyAll(Colors.black)),
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Colors.white;
+                                  }
+                                  return Colors.black;
+                                },
+                              ),
+                            ),
                             onPressed: () {},
                             icon: const Icon(Icons.file_upload,
                                 color: Colors.blue),
@@ -206,9 +214,22 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       Row(
                         children: [
                           ElevatedButton.icon(
-                            style: const ButtonStyle(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Colors.white;
+                                  }
+                                  return Colors.black;
+                                },
+                              ),
+                            ),
+
+                            /*ButtonStyle(
                                 backgroundColor:
-                                    MaterialStatePropertyAll(Colors.black)),
+                                    MaterialStatePropertyAll(Colors.black)),*/
+
                             onPressed: () {},
                             icon: const Icon(Icons.file_upload,
                                 color: Colors.blue),
