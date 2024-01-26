@@ -74,7 +74,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          "Register:",
+                          "Sign up:",
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.black,
@@ -169,24 +169,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
-                      const Row(
+                      Row(
                         children: [
-                          Text(
+                          const Text(
                             "Gender",
                             style: TextStyle(fontSize: 18, color: Colors.black),
                           ),
-                          SizedBox(width: 20),
-                          Radio(value: null, groupValue: null, onChanged: null),
-                          Text("Male"),
-                          SizedBox(width: 20),
-                          Radio(value: null, groupValue: null, onChanged: null),
-                          Text("Female"),
+                          const SizedBox(width: 20),
+                          Radio(
+                            value: false,
+                            groupValue: true,
+                            onChanged: (value) => true,
+                          ),
+                          const Text("Male"),
+                          const SizedBox(width: 20),
+                          Radio(
+                            value: false,
+                            groupValue: true,
+                            onChanged: (value) => true,
+                          ),
+                          const Text("Female"),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         children: [
-                          const Checkbox(value: false, onChanged: null),
+                          Checkbox(
+                            value: false,
+                            onChanged: (value) => true,
+                          ),
                           const Text("Accept"),
                           const SizedBox(width: 0),
                           TextButton(
@@ -225,7 +236,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             foregroundColor: Colors.blue,
                             side: const BorderSide(color: Colors.blue),
                           ),
-                          child: const Text("REGISTER"),
+                          child: const Text("CREATE ACCOUNT"),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -248,7 +259,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                             },
                             child: const Text(
-                              "Login?",
+                              "Login...",
                               style:
                                   TextStyle(color: Colors.blue, fontSize: 16),
                             ),
@@ -313,7 +324,8 @@ class AddRecoveryPhone extends StatelessWidget {
                 const Align(
                   alignment: Alignment.center,
                   child: Text(
-                    "enter recovery phone number that will be used to sen password reset code in case you've forgotten your password",
+                    "enter recovery phone number that will be used to send password reset OTP in case you've forgotten your password",
+                    textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 18.0,
                       fontWeight: FontWeight.bold,
@@ -353,7 +365,7 @@ class AddRecoveryPhone extends StatelessWidget {
                       foregroundColor: Colors.white,
                       side: const BorderSide(color: Colors.blue),
                     ),
-                    child: const Text("FINISH"),
+                    child: const Text("NEXT"),
                   ),
                 ),
                 const SizedBox(height: 10),

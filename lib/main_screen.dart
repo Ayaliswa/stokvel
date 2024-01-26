@@ -52,6 +52,7 @@ class MainWelcomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                const SizedBox(height: 10.0),
                 const Text(
                   "Hello,",
                   style: TextStyle(

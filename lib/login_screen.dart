@@ -87,6 +87,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       const TextField(
                         decoration: InputDecoration(
                           hintText: "Username or Phone",
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Username",
                           labelStyle:
                               TextStyle(color: Colors.black, fontSize: 18),
@@ -197,7 +199,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               );
                             },
                             child: const Text(
-                              "Register?",
+                              "Register...",
                               style:
                                   TextStyle(color: Colors.blue, fontSize: 16),
                             ),

@@ -28,121 +28,125 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                 color: Colors.blueGrey,
                 child: SizedBox(
                   width: 500,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(left: 10)),
-                          const CircleAvatar(
-                            radius: 50,
-                            backgroundImage: AssetImage(
-                              'images/icon.png',
-                            ),
-                            backgroundColor: Colors.transparent,
-                          ),
-                          const SizedBox(width: 10),
-                          const Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'City United Stokvel(Main Savings)',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                              SizedBox(height: 15),
-                              Text(
-                                'Stokvel members names',
-                                style: TextStyle(fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          const Spacer(),
-                          PopupMenuButton<String>(
-                            onSelected: (String choice) {
-                              if (choice == 'My Profile') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return const UserProfileScreen();
-                                    },
-                                  ),
-                                );
-                              } else if (choice == 'Logout') {
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) {
-                                    return AlertDialog(
-                                      title: const Text(
-                                          'Are you sure you want to logout?'),
-                                      actions: <Widget>[
-                                        TextButton(
-                                          child: const Text('No'),
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                          },
-                                        ),
-                                        TextButton(
-                                          child: const Text('Yes'),
-                                          onPressed: () {
-                                            SystemNavigator.pop();
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            itemBuilder: (BuildContext context) {
-                              return ['My Profile', 'Logout']
-                                  .map((String choice) {
-                                return PopupMenuItem<String>(
-                                  value: choice,
-                                  child: Text(choice),
-                                );
-                              }).toList();
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: SingleChildScrollView(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 35.0),
+                        Row(
                           children: [
-                            Column(
+                            const Padding(padding: EdgeInsets.only(left: 10)),
+                            const CircleAvatar(
+                              radius: 50,
+                              backgroundImage: AssetImage(
+                                'images/icon.png',
+                              ),
+                              backgroundColor: Colors.transparent,
+                            ),
+                            const SizedBox(width: 10),
+                            const Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Available Balance',
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 20),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  'E 0.00',
+                                  'City United Stokvel(Main Savings) and like an orange',
                                   style: TextStyle(fontSize: 20),
+                                ),
+                                SizedBox(height: 15),
+                                Text(
+                                  'Stokvel members names',
+                                  style: TextStyle(fontSize: 16),
                                 ),
                               ],
                             ),
-                            SizedBox(width: 20),
-                            Column(
-                              children: [
-                                Text(
-                                  'Requested Balance',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 20),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  'E 0.00',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
+                            const Spacer(),
+                            PopupMenuButton<String>(
+                              onSelected: (String choice) {
+                                if (choice == 'My Profile') {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (BuildContext context) {
+                                        return const UserProfileScreen();
+                                      },
+                                    ),
+                                  );
+                                } else if (choice == 'Logout') {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                            'Are you sure you want to logout?'),
+                                        actions: <Widget>[
+                                          TextButton(
+                                            child: const Text('No'),
+                                            onPressed: () {
+                                              Navigator.of(context).pop();
+                                            },
+                                          ),
+                                          TextButton(
+                                            child: const Text('Yes'),
+                                            onPressed: () {
+                                              SystemNavigator.pop();
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                }
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return ['My Profile', 'Logout']
+                                    .map((String choice) {
+                                  return PopupMenuItem<String>(
+                                    value: choice,
+                                    child: Text(choice),
+                                  );
+                                }).toList();
+                              },
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 10),
+                        const Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Available Balance',
+                                    style: TextStyle(
+                                        color: Colors.green, fontSize: 20),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'E 0.00',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(width: 20),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Requested Balance',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 20),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'E 0.00',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

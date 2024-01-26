@@ -61,7 +61,7 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          'Fill and Submit:',
+                          'Register:',
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,

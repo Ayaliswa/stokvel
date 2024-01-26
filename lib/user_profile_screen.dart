@@ -33,6 +33,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   width: 500,
                   child: Column(
                     children: [
+                      const SizedBox(height: 35.0),
                       Row(
                         children: [
                           const Padding(padding: EdgeInsets.only(left: 20)),
@@ -49,6 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             children: [
                               Text(
                                 'Username goes here',
+                                maxLines: 1,
                                 style: TextStyle(fontSize: 20),
                               ),
                               SizedBox(height: 10),
