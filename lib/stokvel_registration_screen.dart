@@ -113,6 +113,26 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         return null;
                       },
                     ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _slogan,
+                      decoration: const InputDecoration(
+                        hintText: 'create stokvel 5 digit pin',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Stokvel Pin',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon:
+                            Icon(Icons.text_format, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please create pin for your stokvel';
+                        }
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 30),
                     const Align(
                       alignment: Alignment.centerLeft,
@@ -159,6 +179,44 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter bank account number';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _bankName,
+                      decoration: const InputDecoration(
+                        hintText: 'e.g Mbabane Corporate Place',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Branch Name',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.place, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter bank branch name';
+                        }
+                        return null;
+                      },
+                    ),
+                    const SizedBox(height: 20),
+                    TextFormField(
+                      controller: _bankName,
+                      decoration: const InputDecoration(
+                        hintText: 'enter branch code',
+                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                        labelText: 'Branch Code',
+                        labelStyle:
+                            TextStyle(color: Colors.black, fontSize: 18),
+                        prefixIcon: Icon(Icons.code, color: Colors.black),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter branch code';
                         }
                         return null;
                       },

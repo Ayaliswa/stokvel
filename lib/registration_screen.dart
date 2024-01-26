@@ -180,9 +180,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       Row(
                         children: [
                           ElevatedButton.icon(
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.black)),
                             onPressed: () {},
-                            icon: const Icon(Icons.file_upload),
-                            label: const Text('Upload File'),
+                            icon: const Icon(Icons.file_upload,
+                                color: Colors.blue),
+                            label: const Text('Upload File',
+                                style: TextStyle(color: Colors.blue)),
                           ),
                         ],
                       ),
@@ -201,9 +206,14 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       Row(
                         children: [
                           ElevatedButton.icon(
+                            style: const ButtonStyle(
+                                backgroundColor:
+                                    MaterialStatePropertyAll(Colors.black)),
                             onPressed: () {},
-                            icon: const Icon(Icons.file_upload),
-                            label: const Text('Upload File'),
+                            icon: const Icon(Icons.file_upload,
+                                color: Colors.blue),
+                            label: const Text('Upload File',
+                                style: TextStyle(color: Colors.blue)),
                           ),
                         ],
                       ),

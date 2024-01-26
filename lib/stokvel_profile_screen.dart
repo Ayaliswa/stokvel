@@ -49,7 +49,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'City United Stokvel(Main Savings) and like an orange',
+                                  'City United Stokvel',
                                   style: TextStyle(fontSize: 20),
                                 ),
                                 SizedBox(height: 15),
