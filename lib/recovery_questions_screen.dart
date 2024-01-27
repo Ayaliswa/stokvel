@@ -33,7 +33,6 @@ class _RecoveryQuestionsScreenState extends State<RecoveryQuestionsScreen> {
         _currentQuestionIndex++;
       });
     } else {
-      // Navigate to login screen
       Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),

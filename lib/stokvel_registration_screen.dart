@@ -14,8 +14,11 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final _stokvelName = TextEditingController();
   final _slogan = TextEditingController();
+  final _stokvelPin = TextEditingController();
   final _bankName = TextEditingController();
   final _bankAccountNumber = TextEditingController();
+  final _branchName = TextEditingController();
+  final _branchCode = TextEditingController();
   final _momoAccountName = TextEditingController();
   final _momoAccountNumber = TextEditingController();
   final _eMaliAccountName = TextEditingController();
@@ -365,8 +368,11 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                             onPressed: () {
                               _stokvelName.clear();
                               _slogan.clear();
+                              _stokvelPin.clear();
                               _bankName.clear();
                               _bankAccountNumber.clear();
+                              _branchName.clear();
+                              _branchCode.clear();
                               _momoAccountName.clear();
                               _momoAccountName.clear();
                               _eMaliAccountNumber.clear();

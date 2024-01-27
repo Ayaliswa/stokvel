@@ -92,11 +92,10 @@ class MainWelcomeScreen extends StatelessWidget {
                   "Press the login button to continue to stokvel else register and get started",
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.black,
-                  ),
+                      fontSize: 18,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold),
                 ),
-                // const Spacer(),
                 const SizedBox(height: 20.0),
                 Container(
                   width: 400.0,
@@ -105,7 +104,6 @@ class MainWelcomeScreen extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Navigate to login screen
                       Navigator.of(context).push(
                         MaterialPageRoute(
                           builder: (BuildContext context) {
@@ -137,7 +135,6 @@ class MainWelcomeScreen extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
                     onPressed: () {
-                      // Navigate to sign up screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
