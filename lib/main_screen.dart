@@ -87,7 +87,6 @@ class MainWelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                const SizedBox(height: 10),
                 const Text(
                   "Press the login button to continue to stokvel else register and get started",
                   textAlign: TextAlign.center,
@@ -149,7 +148,6 @@ class MainWelcomeScreen extends StatelessWidget {
                     child: const Text("REGISTER"),
                   ),
                 ),
-                const SizedBox(height: 40),
               ],
             ),
           ),

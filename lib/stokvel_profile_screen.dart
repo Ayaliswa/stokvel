@@ -11,6 +11,7 @@ class StokvelProfileScreen extends StatefulWidget {
 
 class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
   int currentIndex = 1;
+  final _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -21,21 +22,21 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: Column(
-          children: [
+          children: <Widget>[
             Center(
               child: Container(
                 padding: const EdgeInsets.all(5),
                 color: Colors.blueGrey,
                 child: SizedBox(
-                  width: 500,
+                  width: 400,
                   child: SingleChildScrollView(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.only(top: 5),
                     child: Column(
                       children: [
                         const SizedBox(height: 20.0),
                         Row(
                           children: [
-                            const Padding(padding: EdgeInsets.only(left: 10)),
+                            const Padding(padding: EdgeInsets.all(2)),
                             const CircleAvatar(
                               radius: 50,
                               backgroundImage: AssetImage(
@@ -50,13 +51,13 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                               children: [
                                 Text(
                                   'City United Stokvel',
-                                  maxLines: 1,
+                                  //maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 20),
                                 ),
-                                SizedBox(height: 15),
+                                SizedBox(height: 10),
                                 Text(
-                                  'Member1, Member2, Member3 ',
+                                  'Member1, Member2',
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(fontSize: 16),
@@ -70,7 +71,9 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (BuildContext context) {
-                                        return const UserProfileScreen();
+                                        return UserProfileScreen(
+                                          username: _usernameController.text,
+                                        );
                                       },
                                     ),
                                   );
@@ -114,39 +117,45 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                         ),
                         const SizedBox(height: 10),
                         const Center(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Column(
-                                children: [
-                                  Text(
-                                    'Available Balance',
-                                    style: TextStyle(
-                                        color: Colors.green, fontSize: 20),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'E 0.00',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 20),
-                              Column(
-                                children: [
-                                  Text(
-                                    'Requested Balance',
-                                    style: TextStyle(
-                                        color: Colors.red, fontSize: 20),
-                                  ),
-                                  SizedBox(height: 2),
-                                  Text(
-                                    'E 0.00',
-                                    style: TextStyle(fontSize: 20),
-                                  ),
-                                ],
-                              ),
-                            ],
+                          child: SizedBox(
+                            width: 400,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: <Widget>[
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Available Bal...',
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          color: Colors.green, fontSize: 20),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      'E 0.00',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Text(
+                                      'Requested Bal...',
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          color: Colors.red, fontSize: 20),
+                                    ),
+                                    SizedBox(height: 2),
+                                    Text(
+                                      'E 0.00',
+                                      style: TextStyle(fontSize: 20),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -181,7 +190,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.report),
+              icon: Icon(Icons.receipt),
               label: 'Statement',
             ),
             BottomNavigationBarItem(
@@ -192,10 +201,6 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
               icon: Icon(Icons.request_quote),
               label: 'Request',
             ),
-            /*BottomNavigationBarItem(
-              icon: Icon(Icons.people),
-              label: 'Me',
-            ),*/
           ],
         ),
       ),

@@ -13,6 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
+  final _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -84,8 +85,9 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      const TextField(
-                        decoration: InputDecoration(
+                      TextField(
+                        controller: _usernameController,
+                        decoration: const InputDecoration(
                           hintText: "Username or Phone",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
@@ -167,7 +169,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
-                                  return const UserProfileScreen();
+                                  return UserProfileScreen(
+                      username: _usernameController.text,);
                                 },
                               ),
                             );

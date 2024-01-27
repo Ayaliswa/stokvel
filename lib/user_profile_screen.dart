@@ -6,14 +6,41 @@ import 'registration_screen.dart';
 import 'change_password_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  const UserProfileScreen({super.key, required this.username});
+  final String username;
+
+  //const UserProfileScreen({Key? key, required this.username}) : super(key: key);
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  int currentIndex = 1;
+  int _selectedIndex = 0;
+
+  static const List<Widget> _currentIndex = <Widget>[
+    Text(
+      'Chat Screen Sample',
+      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+    ),
+    Text(
+      'Make your first request',
+      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+    ),
+    Text(
+      'Make your first request',
+      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+    ),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+      _currentIndex;
+    });
+  }
+
+  get username => null;
 
   @override
   Widget build(BuildContext context) {
@@ -23,20 +50,31 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
+        drawer: Drawer(
+          child: Column(
+            children: <Widget>[
+              UserAccountsDrawerHeader(
+                accountName: Text("$username"),
+                accountEmail: Text(""),
+              ),
+              // Other widgets for the user profile screen
+            ],
+          ),
+        ),
         body: Column(
-          children: [
+          children: <Widget>[
             Center(
               child: Container(
                 padding: const EdgeInsets.all(5),
                 color: Colors.blueGrey,
                 child: SizedBox(
-                  width: 500,
+                  width: 400,
                   child: Column(
                     children: [
                       const SizedBox(height: 20.0),
                       Row(
                         children: [
-                          const Padding(padding: EdgeInsets.only(left: 20)),
+                          const Padding(padding: EdgeInsets.only(left: 5)),
                           const CircleAvatar(
                             radius: 50,
                             backgroundImage: AssetImage('images/icon.png'),
@@ -45,17 +83,17 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           const SizedBox(
                             width: 10,
                           ),
-                          const Column(
+                          Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Username goes here',
+                                '$username!',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20),
                               ),
-                              SizedBox(height: 10),
-                              Text(
+                              const SizedBox(height: 10),
+                              const Text(
                                 '+268 7612-3456',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -182,12 +220,13 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           )
                         ],
                       ),
-                      const SizedBox(height: 5),
+                      const SizedBox(height: 2),
                       DropdownButton<String>(
-                        style: const TextStyle(fontSize: 20),
+                        style:
+                            const TextStyle(fontSize: 20, color: Colors.black),
                         borderRadius:
                             const BorderRadius.all(Radius.circular(10)),
-                        padding: const EdgeInsets.only(left: 30, right: 30),
+                        padding: const EdgeInsets.all(3),
                         isExpanded: true,
                         value: 'City United Stokvel(Main Savings)',
                         onChanged: (String? newValue) {},
@@ -211,7 +250,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Column(
                               children: [
                                 Text(
-                                  'Available Balance',
+                                  'Available Bal...',
                                   style: TextStyle(
                                       color: Colors.green, fontSize: 20),
                                 ),
@@ -226,7 +265,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             Column(
                               children: [
                                 Text(
-                                  'Requested Balance',
+                                  'Requested Bal...',
                                   style: TextStyle(
                                       color: Colors.red, fontSize: 20),
                                 ),
@@ -250,23 +289,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         bottomNavigationBar: BottomNavigationBar(
           backgroundColor: Colors.grey,
           selectedFontSize: 16,
-          currentIndex: currentIndex,
-          onTap: (int index) {
-            setState(() {
-              currentIndex = index;
-              switch (currentIndex) {
-                case 0:
-                  print('my transaction history');
-                case 1:
-                  print('make transaction here');
-                case 2:
-                  print('request & view my request(s) here');
-              }
-            });
-          },
-          items: const [
+          currentIndex: _selectedIndex,
+          selectedItemColor: Colors.blue[800],
+          onTap: _onItemTapped,
+          items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.report),
+              icon: Icon(Icons.receipt),
               label: 'Statement',
             ),
             BottomNavigationBarItem(
@@ -274,13 +302,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               label: 'Transaction',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.request_quote),
+              icon: Icon(Icons.request_page),
               label: 'Request',
             ),
-            /*BottomNavigationBarItem(
-              icon: Icon(Icons.group),
-              label: 'Stokvel',
-            ),*/
           ],
         ),
       ),
