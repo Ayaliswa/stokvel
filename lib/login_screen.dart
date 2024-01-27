@@ -170,7 +170,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               MaterialPageRoute(
                                 builder: (BuildContext context) {
                                   return UserProfileScreen(
-                      username: _usernameController.text,);
+                                    username: _usernameController.text,
+                                  );
                                 },
                               ),
                             );

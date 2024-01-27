@@ -192,7 +192,23 @@ class PasswordResetCode extends StatelessWidget {
                     child: const Text("CONTINUE"),
                   ),
                 ),
-                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Didn't recieve OTP?",
+                      style: TextStyle(color: Colors.black, fontSize: 16),
+                    ),
+                    const SizedBox(width: .2),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        "resend OTP...",
+                        style: TextStyle(color: Colors.blue, fontSize: 16),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
