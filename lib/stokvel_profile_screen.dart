@@ -100,6 +100,7 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
+                                  const SizedBox(height: 2),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).push(
