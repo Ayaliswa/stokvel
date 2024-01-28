@@ -94,7 +94,6 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                     },
                                     child: const Text(
                                       'City United Stokvel',
-                                      //maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: true,
                                       style: TextStyle(
@@ -113,7 +112,6 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                     },
                                     child: const Text(
                                       'Member1, Member2',
-                                      maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       softWrap: true,
                                       style: TextStyle(
