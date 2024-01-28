@@ -1,16 +1,10 @@
 import "package:flutter/material.dart";
 import "login_screen.dart";
 import "sign_up_screen.dart";
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
+//import 'package:firebase_core/firebase_core.dart';
+//import 'firebase_options.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-}
+void main() => runApp(const Stokvel());
 
 class Stokvel extends StatelessWidget {
   const Stokvel({super.key});
@@ -106,7 +100,7 @@ class MainWelcomeScreen extends StatelessWidget {
                 const SizedBox(height: 20.0),
                 Container(
                   width: 400.0,
-                  height: 48,
+                  height: 40,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
@@ -131,13 +125,13 @@ class MainWelcomeScreen extends StatelessWidget {
                 Container(
                   width: 200.0,
                   height: 1,
-                  color: Colors.black,
+                  color: Colors.grey,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                 ),
                 const SizedBox(height: 16),
                 Container(
                   width: 400.0,
-                  height: 48,
+                  height: 40,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(

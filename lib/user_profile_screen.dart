@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:stokvel/change_password_screen.dart';
 import 'stokvel_profile_screen.dart';
 import 'stokvel_registration_screen.dart';
-import 'registration_screen.dart';
-import 'change_password_screen.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key, required this.username});
@@ -18,32 +17,29 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   int _selectedIndex = 0;
 
-  static const List<Widget> _currentIndex = <Widget>[
-    Text(
-      'Chat Screen Sample',
-      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Make your first request',
-      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-    ),
-    Text(
-      'Make your first request',
-      style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-    ),
-  ];
+  String get $username => "My username";
 
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
-      _currentIndex;
     });
   }
 
-  get username => null;
+  final tabs = [
+    const Center(
+      child: Text("View personal history statement"),
+    ),
+    const Center(
+      child: Text("Make deposit to stokvel here"),
+    ),
+    const Center(
+      child: Text("View and make request here"),
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    var username = "";
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "User Profile Screen",
@@ -54,10 +50,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           child: Column(
             children: <Widget>[
               UserAccountsDrawerHeader(
-                accountName: Text("$username"),
-                accountEmail: Text(""),
+                accountName: Text(username),
+                accountEmail: const Text(""),
               ),
-              // Other widgets for the user profile screen
             ],
           ),
         ),
@@ -67,226 +62,213 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               child: Container(
                 padding: const EdgeInsets.all(5),
                 color: Colors.blueGrey,
-                child: SizedBox(
-                  width: 400,
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 20.0),
-                      Row(
-                        children: [
-                          const Padding(padding: EdgeInsets.only(left: 5)),
-                          const CircleAvatar(
-                            radius: 50,
-                            backgroundImage: AssetImage('images/icon.png'),
-                            backgroundColor: Colors.transparent,
-                          ),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                child: SingleChildScrollView(
+                  child: SizedBox(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 20.0),
+                        SizedBox(
+                          height: 70,
+                          child: Row(
                             children: [
-                              Text(
-                                '$username!',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: const TextStyle(fontSize: 20),
+                              const Padding(padding: EdgeInsets.only(left: 5)),
+                              const CircleAvatar(
+                                radius: 50,
+                                backgroundImage: AssetImage('images/icon.png'),
+                                backgroundColor: Colors.transparent,
                               ),
-                              const SizedBox(height: 10),
-                              const Text(
-                                '+268 7612-3456',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 20),
+                              const SizedBox(
+                                width: 2,
                               ),
-                            ],
-                          ),
-                          const Spacer(),
-                          PopupMenuButton(
-                            itemBuilder: (BuildContext context) =>
-                                <PopupMenuEntry>[
-                              PopupMenuItem(
-                                child: TextButton(
-                                  onPressed: () {
-                                    (BuildContext context) => <PopupMenuEntry>[
-                                          PopupMenuItem(
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return const RegistrationForm();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text('Edit Profile',
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                            ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      $username,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      style: const TextStyle(
+                                          fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    onPressed: () {},
+                                    child: const Text(
+                                      '+268 7612-3456',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              PopupMenuButton(
+                                itemBuilder: (BuildContext context) =>
+                                    <PopupMenuEntry>[
+                                  PopupMenuItem(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return const ChangePasswordScreen();
+                                            },
                                           ),
-                                          PopupMenuItem(
-                                            child: TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return const ChangePasswordScreen();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                              child: const Text(
-                                                  'Change Password',
-                                                  style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color: Colors.green)),
-                                            ),
-                                          )
-                                        ];
-                                  },
-                                  child: const Text('Me',
-                                      style: TextStyle(color: Colors.black)),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return const StokvelProfileScreen();
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: const Text('Stokvel Profile',
-                                      style: TextStyle(color: Colors.black)),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                child: TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return const StokvelRegistrationForm();
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: const Text('Create stokvel',
-                                      style: TextStyle(color: Colors.black)),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                child: TextButton(
-                                  onPressed: () {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                              'Are you sure you want to logout?'),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text('No'),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                            ),
-                                            TextButton(
-                                              child: const Text('Yes'),
-                                              onPressed: () {
-                                                SystemNavigator.pop();
-                                              },
-                                            ),
-                                          ],
                                         );
                                       },
-                                    );
-                                  },
-                                  child: const Text('Logout',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.red)),
-                                ),
+                                      child: const Text('Change my password',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return const StokvelProfileScreen();
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: const Text('Stokvel Profile',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (BuildContext context) {
+                                              return const StokvelRegistrationForm();
+                                            },
+                                          ),
+                                        );
+                                      },
+                                      child: const Text('Create stokvel',
+                                          style:
+                                              TextStyle(color: Colors.black)),
+                                    ),
+                                  ),
+                                  PopupMenuItem(
+                                    child: TextButton(
+                                      onPressed: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'Are you sure you want to logout?'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text('No'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text('Yes'),
+                                                  onPressed: () {
+                                                    SystemNavigator.pop();
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: const Text('Logout',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.red)),
+                                    ),
+                                  ),
+                                ],
+                                icon: const Icon(Icons.more_vert),
+                              )
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        SizedBox(
+                          width: 400,
+                          child: DropdownButton<String>(
+                            style: const TextStyle(
+                                fontSize: 20, color: Colors.black),
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(10)),
+                            padding: const EdgeInsets.all(3),
+                            isExpanded: true,
+                            value: 'City United Stokvel(Main Savings)',
+                            onChanged: (String? newValue) {},
+                            items: <String>[
+                              'City United Stokvel(Main Savings)',
+                              'City United Stokvel(Food Savings)',
+                            ].map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        const Center(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Column(
+                                children: [
+                                  Text(
+                                    'Available Balance',
+                                    style: TextStyle(
+                                        color: Colors.green, fontSize: 20),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'E 0.00',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Text(
+                                    'Requested Balance',
+                                    style: TextStyle(
+                                        color: Colors.red, fontSize: 20),
+                                  ),
+                                  SizedBox(height: 2),
+                                  Text(
+                                    'E 0.00',
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                ],
                               ),
                             ],
-                            icon: const Icon(Icons.more_vert),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 2),
-                      DropdownButton<String>(
-                        style:
-                            const TextStyle(fontSize: 20, color: Colors.black),
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        padding: const EdgeInsets.all(3),
-                        isExpanded: true,
-                        value: 'City United Stokvel(Main Savings)',
-                        onChanged: (String? newValue) {},
-                        items: <String>[
-                          'City United Stokvel(Main Savings)',
-                          'City United Stokvel(Food Savings)',
-                          'Group 3',
-                          'Group 4'
-                        ].map<DropdownMenuItem<String>>((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                      ),
-                      const SizedBox(height: 5),
-                      const Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Column(
-                              children: [
-                                Text(
-                                  'Available Bal...',
-                                  style: TextStyle(
-                                      color: Colors.green, fontSize: 20),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  'E 0.00',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                            SizedBox(width: 10),
-                            Column(
-                              children: [
-                                Text(
-                                  'Requested Bal...',
-                                  style: TextStyle(
-                                      color: Colors.red, fontSize: 20),
-                                ),
-                                SizedBox(height: 2),
-                                Text(
-                                  'E 0.00',
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                              ],
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
+            const Spacer(),
+            tabs[_selectedIndex],
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
           backgroundColor: Colors.grey,
           selectedFontSize: 16,
           currentIndex: _selectedIndex,
@@ -303,7 +285,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.request_page),
-              label: 'Request',
+              label: 'Request Loan',
             ),
           ],
         ),

@@ -70,7 +70,7 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                       height: MediaQuery.of(context).size.height / 3,
                     ),
                     const Text(
-                      'Create your stokvel and become admin',
+                      'Create your stokvel',
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
@@ -125,8 +125,7 @@ class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
                         labelText: 'Stokvel Pin',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon:
-                            Icon(Icons.text_format, color: Colors.black),
+                        prefixIcon: Icon(Icons.code, color: Colors.black),
                         border: OutlineInputBorder(),
                       ),
                       validator: (value) {
