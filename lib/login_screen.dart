@@ -1,7 +1,20 @@
+// ignore_for_file: unused_field
+
+import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "user_profile_screen.dart";
 import "sign_up_screen.dart";
 import "password_reset_screen.dart";
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(const LoginScreen());
+}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,7 +26,27 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-  final _usernameController = TextEditingController();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  TextEditingController _usernameController = TextEditingController();
+  TextEditingController _emailController = TextEditingController();
+  TextEditingController _passwordController = TextEditingController();
+
+  String _username = "";
+  String _email = "";
+  String _password = "";
+
+  void _handleLogin() async {
+    try {
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+        email: _email,
+        password: _password,
+      );
+      ('User Logged In: ${userCredential.user!.email}');
+    } catch (e) {
+      ("Opps!!! Log In failled due to an error");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                       const SizedBox(height: 20.0),
-                      TextField(
+                      TextFormField(
                         controller: _usernameController,
                         decoration: const InputDecoration(
                           hintText: "Username or Phone",
@@ -97,10 +130,48 @@ class _LoginScreenState extends State<LoginScreen> {
                           prefixIcon: Icon(Icons.person, color: Colors.black),
                           border: OutlineInputBorder(),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter username";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _username = value;
+                          });
+                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
+                        controller: _emailController,
+                        decoration: const InputDecoration(
+                          hintText: "example@gmail.com",
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: "Username",
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 18),
+                          prefixIcon: Icon(Icons.person, color: Colors.black),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter your email";
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _email = value;
+                          });
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 20.0),
+                      TextFormField(
+                        controller: _passwordController,
                         obscureText: _obscureText,
                         decoration: InputDecoration(
                           hintText: "Password",
@@ -127,11 +198,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please enter a password';
-                          } else if (value.length < 8) {
-                            return 'Password must be at least 8 characters long';
+                            return "Please enter password";
                           }
                           return null;
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _username = value;
+                          });
                         },
                         textAlign: TextAlign.start,
                       ),
@@ -166,6 +240,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             horizontal: 30, vertical: 8),
                         child: ElevatedButton(
                           onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              _handleLogin();
+                            }
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {

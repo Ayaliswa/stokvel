@@ -1,10 +1,6 @@
 import "package:flutter/material.dart";
 import "login_screen.dart";
 import "sign_up_screen.dart";
-//import 'package:firebase_core/firebase_core.dart';
-//import 'firebase_options.dart';
-
-void main() => runApp(const Stokvel());
 
 class Stokvel extends StatelessWidget {
   const Stokvel({super.key});
