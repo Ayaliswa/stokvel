@@ -1,18 +1,6 @@
-import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "registration_screen.dart";
 import "login_screen.dart";
-import "firebase_options.dart";
-import 'package:firebase_core/firebase_core.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  runApp(const SignUpScreen());
-}
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -24,32 +12,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscureText = true;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController _usernameController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  TextEditingController _passController = TextEditingController();
-
-  String _username = "";
-  String _phone = "";
-  String _email = "";
-  String _password = "";
-  String _pass = "";
-
-  void _handleSignUp() async {
-    try {
-      UserCredential userCredential =
-          await _auth.createUserWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
-      ('User Registered: ${userCredential.user!.email}');
-    } catch (e) {
-      ("Opps!!! Sign up failled due to an error");
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -143,17 +106,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
                             return null;
                           },
-                          onChanged: (value) {
-                            setState(() {
-                              _username = value;
-                            });
-                          },
                           textAlign: TextAlign.start,
                         ),
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _phoneController,
                         keyboardType: TextInputType.phone,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -173,16 +130,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _phone = value;
-                          });
-                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -202,16 +153,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _email = value;
-                          });
-                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _passwordController,
                         obscureText: _obscureText,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -246,16 +191,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _password = value;
-                          });
-                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20),
                       TextFormField(
-                        controller: _passController,
                         obscureText: _obscureText,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -283,15 +222,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           ),
                         ),
                         validator: (value) {
-                          if (value!.isEmpty || value != _password) {
+                          Object password = "";
+                          if (value!.isEmpty || value != password) {
                             return "Password do not match";
                           }
                           return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            _pass = value;
-                          });
                         },
                         textAlign: TextAlign.start,
                       ),
@@ -351,9 +286,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             horizontal: 16, vertical: 8),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _handleSignUp();
-                            }
                             Navigator.push(
                               context,
                               MaterialPageRoute(

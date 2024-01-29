@@ -1,18 +1,7 @@
-import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "user_profile_screen.dart";
 import "sign_up_screen.dart";
 import "password_reset_screen.dart";
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-
-void main() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
-  runApp(const LoginScreen());
-}
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -24,27 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final TextEditingController _usernameController = TextEditingController();
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-
-  String _username = "";
-  String _email = "";
-  String _password = "";
-
-  void _handleLogin() async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _email,
-        password: _password,
-      );
-      ('User Logged In: ${userCredential.user!.email}');
-    } catch (e) {
-      ("Opps!!! Log In failled due to an error");
-    }
-  }
+  TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -134,16 +103,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _username = value;
-                          });
-                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
-                        controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
                         enableSuggestions: true,
                         autocorrect: true,
@@ -163,16 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          setState(() {
-                            _email = value;
-                          });
-                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),
                       TextFormField(
-                        controller: _passwordController,
                         obscureText: _obscureText,
                         enableSuggestions: false,
                         autocorrect: false,
@@ -204,11 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             return "Please enter password";
                           }
                           return null;
-                        },
-                        onChanged: (value) {
-                          setState(() {
-                            _password = value;
-                          });
                         },
                         textAlign: TextAlign.start,
                       ),

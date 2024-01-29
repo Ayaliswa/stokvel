@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBW2hREknnXIaDYEQj58_U6jcNsbJRwCtQ',
-    appId: '1:580821940359:web:d49b97e5ad04eecac92022',
-    messagingSenderId: '580821940359',
-    projectId: 'stokvel-493c3',
-    authDomain: 'stokvel-493c3.firebaseapp.com',
-    storageBucket: 'stokvel-493c3.appspot.com',
-    measurementId: 'G-6LM1Q6W2KF',
+    apiKey: 'AIzaSyCFLCQtywPAXXZF5aB8X25hlLWWRx4jpPk',
+    appId: '1:349266216363:web:d56c7cc129af4c90c8feee',
+    messagingSenderId: '349266216363',
+    projectId: 'stokvel-4e463',
+    authDomain: 'stokvel-4e463.firebaseapp.com',
+    storageBucket: 'stokvel-4e463.appspot.com',
+    measurementId: 'G-QYQ9526GW7',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBbC5CuCyRdrxlvtwhKd2GBQJwpAGrZJKg',
-    appId: '1:580821940359:android:867f7841816b325cc92022',
-    messagingSenderId: '580821940359',
-    projectId: 'stokvel-493c3',
-    storageBucket: 'stokvel-493c3.appspot.com',
+    apiKey: 'AIzaSyCkmkrm3fqsdZjk7vlkNZcojIc5JJc8dkU',
+    appId: '1:349266216363:android:b464511934c75b15c8feee',
+    messagingSenderId: '349266216363',
+    projectId: 'stokvel-4e463',
+    storageBucket: 'stokvel-4e463.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDQKh7-lMynaf57_x5WOXmkJa14uvM9Aqw',
-    appId: '1:580821940359:ios:57b9ac3905b4ab06c92022',
-    messagingSenderId: '580821940359',
-    projectId: 'stokvel-493c3',
-    storageBucket: 'stokvel-493c3.appspot.com',
+    apiKey: 'AIzaSyA-Z0mgXvlNw94-ENg_nT5eHsUC41QdkAE',
+    appId: '1:349266216363:ios:e96f4482fb6468e3c8feee',
+    messagingSenderId: '349266216363',
+    projectId: 'stokvel-4e463',
+    storageBucket: 'stokvel-4e463.appspot.com',
     iosBundleId: 'com.example.stokvel',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDQKh7-lMynaf57_x5WOXmkJa14uvM9Aqw',
-    appId: '1:580821940359:ios:19b1789cee3a8ee3c92022',
-    messagingSenderId: '580821940359',
-    projectId: 'stokvel-493c3',
-    storageBucket: 'stokvel-493c3.appspot.com',
+    apiKey: 'AIzaSyA-Z0mgXvlNw94-ENg_nT5eHsUC41QdkAE',
+    appId: '1:349266216363:ios:1bd1054d64aab521c8feee',
+    messagingSenderId: '349266216363',
+    projectId: 'stokvel-4e463',
+    storageBucket: 'stokvel-4e463.appspot.com',
     iosBundleId: 'com.example.stokvel.RunnerTests',
   );
 }
