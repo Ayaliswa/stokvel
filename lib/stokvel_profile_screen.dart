@@ -79,7 +79,8 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                 backgroundColor: Colors.transparent,
                               ),
                               Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextButton(
@@ -95,12 +96,10 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                     child: const Text(
                                       'City United Stokvel',
                                       overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
-                                  const SizedBox(height: 2),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.of(context).push(
@@ -114,7 +113,6 @@ class _StokvelProfileScreenState extends State<StokvelProfileScreen> {
                                     child: const Text(
                                       'Member1, Member2',
                                       overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
                                       style: TextStyle(
                                           fontSize: 16, color: Colors.black),
                                     ),

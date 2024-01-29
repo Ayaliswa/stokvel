@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field
-
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "registration_screen.dart";
@@ -126,7 +124,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       SingleChildScrollView(
                         child: TextFormField(
                           controller: _usernameController,
-                          keyboardType: TextInputType.name,
+                          keyboardType: TextInputType.text,
+                          enableSuggestions: false,
+                          autocorrect: false,
                           decoration: const InputDecoration(
                             hintText: "create username",
                             hintStyle:
@@ -155,6 +155,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _phoneController,
                         keyboardType: TextInputType.phone,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: const InputDecoration(
                           hintText: "+268 7......",
                           hintStyle:
@@ -182,14 +184,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: const InputDecoration(
                           hintText: "example@gmail.com",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Phone",
+                          labelText: "Email",
                           labelStyle:
                               TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.phone, color: Colors.black),
+                          prefixIcon: Icon(Icons.mail, color: Colors.black),
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) {
@@ -209,6 +213,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: InputDecoration(
                           hintText: "create password",
                           hintStyle:
@@ -251,6 +257,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       TextFormField(
                         controller: _passController,
                         obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: InputDecoration(
                           hintText: "confirm your password",
                           hintStyle:

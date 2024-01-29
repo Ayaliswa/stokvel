@@ -81,15 +81,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                 width: 2,
                               ),
                               Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   TextButton(
                                     onPressed: () {},
                                     child: Text(
                                       $username,
-                                      maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
                                       style: const TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
@@ -98,9 +98,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                                     onPressed: () {},
                                     child: const Text(
                                       '+268 7612-3456',
-                                      maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),

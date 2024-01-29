@@ -1,5 +1,3 @@
-// ignore_for_file: unused_field
-
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "user_profile_screen.dart";
@@ -28,9 +26,9 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController _usernameController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   String _username = "";
   String _email = "";
@@ -146,19 +144,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 20.0),
                       TextFormField(
                         controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
+                        enableSuggestions: true,
+                        autocorrect: true,
                         decoration: const InputDecoration(
                           hintText: "example@gmail.com",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Username",
+                          labelText: "Email",
                           labelStyle:
                               TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.person, color: Colors.black),
+                          prefixIcon: Icon(Icons.mail, color: Colors.black),
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "Please enter your email";
+                            return "Please enter your email address";
                           }
                           return null;
                         },
@@ -173,6 +174,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: InputDecoration(
                           hintText: "Password",
                           hintStyle:
@@ -204,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         },
                         onChanged: (value) {
                           setState(() {
-                            _username = value;
+                            _password = value;
                           });
                         },
                         textAlign: TextAlign.start,
@@ -240,9 +243,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             horizontal: 30, vertical: 8),
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              _handleLogin();
-                            }
                             Navigator.of(context).push(
                               MaterialPageRoute(
                                 builder: (BuildContext context) {

@@ -1,3 +1,135 @@
+/*import 'package:flutter/material.dart';
+
+class StokvelInfo extends StatefulWidget {
+  const StokvelInfo({super.key});
+
+  @override
+  _StokvelInfoState createState() => _StokvelInfoState();
+}
+
+class _StokvelInfoState extends State<StokvelInfo> {
+  String _groupName = 'Group Name';
+  String _groupSlogan = 'Group Slogan';
+  String _groupPhotoPath = 'assets/images/group_photo.png';
+  List<String> _members = ['Member 1', 'Member 2', 'Member 3'];
+
+  void _updateGroupPhoto() async {
+    // TODO: Implement updating group photo from user's files.
+  }
+
+  void _addMembers() async {
+    // TODO: Implement adding members to the group.
+  }
+
+  void _viewAllMembers() async {
+    // TODO: Implement displaying all members of the group.
+  }
+
+  void _exitGroup() async {
+    // TODO: Implement exiting the group.
+  }
+
+  void _reportAbuse() async {
+    // TODO: Implement reporting abuse in the group.
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: const Text("Stokvel Information"),
+        backgroundColor: Colors.blue,
+        actions: <Widget>[
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
+              PopupMenuItem(
+                child: TextButton(
+                  onPressed: () {},
+                  child: const Text('Add members',
+                      style: TextStyle(color: Colors.black)),
+                ),
+              ),
+              PopupMenuItem(
+                child: TextButton(
+                  onPressed: () {},
+                  child: const Text('Change Stokvel name',
+                      style: TextStyle(color: Colors.black)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          GestureDetector(
+            onTap: _updateGroupPhoto,
+            child: Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(_groupPhotoPath),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            _groupName,
+            style: const TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            _groupSlogan,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.grey,
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _addMembers,
+            child: const Text('Add Members'),
+          ),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: _viewAllMembers,
+            child: Text(
+              'View All Members (${_members.length})',
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.blue,
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _exitGroup,
+            child: const Text('Exit Group'),
+          ),
+          const SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: _reportAbuse,
+            child: const Text('Report Abuse'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+*/
+
 import "package:flutter/material.dart";
 import "package:stokvel/login_screen.dart";
 
