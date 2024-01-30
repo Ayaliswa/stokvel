@@ -2,6 +2,8 @@ import "package:flutter/material.dart";
 import "login_screen.dart";
 import "sign_up_screen.dart";
 
+void main() => runApp(const Stokvel());
+
 class Stokvel extends StatelessWidget {
   const Stokvel({super.key});
 
