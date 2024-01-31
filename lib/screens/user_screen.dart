@@ -72,7 +72,7 @@ class _BottomNavigationBar extends State<UserScreen> {
                                   decoration: const BoxDecoration(
                                     color: Colors.transparent,
                                     image: DecorationImage(
-                                      image: AssetImage("images/MoMo.png"),
+                                      image: AssetImage("images/MoMo.jpeg"),
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -108,7 +108,7 @@ class _BottomNavigationBar extends State<UserScreen> {
                         labelText: 'Source of fund',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: Icon(Icons.person, color: Colors.black),
+                        prefixIcon: Icon(Icons.source, color: Colors.black),
                         // border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -129,7 +129,7 @@ class _BottomNavigationBar extends State<UserScreen> {
                         labelText: 'Amount',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: Icon(Icons.person, color: Colors.black),
+                        prefixIcon: Icon(Icons.money, color: Colors.black),
                         // border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -147,10 +147,10 @@ class _BottomNavigationBar extends State<UserScreen> {
                       decoration: const InputDecoration(
                         hintText: 'number to deposit from',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: 'Account Number',
+                        labelText: 'Deposit From Number',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: Icon(Icons.person, color: Colors.black),
+                        prefixIcon: Icon(Icons.numbers, color: Colors.black),
                         // border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -163,30 +163,34 @@ class _BottomNavigationBar extends State<UserScreen> {
                     const SizedBox(
                       height: 30,
                     ),
-                    Row(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.green),
+                    Center(
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.green,
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.green),
+                            ),
+                            child: const Text('SEND...'),
                           ),
-                          child: const Text('SEND...'),
-                        ),
-                        const SizedBox(
-                          width: 30,
-                        ),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.red,
-                            foregroundColor: Colors.white,
-                            side: const BorderSide(color: Colors.red),
+                          const SizedBox(
+                            width: 30,
                           ),
-                          child: const Text('CANCEL'),
-                        ),
-                      ],
+                          ElevatedButton(
+                            onPressed: () {},
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red,
+                              foregroundColor: Colors.white,
+                              side: const BorderSide(color: Colors.red),
+                            ),
+                            child: const Text('CANCEL'),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -246,12 +250,11 @@ class _BottomNavigationBar extends State<UserScreen> {
                     SizedBox(
                       child: Row(
                         children: [
-                          const Padding(padding: EdgeInsets.only(left: 5)),
                           Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: Container(
-                              height: 60,
-                              width: 60,
+                              height: 70,
+                              width: 70,
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(100),
@@ -263,15 +266,15 @@ class _BottomNavigationBar extends State<UserScreen> {
                             ),
                           ),
                           const SizedBox(
-                            width: 6,
+                            width: 1,
                           ),
                           TextButton(
                             onPressed: () {},
                             child: const Text(
-                              "USERNAME",
+                              "Welcome Back \nAyanda",
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                  fontSize: 28,
+                                  fontSize: 24,
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold),
                             ),
@@ -386,39 +389,43 @@ class _BottomNavigationBar extends State<UserScreen> {
                     ),
                     const SizedBox(height: 3),
                     const SizedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Column(
-                            children: [
-                              Text(
-                                'Available Balance',
-                                style: TextStyle(
-                                    color: Colors.green, fontSize: 20),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'E 0.00',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                'Requested Balance',
-                                style:
-                                    TextStyle(color: Colors.red, fontSize: 20),
-                              ),
-                              SizedBox(height: 2),
-                              Text(
-                                'E 0.00',
-                                style: TextStyle(fontSize: 20),
-                              ),
-                            ],
-                          ),
-                        ],
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 15, right: 15),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  'Available Bal',
+                                  style: TextStyle(
+                                      color: Colors.green, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E 0.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            Spacer(),
+                            Column(
+                              children: [
+                                Text(
+                                  'Requested Bal',
+                                  style: TextStyle(
+                                      color: Colors.red, fontSize: 20),
+                                ),
+                                SizedBox(height: 2),
+                                Text(
+                                  'E 0.00',
+                                  style: TextStyle(fontSize: 20),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],

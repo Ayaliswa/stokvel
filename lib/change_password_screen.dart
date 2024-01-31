@@ -24,11 +24,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         title: const Text("Change Password"),
         backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: SizedBox(
-          width: 400,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
+      body: SingleChildScrollView(
+        child: Center(
+          child: SizedBox(
+            width: 400,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
