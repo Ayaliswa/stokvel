@@ -18,6 +18,7 @@ class _BottomNavigationBar extends State<UserScreen> {
   List itemLabels = [
     // Statement screen tab
     SingleChildScrollView(
+      scrollDirection: Axis.vertical,
       child: Column(
         children: <Widget>[
           Center(
@@ -799,6 +800,7 @@ class _BottomNavigationBar extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey,
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.grey,
