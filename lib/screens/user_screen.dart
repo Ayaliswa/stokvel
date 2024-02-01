@@ -52,44 +52,53 @@ class _BottomNavigationBar extends State<UserScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    image: DecorationImage(
-                                      image: AssetImage("images/Visa.png"),
-                                      fit: BoxFit.cover,
+                                TextButton(
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                      image: DecorationImage(
+                                        image: AssetImage("images/MoMo.jpeg"),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
+                                  onPressed: () {},
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  width: 15,
                                 ),
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    image: DecorationImage(
-                                      image: AssetImage("images/MoMo.jpeg"),
-                                      fit: BoxFit.cover,
+                                TextButton(
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                      image: DecorationImage(
+                                        image: AssetImage("images/eMali.png"),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
+                                  onPressed: () {},
                                 ),
                                 const SizedBox(
-                                  width: 10,
+                                  width: 15,
                                 ),
-                                Container(
-                                  height: 60,
-                                  width: 60,
-                                  decoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    image: DecorationImage(
-                                      image: AssetImage("images/eMali.png"),
-                                      fit: BoxFit.cover,
+                                TextButton(
+                                  child: Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                      image: DecorationImage(
+                                        image: AssetImage("images/Visa.png"),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
+                                  onPressed: () {},
                                 ),
                               ],
                             ),
@@ -98,17 +107,27 @@ class _BottomNavigationBar extends State<UserScreen> {
                       ),
                     ),
                     const SizedBox(
-                      height: 5,
+                      height: 25,
+                    ),
+                    const Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          textAlign: TextAlign.start,
+                          "Deposit via MoMo account",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
                     ),
                     TextFormField(
                       keyboardType: TextInputType.name,
                       decoration: const InputDecoration(
-                        hintText: 'e.g salary',
+                        hintText: '76416393',
                         hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: 'Source of fund',
+                        labelText: 'Phone Number',
                         labelStyle:
                             TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: Icon(Icons.source, color: Colors.black),
+                        prefixIcon: Icon(Icons.phone, color: Colors.black),
                         // border: OutlineInputBorder(),
                       ),
                       validator: (value) {
@@ -141,24 +160,6 @@ class _BottomNavigationBar extends State<UserScreen> {
                     ),
                     const SizedBox(
                       height: 5,
-                    ),
-                    TextFormField(
-                      keyboardType: TextInputType.name,
-                      decoration: const InputDecoration(
-                        hintText: 'number to deposit from',
-                        hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: 'Deposit From Number',
-                        labelStyle:
-                            TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: Icon(Icons.numbers, color: Colors.black),
-                        // border: OutlineInputBorder(),
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter account to deposit with';
-                        }
-                        return null;
-                      },
                     ),
                     const SizedBox(
                       height: 30,
@@ -242,7 +243,7 @@ class _BottomNavigationBar extends State<UserScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(5),
-              color: Colors.blue,
+              color: Colors.blueGrey,
               child: SizedBox(
                 child: Column(
                   children: [
