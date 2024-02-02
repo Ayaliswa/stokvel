@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:stokvel/change_password_screen.dart";
+import 'package:stokvel/security/change_password_screen.dart';
 
 class StokvelMemberInfo extends StatefulWidget {
   const StokvelMemberInfo({super.key});

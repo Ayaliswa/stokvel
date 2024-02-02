@@ -1,7 +1,7 @@
 import "package:flutter/material.dart";
 import "package:stokvel/screens/user_screen.dart";
-import "sign_up_screen.dart";
-import "password_reset_screen.dart";
+import '../registration/sign_up_screen.dart';
+import 'password_reset_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -41,7 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Text(
-                    "Welcome Back",
+                    "Welcome Back\n you've been missed",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 28.0,

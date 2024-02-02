@@ -1,6 +1,6 @@
 import "package:flutter/material.dart";
-import "package:stokvel/login_screen.dart";
-import "sign_up_screen.dart";
+import 'package:stokvel/security/login_screen.dart';
+import 'package:stokvel/registration/sign_up_screen.dart';
 
 void main() => runApp(const Stokvel());
 

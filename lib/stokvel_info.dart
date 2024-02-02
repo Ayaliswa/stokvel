@@ -131,7 +131,7 @@ class _StokvelInfoState extends State<StokvelInfo> {
 */
 
 import "package:flutter/material.dart";
-import "package:stokvel/login_screen.dart";
+import 'package:stokvel/security/login_screen.dart';
 
 class StokvelInfo extends StatefulWidget {
   const StokvelInfo({super.key});

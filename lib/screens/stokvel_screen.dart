@@ -18,10 +18,7 @@ class _BottomNavigationBar extends State<StokvelScreen> {
       "Statement",
       style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
     ),
-    const Text(
-      "Chats",
-      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-    ),
+    const ChatScreen(),
     const Text(
       "Request",
       style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
@@ -60,188 +57,257 @@ class _BottomNavigationBar extends State<StokvelScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(5),
-              color: Colors.blue,
-              child: SizedBox(
-                child: Column(
-                  children: <Widget>[
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        color: Colors.blue,
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              const SizedBox(height: 25.0),
-                              SizedBox(
-                                child: Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Container(
-                                        height: 70,
-                                        width: 70,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius:
-                                              BorderRadius.circular(100),
-                                          image: const DecorationImage(
-                                            image:
-                                                AssetImage("images/icon.png"),
-                                            fit: BoxFit.cover,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(5),
+                color: Colors.blue,
+                child: SizedBox(
+                  child: Column(
+                    children: <Widget>[
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          color: Colors.blue,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: 25.0),
+                                SizedBox(
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 10),
+                                        child: Container(
+                                          height: 70,
+                                          width: 70,
+                                          decoration: BoxDecoration(
+                                            color: Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            image: const DecorationImage(
+                                              image:
+                                                  AssetImage("images/icon.png"),
+                                              fit: BoxFit.cover,
+                                            ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      width: 1,
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Column(
-                                          children: [
-                                            TextButton(
-                                              onPressed: () {},
-                                              child: const Text(
-                                                "Welcome to \nCity United Stokvel",
-                                                overflow: TextOverflow.ellipsis,
-                                                style: TextStyle(
-                                                    fontSize: 24,
-                                                    color: Colors.black,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                      const SizedBox(
+                                        width: 1,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Column(
+                                            children: [
+                                              TextButton(
+                                                onPressed: () {},
+                                                child: const Text(
+                                                  "City United Stokvel",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: 24,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
                                               ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const Spacer(),
+                                      PopupMenuButton(
+                                        itemBuilder: (BuildContext context) =>
+                                            <PopupMenuEntry>[
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return const UserScreen();
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                              child: const Text('My Profile',
+                                                  style: TextStyle(
+                                                      color: Colors.black)),
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    const Spacer(),
-                                    PopupMenuButton(
-                                      itemBuilder: (BuildContext context) =>
-                                          <PopupMenuEntry>[
-                                        PopupMenuItem(
-                                          child: TextButton(
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
+                                          ),
+                                          PopupMenuItem(
+                                            child: TextButton(
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
                                                   builder:
                                                       (BuildContext context) {
-                                                    return const UserScreen();
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                          'Are you sure you want to logout?'),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child:
+                                                              const Text('No'),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                        TextButton(
+                                                          child:
+                                                              const Text('Yes'),
+                                                          onPressed: () {
+                                                            SystemNavigator
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
                                                   },
-                                                ),
-                                              );
-                                            },
-                                            child: const Text('My Profile',
-                                                style: TextStyle(
-                                                    color: Colors.black)),
+                                                );
+                                              },
+                                              child: const Text('Logout',
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: Colors.red)),
+                                            ),
                                           ),
-                                        ),
-                                        PopupMenuItem(
-                                          child: TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                        'Are you sure you want to logout?'),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        child: const Text('No'),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                      TextButton(
-                                                        child:
-                                                            const Text('Yes'),
-                                                        onPressed: () {
-                                                          SystemNavigator.pop();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: const Text('Logout',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color: Colors.red)),
+                                        ],
+                                        icon: const Icon(Icons.more_vert),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 3),
+                                const SizedBox(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Column(
+                                        children: [
+                                          Text(
+                                            'Available Bal',
+                                            style: TextStyle(
+                                                color: Colors.green,
+                                                fontSize: 20),
                                           ),
-                                        ),
-                                      ],
-                                      icon: const Icon(Icons.more_vert),
-                                    )
-                                  ],
+                                          Text(
+                                            'E 0.00',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Column(
+                                        children: [
+                                          Text(
+                                            'Requested Bal',
+                                            style: TextStyle(
+                                                color: Colors.red,
+                                                fontSize: 20),
+                                          ),
+                                          SizedBox(height: 2),
+                                          Text(
+                                            'E 0.00',
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              const SizedBox(height: 3),
-                              const SizedBox(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Column(
-                                      children: [
-                                        Text(
-                                          'Available Bal',
-                                          style: TextStyle(
-                                              color: Colors.green,
-                                              fontSize: 20),
-                                        ),
-                                        Text(
-                                          'E 0.00',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          'Requested Bal',
-                                          style: TextStyle(
-                                              color: Colors.red, fontSize: 20),
-                                        ),
-                                        SizedBox(height: 2),
-                                        Text(
-                                          'E 0.00',
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-            Center(
-              child: itemLabels[selectedItem],
-            ),
-          ],
+              Center(
+                child: itemLabels[selectedItem],
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+class ChatScreen extends StatefulWidget {
+  //final String userPhone;
+  const ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _messageController = TextEditingController();
+
+  void sendMessage() {
+    if (_messageController.text.isNotEmpty) {
+      _messageController.clear();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        //messages on screen
+        Expanded(
+          child: _buildMessageList(),
+        ),
+
+        // text field to type message
+        _buildMessageInput(),
+      ],
+    );
+  }
+}
+
+Widget _buildMessageList() {
+  return const Text("you sent a message");
+}
+
+Widget _buildMessageInput() {
+  return Row(
+    children: [
+      const Expanded(
+        child: TextField(
+          obscureText: false,
+          decoration: InputDecoration(
+            hintText: "Type message here",
+            hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+            border: OutlineInputBorder(),
+          ),
+          textAlign: TextAlign.start,
+        ),
+      ),
+      IconButton(
+        icon: const Icon(Icons.send),
+        onPressed: () {},
+      ),
+    ],
+  );
 }
