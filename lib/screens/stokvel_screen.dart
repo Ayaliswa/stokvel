@@ -275,39 +275,33 @@ class _ChatScreenState extends State<ChatScreen> {
     return Column(
       children: [
         //messages on screen
-        Expanded(
-          child: _buildMessageList(),
+        const Expanded(
+          child: Text("you sent a message"),
         ),
 
         // text field to type message
-        _buildMessageInput(),
+        Row(
+          children: [
+            const Expanded(
+              child: TextField(
+                obscureText: false,
+                decoration: InputDecoration(
+                  hintText: "Type message here",
+                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
+                  border: OutlineInputBorder(),
+                ),
+                textAlign: TextAlign.start,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.send),
+              onPressed: () {
+                sendMessage();
+              },
+            ),
+          ],
+        ),
       ],
     );
   }
-}
-
-Widget _buildMessageList() {
-  return const Text("you sent a message");
-}
-
-Widget _buildMessageInput() {
-  return Row(
-    children: [
-      const Expanded(
-        child: TextField(
-          obscureText: false,
-          decoration: InputDecoration(
-            hintText: "Type message here",
-            hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-            border: OutlineInputBorder(),
-          ),
-          textAlign: TextAlign.start,
-        ),
-      ),
-      IconButton(
-        icon: const Icon(Icons.send),
-        onPressed: () {},
-      ),
-    ],
-  );
 }
