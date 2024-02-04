@@ -1,5 +1,8 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:stokvel/bottom_tabs/stokvel/chat_screen.dart";
+import "package:stokvel/bottom_tabs/stokvel/request.dart";
+import "package:stokvel/bottom_tabs/stokvel/statement.dart";
 import "package:stokvel/screens/user_screen.dart";
 
 class StokvelScreen extends StatefulWidget {
@@ -13,22 +16,29 @@ class StokvelScreen extends StatefulWidget {
 
 class _BottomNavigationBar extends State<StokvelScreen> {
   int selectedItem = 0;
-  List itemLabels = [
-    const Text(
-      "Statement",
-      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-    ),
-    const ChatScreen(),
-    const Text(
-      "Request",
-      style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-    ),
-  ];
 
-  void updateItem(value) {
+  void updateItem(int index) {
     setState(() {
-      selectedItem = value;
+      selectedItem = index;
     });
+    if (index == 0) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => StatementScreen()),
+      );
+    }
+    if (index == 1) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ChatScreen()),
+      );
+    }
+    if (index == 2) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => PendingRequestScreen()),
+      );
+    }
   }
 
   @override
@@ -36,7 +46,6 @@ class _BottomNavigationBar extends State<StokvelScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.white,
         selectedFontSize: 16,
         selectedItemColor: Colors.blue[800],
@@ -65,14 +74,14 @@ class _BottomNavigationBar extends State<StokvelScreen> {
             children: [
               Container(
                 padding: const EdgeInsets.all(5),
-                color: Colors.blue,
+                color: Colors.blueGrey,
                 child: SizedBox(
                   child: Column(
                     children: <Widget>[
                       Center(
                         child: Container(
                           padding: const EdgeInsets.all(5),
-                          color: Colors.blue,
+                          color: Colors.blueGrey,
                           child: SingleChildScrollView(
                             child: Column(
                               children: [
@@ -242,66 +251,23 @@ class _BottomNavigationBar extends State<StokvelScreen> {
                   ),
                 ),
               ),
-              Center(
-                child: itemLabels[selectedItem],
+              const Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Text(
+                        textAlign: TextAlign.center,
+                        "Welcome to\nCity United Stokvel\nUse the navigation bar below to change to different pages",
+                        style: TextStyle(
+                            fontSize: 28, fontWeight: FontWeight.bold)),
+                  ),
+                ],
               ),
             ],
           ),
         ),
       ),
-    );
-  }
-}
-
-class ChatScreen extends StatefulWidget {
-  //final String userPhone;
-  const ChatScreen({super.key});
-
-  @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  final TextEditingController _messageController = TextEditingController();
-
-  void sendMessage() {
-    if (_messageController.text.isNotEmpty) {
-      _messageController.clear();
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        //messages on screen
-        const Expanded(
-          child: Text("you sent a message"),
-        ),
-
-        // text field to type message
-        Row(
-          children: [
-            const Expanded(
-              child: TextField(
-                obscureText: false,
-                decoration: InputDecoration(
-                  hintText: "Type message here",
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                  border: OutlineInputBorder(),
-                ),
-                textAlign: TextAlign.start,
-              ),
-            ),
-            IconButton(
-              icon: const Icon(Icons.send),
-              onPressed: () {
-                sendMessage();
-              },
-            ),
-          ],
-        ),
-      ],
     );
   }
 }
