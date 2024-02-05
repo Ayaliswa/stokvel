@@ -5,6 +5,8 @@ import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
 import 'package:stokvel/screens/user_screen.dart';
 
 class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
@@ -19,14 +21,14 @@ class _ChatScreenState extends State<ChatScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => StatementScreen()),
+        MaterialPageRoute(builder: (context) => const StatementScreen()),
       );
     }
     if (index == 1) {}
     if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PendingRequestScreen()),
+        MaterialPageRoute(builder: (context) => const PendingRequestScreen()),
       );
     }
   }
@@ -244,15 +246,15 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
-                    padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(10),
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: messages[index].isMine ? Colors.blue : Colors.grey,
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: Text(
                       messages[index].text,
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ),
                 );

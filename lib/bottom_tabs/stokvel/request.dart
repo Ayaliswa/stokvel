@@ -14,6 +14,8 @@ class Request {
 }
 
 class PendingRequestScreen extends StatefulWidget {
+  const PendingRequestScreen({super.key});
+
   @override
   _PendingRequestScreenState createState() => _PendingRequestScreenState();
 }
@@ -28,13 +30,13 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => StatementScreen()),
+        MaterialPageRoute(builder: (context) => const StatementScreen()),
       );
     }
     if (index == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatScreen()),
+        MaterialPageRoute(builder: (context) => const ChatScreen()),
       );
     }
     if (index == 2) {}
