@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:flutter/services.dart";
+import "package:stokvel/bottom_navigation_bar/user_navigation_bar.dart";
 import 'package:stokvel/security/change_password_screen.dart';
 import "package:stokvel/screens/stokvel_screen.dart";
 //import "package:stokvel/stokvel_profile_screen.dart";
@@ -52,7 +53,7 @@ class _BottomNavigationBar extends State<UserScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                TextButton(
+                                GestureDetector(
                                   child: Container(
                                     height: 60,
                                     width: 60,
@@ -64,7 +65,6 @@ class _BottomNavigationBar extends State<UserScreen> {
                                       ),
                                     ),
                                   ),
-                                  onPressed: () {},
                                 ),
                                 const SizedBox(
                                   width: 15,
@@ -214,27 +214,9 @@ class _BottomNavigationBar extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Colors.white,
-        selectedFontSize: 16,
-        selectedItemColor: Colors.blue[800],
+      bottomNavigationBar: UserNavigationBar(
         currentIndex: selectedItem,
         onTap: updateItem,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.receipt),
-            label: 'Statement',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.currency_exchange),
-            label: 'Transaction',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.request_page),
-            label: 'Request Loan',
-          ),
-        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
