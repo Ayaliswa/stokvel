@@ -4,12 +4,12 @@ class UserNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  UserNavigationBar({required this.currentIndex, required this.onTap});
+  const UserNavigationBar(
+      {super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
       backgroundColor: Colors.white,
       selectedFontSize: 16,
       selectedItemColor: Colors.blue[800],

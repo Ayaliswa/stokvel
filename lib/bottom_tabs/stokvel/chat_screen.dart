@@ -54,7 +54,7 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: <Widget>[
-          StokvelHearder(),
+          StokvelHeader(),
           Expanded(
             child: ListView.builder(
               itemCount: messages.length,

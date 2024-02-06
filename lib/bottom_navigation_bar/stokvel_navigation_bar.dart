@@ -4,7 +4,8 @@ class StokvelNavigationBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
 
-  StokvelNavigationBar({required this.currentIndex, required this.onTap});
+  const StokvelNavigationBar(
+      {super.key, required this.currentIndex, required this.onTap});
 
   @override
   Widget build(BuildContext context) {

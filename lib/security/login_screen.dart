@@ -1,5 +1,5 @@
 import "package:flutter/material.dart";
-import "package:stokvel/screens/user_screen.dart";
+import 'package:stokvel/bottom_tabs/user/statement.dart';
 import '../registration/sign_up_screen.dart';
 import 'password_reset_screen.dart';
 
@@ -152,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (BuildContext context) {
-                              return const UserScreen();
+                              return const UserStatementScreen();
                             },
                           ),
                         );

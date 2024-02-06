@@ -54,7 +54,7 @@ class _BottomNavigationBar extends State<StokvelScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              StokvelHearder(),
+              StokvelHeader(),
               const Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
