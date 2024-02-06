@@ -109,25 +109,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                       const SizedBox(height: 16),
                       TextFormField(
                         decoration: const InputDecoration(
-                          hintText: 'example@gmail.com',
-                          hintStyle:
-                              TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: 'Email',
-                          labelStyle:
-                              TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon: Icon(Icons.mail, color: Colors.black),
-                          border: OutlineInputBorder(),
-                        ),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter your email address';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        decoration: const InputDecoration(
                           hintText: 'P O Box 1 CityName',
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
@@ -225,11 +206,6 @@ class _RegistrationFormState extends State<RegistrationForm> {
                                 },
                               ),
                             ),
-
-                            /*ButtonStyle(
-                                backgroundColor:
-                                    MaterialStatePropertyAll(Colors.black)),*/
-
                             onPressed: () {},
                             icon: const Icon(Icons.file_upload,
                                 color: Colors.blue),

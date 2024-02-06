@@ -12,14 +12,14 @@ class Statement {
   Statement(this.id, this.amount, this.description);
 }
 
-class StatementScreen extends StatefulWidget {
-  const StatementScreen({super.key});
+class StokvelStatementScreen extends StatefulWidget {
+  const StokvelStatementScreen({super.key});
 
   @override
-  _StatementScreenState createState() => _StatementScreenState();
+  _StokvelStatementScreenState createState() => _StokvelStatementScreenState();
 }
 
-class _StatementScreenState extends State<StatementScreen> {
+class _StokvelStatementScreenState extends State<StokvelStatementScreen> {
   int selectedItem = 0;
 
   void updateItem(int index) {

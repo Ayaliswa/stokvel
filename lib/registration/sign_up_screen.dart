@@ -12,7 +12,7 @@ class SignUpScreen extends StatefulWidget {
 
 class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscureText = true;
-  TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +22,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: const Text("Stokvel"),
-          backgroundColor: Colors.blue,
-        ),
         body: Center(
           child: SizedBox(
             width: 400,
@@ -39,11 +31,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  Image.asset(
+                    "images/signupphoto.png",
+                    height: MediaQuery.of(context).size.height / 3,
+                  ),
+                  const SizedBox(height: 5.0),
                   const Text(
                     "Let's create an account for you",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 28.0,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
@@ -54,14 +51,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       ],
                     ),
                   ),
-                  Image.asset(
-                    "images/icon.png",
-                    height: MediaQuery.of(context).size.height / 3,
-                  ),
+                  const SizedBox(height: 20.0),
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      "Sign up:",
+                      "Sign up/create account:",
                       style: TextStyle(
                         fontSize: 18,
                         color: Colors.black,
@@ -110,27 +104,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Please enter phone number";
-                      }
-                      return null;
-                    },
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 20),
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    decoration: const InputDecoration(
-                      hintText: "example@gmail.com",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                      labelText: "Email",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon: Icon(Icons.mail, color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please enter email address";
                       }
                       return null;
                     },
@@ -280,7 +253,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       child: const Text("CREATE ACCOUNT"),
                     ),
                   ),
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [

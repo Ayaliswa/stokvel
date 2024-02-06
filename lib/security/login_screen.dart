@@ -13,7 +13,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
-  TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -23,14 +23,6 @@ class _LoginScreenState extends State<LoginScreen> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-          title: const Text("Stokvel"),
-          backgroundColor: Colors.blue,
-        ),
         body: Center(
           child: SizedBox(
             width: 400,
@@ -40,11 +32,16 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  Image.asset(
+                    "images/loginphoto.png",
+                    height: MediaQuery.of(context).size.height / 3,
+                  ),
+                  const SizedBox(height: 5.0),
                   const Text(
                     "Welcome Back\n you've been missed",
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 28.0,
+                      fontSize: 24.0,
                       fontWeight: FontWeight.bold,
                       shadows: [
                         Shadow(
@@ -55,10 +52,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                   ),
-                  Image.asset(
-                    "images/icon.png",
-                    height: MediaQuery.of(context).size.height / 3,
-                  ),
+                  const SizedBox(height: 20.0),
                   const Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
@@ -84,27 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return "Please enter username";
-                      }
-                      return null;
-                    },
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(height: 20.0),
-                  TextFormField(
-                    keyboardType: TextInputType.emailAddress,
-                    enableSuggestions: true,
-                    autocorrect: true,
-                    decoration: const InputDecoration(
-                      hintText: "example@gmail.com",
-                      hintStyle: TextStyle(color: Colors.grey, fontSize: 16),
-                      labelText: "Email",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon: Icon(Icons.mail, color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Please enter your email address";
                       }
                       return null;
                     },

@@ -164,3 +164,40 @@ class MainWelcomeScreen extends StatelessWidget {
     );
   }
 }
+/*
+How to convert flutter app code to website
+
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+
+class MyHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        if (constraints.maxWidth > 600) {
+          return _WideLayout();
+        } else {
+          return _NarrowLayout();
+        }
+      },
+    );
+  }
+}
+
+class _NarrowLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Layout for smaller screens
+  }
+}
+
+class _WideLayout extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Layout for larger screens
+  }
+}
+
+ */

@@ -24,7 +24,7 @@ class _BottomNavigationBar extends State<StokvelScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => StatementScreen()),
+        MaterialPageRoute(builder: (context) => StokvelStatementScreen()),
       );
     }
     if (index == 1) {
@@ -62,7 +62,7 @@ class _BottomNavigationBar extends State<StokvelScreen> {
                   Center(
                     child: Text(
                         textAlign: TextAlign.center,
-                        "Welcome to\nCity United Stokvel\nUse the navigation bar below to change to different pages",
+                        "Welcome to\nCity United Stokvel\nUse the navigation bar below to change to different pages\n\nPress any tab below to hide this welcome",
                         style: TextStyle(
                             fontSize: 28, fontWeight: FontWeight.bold)),
                   ),

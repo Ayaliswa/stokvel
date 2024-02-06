@@ -21,7 +21,7 @@ class _ChatScreenState extends State<ChatScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const StatementScreen()),
+        MaterialPageRoute(builder: (context) => const StokvelStatementScreen()),
       );
     }
     if (index == 1) {}
@@ -80,9 +80,9 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(15),
             child: Row(
-              children: <Widget>[
+              children: [
                 Expanded(
                   child: TextField(
                     controller: controller,
@@ -91,12 +91,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(50),
                       ),
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: sendMessage,
+                      ),
                     ),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send),
-                  onPressed: sendMessage,
                 ),
               ],
             ),

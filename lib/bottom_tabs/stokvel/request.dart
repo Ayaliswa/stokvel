@@ -30,7 +30,7 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => const StatementScreen()),
+        MaterialPageRoute(builder: (context) => const StokvelStatementScreen()),
       );
     }
     if (index == 1) {
