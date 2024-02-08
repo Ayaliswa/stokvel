@@ -14,6 +14,7 @@ class UserTransactionScreen extends StatefulWidget {
 class _UserTransactionScreenState extends State<UserTransactionScreen> {
   int selectedItem = 1;
   int selectedPaymentMethod = 0;
+  String? dropdownValue;
 
   void updateItem(int index) {
     setState(() {
@@ -361,10 +362,10 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                     padding: const EdgeInsets.only(
                                         left: 10, right: 10),
                                     child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         const Row(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
                                           children: [
                                             Text(
                                               textAlign: TextAlign.start,
@@ -373,6 +374,9 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ],
+                                        ),
+                                        const SizedBox(
+                                          height: 10,
                                         ),
                                         TextFormField(
                                           keyboardType: TextInputType.name,
@@ -421,6 +425,114 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             }
                                             return null;
                                           },
+                                        ),
+                                        const SizedBox(
+                                          height: 5,
+                                        ),
+                                        const Text("Expiry Date",
+                                            textAlign: TextAlign.start),
+                                        Row(
+                                          children: <Widget>[
+                                            DropdownButton<String>(
+                                              value: dropdownValue,
+                                              hint: const Text('Month'),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  dropdownValue = newValue;
+                                                });
+                                              },
+                                              items: <String>[
+                                                '01',
+                                                '02',
+                                                '03',
+                                                '04',
+                                                "05",
+                                                "06",
+                                                "07",
+                                                "08",
+                                                "09",
+                                                "10",
+                                                "11",
+                                                "12"
+                                              ].map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            ),
+                                            DropdownButton<String>(
+                                              value: dropdownValue,
+                                              hint: const Text("Year"),
+                                              onChanged: (String? newValue) {
+                                                setState(() {
+                                                  dropdownValue = newValue;
+                                                });
+                                              },
+                                              items: <String>[
+                                                "2024",
+                                                "2025",
+                                                "2026",
+                                                "2027",
+                                                "2028",
+                                                "2029",
+                                                "2030",
+                                                "2031",
+                                                "2032",
+                                                "2033",
+                                                "2034",
+                                                "2035",
+                                                "2036",
+                                                "2037",
+                                                "2038",
+                                                "2039",
+                                                "2040",
+                                              ].map<DropdownMenuItem<String>>(
+                                                  (String value) {
+                                                return DropdownMenuItem<String>(
+                                                  value: value,
+                                                  child: Text(value),
+                                                );
+                                              }).toList(),
+                                            ),
+                                            if (dropdownValue != null)
+                                              Text('Selected: $dropdownValue'),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          children: [
+                                            TextFormField(
+                                              keyboardType: TextInputType.name,
+                                              decoration: const InputDecoration(
+                                                hintText:
+                                                    "3 digits next to card number",
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16),
+                                                labelText: "Card CVV Number",
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                                prefixIcon: Icon(Icons.money,
+                                                    color: Colors.black),
+                                                // border: OutlineInputBorder(),
+                                              ),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter your Card CVV Number';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            IconButton(
+                                              icon: const Icon(Icons.send),
+                                              onPressed: () {},
+                                            ),
+                                          ],
                                         ),
                                         const SizedBox(
                                           height: 35,
