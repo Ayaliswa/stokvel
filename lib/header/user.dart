@@ -3,7 +3,16 @@ import 'package:flutter/services.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
 import 'package:stokvel/security/change_password_screen.dart';
 
-class UserHeader extends StatelessWidget {
+class UserHeader extends StatefulWidget {
+  const UserHeader({super.key});
+
+  @override
+  UserHeaderState createState() => UserHeaderState();
+}
+
+class UserHeaderState extends State<UserHeader> {
+  String? dropdownValue;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -145,8 +154,13 @@ class UserHeader extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.only(left: 20, right: 20),
                                 isExpanded: true,
-                                value: "City United Stokvel",
-                                onChanged: (String? newValue) {},
+                                value: dropdownValue,
+                                hint: const Text("select group"),
+                                onChanged: (String? newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue;
+                                  });
+                                },
                                 items: <String>[
                                   'City United Stokvel',
                                   'City United Stokvel(Food Savings)',

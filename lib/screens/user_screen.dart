@@ -41,7 +41,7 @@ class _BottomNavigationBar extends State<UserScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              UserHeader(),
+              const UserHeader(),
               Center(
                 child: itemLabels[selectedItem],
               ),
