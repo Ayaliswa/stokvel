@@ -171,7 +171,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 20,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText:
                                                   'How much do you want to deposit',
@@ -198,7 +197,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 15,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText: '76******',
                                               hintStyle: TextStyle(
@@ -288,7 +286,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 20,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText:
                                                   "How much do you want to deposit",
@@ -315,7 +312,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 15,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText: "79******",
                                               hintStyle: TextStyle(
@@ -405,7 +401,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 20,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText:
                                                   "Enter amount to deposit",
@@ -432,7 +427,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 15,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText:
                                                   "Enter card registered name",
@@ -458,7 +452,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 15,
                                           ),
                                           TextFormField(
-                                            keyboardType: TextInputType.name,
                                             decoration: const InputDecoration(
                                               hintText: "Enter Card Number",
                                               hintStyle: TextStyle(
@@ -577,35 +570,44 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                           const SizedBox(
                                             height: 15,
                                           ),
-                                          TextFormField(
-                                            keyboardType: TextInputType.name,
-                                            decoration: InputDecoration(
-                                              hintText:
-                                                  "3 digits next to card number",
-                                              hintStyle: const TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 16),
-                                              labelText: "Card CVV Number",
-                                              labelStyle: const TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                              prefixIcon: const Icon(
-                                                  Icons.money,
-                                                  color: Colors.black),
-                                              border:
-                                                  const OutlineInputBorder(),
-                                              suffixIcon: IconButton(
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: TextFormField(
+                                                  keyboardType:
+                                                      TextInputType.name,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    hintText:
+                                                        "3 digits next to card number",
+                                                    hintStyle: TextStyle(
+                                                        color: Colors.grey,
+                                                        fontSize: 16),
+                                                    labelText:
+                                                        "Card CVV Number",
+                                                    labelStyle: TextStyle(
+                                                        color: Colors.black,
+                                                        fontSize: 18),
+                                                    prefixIcon: Icon(
+                                                        Icons.numbers,
+                                                        color: Colors.black),
+                                                    border:
+                                                        OutlineInputBorder(),
+                                                  ),
+                                                  validator: (value) {
+                                                    if (value!.isEmpty) {
+                                                      return 'Please enter your Card CVV Number';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                              IconButton(
                                                 icon: const Icon(Icons
                                                     .question_mark_rounded),
                                                 onPressed: () {},
                                               ),
-                                            ),
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Please enter your Card CVV Number';
-                                              }
-                                              return null;
-                                            },
+                                            ],
                                           ),
                                           const SizedBox(
                                             height: 35,

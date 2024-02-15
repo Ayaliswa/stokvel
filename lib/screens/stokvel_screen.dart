@@ -24,19 +24,19 @@ class _BottomNavigationBar extends State<StokvelScreen> {
     if (index == 0) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => StokvelStatementScreen()),
+        MaterialPageRoute(builder: (context) => const StokvelStatementScreen()),
       );
     }
     if (index == 1) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => ChatScreen()),
+        MaterialPageRoute(builder: (context) => const ChatScreen()),
       );
     }
     if (index == 2) {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => PendingRequestScreen()),
+        MaterialPageRoute(builder: (context) => const PendingRequestScreen()),
       );
     }
   }
@@ -48,14 +48,14 @@ class _BottomNavigationBar extends State<StokvelScreen> {
         currentIndex: selectedItem,
         onTap: updateItem,
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               StokvelHeader(),
-              const Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

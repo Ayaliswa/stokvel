@@ -74,7 +74,7 @@ class _UserStatementScreenState extends State<UserStatementScreen> {
       ),
       body: Column(
         children: [
-          UserHeader(),
+          const UserHeader(),
           Expanded(
             child: ListView.builder(
               itemCount: statements.length,

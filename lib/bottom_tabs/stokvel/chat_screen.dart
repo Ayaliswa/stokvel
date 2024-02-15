@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stokvel/bottom_navigation_bar/stokvel_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/stokvel/request.dart';
@@ -36,12 +38,14 @@ class _ChatScreenState extends State<ChatScreen> {
   final List<Message> messages = [];
   final TextEditingController controller = TextEditingController();
 
-  void sendMessage() {
+  void sendMessage() async {
     if (controller.text.isNotEmpty) {
-      setState(() {
-        messages.add(Message(controller.text, true));
-        controller.clear();
+      await FirebaseFirestore.instance.collection('messages').add({
+        'text': controller.text,
+        'isMine': true,
+        'timestamp': FieldValue.serverTimestamp(),
       });
+      controller.clear();
     }
   }
 
@@ -54,27 +58,44 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: <Widget>[
-          StokvelHeader(),
+          const StokvelHeader(),
           Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  alignment: messages[index].isMine
-                      ? Alignment.centerRight
-                      : Alignment.centerLeft,
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    margin: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: messages[index].isMine ? Colors.blue : Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Text(
-                      messages[index].text,
-                      style: const TextStyle(color: Colors.white),
-                    ),
-                  ),
+            child: StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('messages')
+                  .orderBy('timestamp', descending: true)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (!snapshot.hasData) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                final messages = snapshot.data!.docs
+                    .map((doc) => Message.fromDocument(doc))
+                    .toList();
+                return ListView.builder(
+                  reverse: true,
+                  itemCount: messages.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      alignment: messages[index].isMine
+                          ? Alignment.centerRight
+                          : Alignment.centerLeft,
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: messages[index].isMine
+                              ? Colors.blue
+                              : Colors.grey,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          messages[index].text,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
             ),
@@ -87,15 +108,15 @@ class _ChatScreenState extends State<ChatScreen> {
                   child: TextField(
                     controller: controller,
                     decoration: InputDecoration(
-                      hintText: 'Type a message here',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(50),
-                      ),
-                      suffixIcon: IconButton(
-                        icon: const Icon(Icons.send),
-                        onPressed: sendMessage,
-                      ),
-                    ),
+                        hintText: 'Type a message here',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                        ),
+                        suffixIcon: IconButton(
+                            icon: const Icon(Icons.send),
+                            onPressed: () {
+                              sendMessage();
+                            })),
                   ),
                 ),
               ],
@@ -112,4 +133,8 @@ class Message {
   final bool isMine;
 
   Message(this.text, this.isMine);
+
+  Message.fromDocument(QueryDocumentSnapshot doc)
+      : text = doc['text'],
+        isMine = doc['isMine'];
 }

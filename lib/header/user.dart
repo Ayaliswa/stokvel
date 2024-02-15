@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
@@ -12,6 +14,19 @@ class UserHeader extends StatefulWidget {
 
 class UserHeaderState extends State<UserHeader> {
   String? dropdownValue;
+
+  Future<String> getUserInfo() async {
+    final username = FirebaseAuth.instance.currentUser;
+    if (username != null) {
+      final doc = await FirebaseFirestore.instance
+          .collection('Login')
+          .doc(username.uid)
+          .get();
+      return doc.data()?['Phone'] ?? doc.data()?['Username'] ?? '';
+    } else {
+      return '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,16 +71,29 @@ class UserHeaderState extends State<UserHeader> {
                                   const SizedBox(
                                     width: 1,
                                   ),
-                                  TextButton(
-                                    onPressed: () {},
-                                    child: const Text(
-                                      "Welcome Back \nAyanda",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold),
-                                    ),
+                                  FutureBuilder<String>(
+                                    future: getUserInfo(),
+                                    builder: (BuildContext context,
+                                        AsyncSnapshot<String> snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator(); // show a loading spinner while waiting
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        return TextButton(
+                                          onPressed: () {},
+                                          child: Text(
+                                            "Welcome Back \n${snapshot.data}",
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontSize: 24,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                   const Spacer(),
                                   PopupMenuButton(

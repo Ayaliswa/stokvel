@@ -21,6 +21,15 @@ def flutterVersionName = localProperties.getProperty('flutter.versionName')
 if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
+apply plugin: 'com.google.gms.google-services'
+apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'com.google.firebase.firebase-perf'
+apply plugin: 'com.google.firebase.firebase-crashlytics'
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+
 
 android {
     namespace "com.example.stokvel"
@@ -62,4 +71,11 @@ android {
 
 flutter {
     source '../..'
+}
+dependencies{
+  implementation 'com.google.firebase:firebase-auth'
+  implementation 'com.google.firebase:firebase-firestore'
+  implementaion 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.5.31'
+  implementation 'com.google.firebase:firebase-analytics'
+  implementation platform('com.google.firebase:firebase-bom:32.7.2')
 }

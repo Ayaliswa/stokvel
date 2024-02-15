@@ -71,7 +71,7 @@ class _PendingRequestScreenState extends State<PendingRequestScreen> {
       ),
       body: Column(
         children: [
-          StokvelHeader(),
+          const StokvelHeader(),
           Expanded(
             child: ListView.builder(
               itemCount: requests.length,

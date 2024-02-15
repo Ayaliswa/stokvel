@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:stokvel/bottom_tabs/user/statement.dart';
 
 class StokvelHeader extends StatelessWidget {
+  const StokvelHeader({super.key});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(

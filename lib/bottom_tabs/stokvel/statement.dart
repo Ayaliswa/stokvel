@@ -70,7 +70,7 @@ class _StokvelStatementScreenState extends State<StokvelStatementScreen> {
       ),
       body: Column(
         children: [
-          StokvelHeader(),
+          const StokvelHeader(),
           Expanded(
             child: ListView.builder(
               itemCount: statements.length,
