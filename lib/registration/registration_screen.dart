@@ -5,11 +5,10 @@ class RegistrationForm extends StatefulWidget {
   const RegistrationForm({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _RegistrationFormState createState() => _RegistrationFormState();
+  RegistrationFormState createState() => RegistrationFormState();
 }
 
-class _RegistrationFormState extends State<RegistrationForm> {
+class RegistrationFormState extends State<RegistrationForm> {
   final _formKey = GlobalKey<FormState>();
 
   @override

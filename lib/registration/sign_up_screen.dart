@@ -1,17 +1,19 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:stokvel/Database/Login.dart';
 import 'registration_screen.dart';
 import '../security/login_screen.dart';
+import 'package:path/path.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _SignUpScreenState createState() => _SignUpScreenState();
+  SignUpScreenState createState() => SignUpScreenState();
 }
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreenState extends State<SignUpScreen> {
   final _formKey = GlobalKey<FormState>();
   String? password;
   String? confirmPassword;
@@ -32,27 +34,36 @@ class _SignUpScreenState extends State<SignUpScreen> {
     super.dispose();
   }
 
+  late BuildContext _context;
   Future signUp() async {
-    if (passwordConfirmed()) {
-      addMemeberLoginDetails(
-        _usernameController.text.trim(),
-        _phoneController.text.trim(),
-        _passwordController.text.trim(),
-      );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const SecurityQuestions()),
-      );
+    try {
+      if (passwordConfirmed()) {
+        print('signUp function called');
+        await addMemeberLoginDetails(
+            _usernameController.text.trim(),
+            _phoneController.text.trim(),
+            _passwordController.text.trim(),
+            groupValue.trim());
+        Navigator.push(
+          _context,
+          MaterialPageRoute(builder: (context) => const SecurityQuestions()),
+        );
+      }
+    } catch (e) {
+      print('Exception in signUp: $e');
     }
   }
 
   Future addMemeberLoginDetails(
-      String username, String phone, String password) async {
-    await FirebaseFirestore.instance.collection("Login").add({
-      "Username": username,
-      "Phone number": phone,
-      "Password": password,
-    });
+      String username, String phone, String password, String gender) async {
+    try {
+      print('addMemeberLoginDetails function called');
+      User user = User(username, phone, password, gender);
+      print('User: $user');
+      await LoginDatabaseHelper.instance.saveUser(user);
+    } catch (e) {
+      print('Exception in addMemeberLoginDetails: $e');
+    }
   }
 
   bool passwordConfirmed() {
@@ -66,6 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "Sign Up Screen",
@@ -364,44 +376,57 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 }
 
+/*$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$*/
 class SecurityQuestions extends StatefulWidget {
   const SecurityQuestions({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _SecurityQuestionsState createState() => _SecurityQuestionsState();
+  SecurityQuestionsState createState() => SecurityQuestionsState();
 }
 
-class _SecurityQuestionsState extends State<StatefulWidget> {
+class SecurityQuestionsState extends State<SecurityQuestions> {
   final _formKey = GlobalKey<FormState>();
   final List<String> questions = [
     'What was your childhood nickname?',
-    'What is the name of your first primary school you attended?',
+    'What is the name of the first primary school you attended?',
     'In what city did you meet your spouse/significant other?',
     'What is the name of your favorite childhood friend?',
     'What is the name of the city where your parents met?',
     'What is the name of your first girlfriend/boyfriend?',
-    'What is your guilty plessure?',
-    'How many girls/boys have have you kissed?',
+    'What is your guilty pleasure?',
+    'How many lips have you kissed?',
   ];
-  String? selectedQuestion1;
-  String? selectedQuestion2;
-  String? selectedQuestion3;
-  String? answer1;
-  String? answer2;
-  String? answer3;
+  String? selectedQuestion;
+  String? answer;
 
-  final _firestore = FirebaseFirestore.instance;
+  int currentQuestionIndex = 0;
 
-  Future<void> saveSecurityQuestions() async {
-    await _firestore.collection('Security').add({
-      'question1': selectedQuestion1,
-      'answer1': answer1,
-      'question2': selectedQuestion2,
-      'answer2': answer2,
-      'question3': selectedQuestion3,
-      'answer3': answer3,
-    });
+  Database? db;
+
+  Future<void> initDb() async {
+    db = await openDatabase(
+      join(await getDatabasesPath(), 'Stokvel.db'),
+      onCreate: (db, version) {
+        return db.execute(
+          "CREATE TABLE Security-Questions(id INTEGER PRIMARY KEY, question TEXT, answer TEXT)",
+        );
+      },
+      version: 1,
+    );
+  }
+
+  Future<void> saveSecurityQuestion() async {
+    await db?.insert(
+      'questions',
+      {'question': selectedQuestion, 'answer': answer},
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    initDb();
   }
 
   @override
@@ -409,6 +434,9 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text('Security Questions'),
+      ),
       body: Center(
         child: SizedBox(
           width: 400,
@@ -419,7 +447,7 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   Image.asset(
                     "images/icon.png",
                     height: MediaQuery.of(context).size.height / 3,
@@ -459,7 +487,7 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                   ),
                   const SizedBox(height: 30.0),
                   DropdownButtonFormField<String>(
-                    value: selectedQuestion1,
+                    value: selectedQuestion,
                     items: questions.map((String question) {
                       return DropdownMenuItem<String>(
                         value: question,
@@ -468,7 +496,7 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                     }).toList(),
                     onChanged: (String? newValue) {
                       setState(() {
-                        selectedQuestion1 = newValue;
+                        selectedQuestion = newValue;
                       });
                     },
                     validator: (value) {
@@ -478,11 +506,11 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                       return null;
                     },
                     decoration: const InputDecoration(
-                      labelText: 'Question 1',
-                      hintText: "choose question here",
+                      labelText: 'Question',
+                      hintText: "Choose a question",
                       labelStyle: TextStyle(color: Colors.black, fontSize: 18),
                       prefixIcon:
-                          Icon(Icons.question_mark, color: Colors.black),
+                          Icon(Icons.question_answer, color: Colors.black),
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -491,7 +519,7 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                   ),
                   TextFormField(
                     onChanged: (value) {
-                      answer1 = value;
+                      answer = value;
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -500,122 +528,13 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                       return null;
                     },
                     decoration: const InputDecoration(
-                      labelText: 'Answer 1',
-                      hintText: "answer question 1 above",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon: Icon(Icons.question_answer_rounded,
-                          color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: selectedQuestion2,
-                    items: questions.map((String question) {
-                      return DropdownMenuItem<String>(
-                        value: question,
-                        child: Text(question),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedQuestion2 = newValue;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a question';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Question 2',
-                      hintText: "choose question 2 here",
+                      labelText: 'Answer',
+                      hintText: "Enter your answer",
                       labelStyle: TextStyle(color: Colors.black, fontSize: 18),
                       prefixIcon:
-                          Icon(Icons.question_mark, color: Colors.black),
+                          Icon(Icons.question_answer, color: Colors.black),
                       border: OutlineInputBorder(),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    onChanged: (value) {
-                      answer2 = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your answer';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Answer 2',
-                      hintText: "answer question 2 above",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon: Icon(Icons.question_answer_rounded,
-                          color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    textAlign: TextAlign.start,
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  DropdownButtonFormField<String>(
-                    value: selectedQuestion3,
-                    items: questions.map((String question) {
-                      return DropdownMenuItem<String>(
-                        value: question,
-                        child: Text(question),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedQuestion3 = newValue;
-                      });
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please select a question';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Question 3',
-                      hintText: "choose question 3 here",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon:
-                          Icon(Icons.question_mark, color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    onChanged: (value) {
-                      answer3 = value;
-                    },
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter your answer';
-                      }
-                      return null;
-                    },
-                    decoration: const InputDecoration(
-                      labelText: 'Answer 3',
-                      hintText: "answer question 3 above",
-                      labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                      prefixIcon: Icon(Icons.question_answer_rounded,
-                          color: Colors.black),
-                      border: OutlineInputBorder(),
-                    ),
-                    textAlign: TextAlign.start,
                   ),
                   const SizedBox(height: 20.0),
                   Container(
@@ -626,17 +545,22 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                     child: ElevatedButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          // Save the answers to Firestore
-                          await saveSecurityQuestions();
-                          // Navigate to the next screen
-
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) {
-                                return const RegistrationForm();
-                              },
-                            ),
-                          );
+                          await saveSecurityQuestion();
+                          if (currentQuestionIndex < 2) {
+                            setState(() {
+                              currentQuestionIndex++;
+                              selectedQuestion = null;
+                              answer = null;
+                            });
+                          } else {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) {
+                                  return const RegistrationForm();
+                                },
+                              ),
+                            );
+                          }
                         }
                       },
                       style: ElevatedButton.styleFrom(
@@ -644,10 +568,9 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
                         foregroundColor: Colors.white,
                         side: const BorderSide(color: Colors.blue),
                       ),
-                      child: const Text("NEXT"),
+                      child: Text(currentQuestionIndex < 2 ? 'Next' : 'Finish'),
                     ),
                   ),
-                  const SizedBox(height: 10),
                 ],
               ),
             ),
@@ -657,107 +580,6 @@ class _SecurityQuestionsState extends State<StatefulWidget> {
     );
   }
 }
-/*
-class SecurityQuestions extends StatelessWidget {
-  const SecurityQuestions({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text("Stokvel"),
-        backgroundColor: Colors.blue,
-      ),
-      body: Center(
-        child: SizedBox(
-          width: 400,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  "Add Recovery Phone Number",
-                  style: TextStyle(
-                    fontSize: 28.0,
-                    fontWeight: FontWeight.bold,
-                    shadows: [
-                      Shadow(
-                        blurRadius: 3.0,
-                        color: Colors.black,
-                        offset: Offset(2.0, 2.0),
-                      ),
-                    ],
-                  ),
-                ),
-                Image.asset(
-                  "images/icon.png",
-                  height: MediaQuery.of(context).size.height / 3,
-                ),
-                const Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    "enter recovery phone number that will be used to send password reset OTP in case you've forgotten your password",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 30.0),
-                const TextField(
-                  decoration: InputDecoration(
-                    hintText: "enter recovery phone number",
-                    labelText: "Recovery Phone",
-                    labelStyle: TextStyle(color: Colors.black, fontSize: 18),
-                    prefixIcon: Icon(Icons.phone, color: Colors.black),
-                    border: OutlineInputBorder(),
-                  ),
-                  textAlign: TextAlign.start,
-                ),
-                const SizedBox(height: 20.0),
-                Container(
-                  width: 400.0,
-                  height: 40,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 30, vertical: 8),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) {
-                            return const RegistrationForm();
-                          },
-                        ),
-                      );
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
-                      foregroundColor: Colors.white,
-                      side: const BorderSide(color: Colors.blue),
-                    ),
-                    child: const Text("NEXT"),
-                  ),
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class TermsOfUse extends StatelessWidget {
   const TermsOfUse({super.key});

@@ -1,18 +1,21 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:stokvel/bottom_tabs/user/statement.dart';
 import '../registration/sign_up_screen.dart';
 import 'password_reset_screen.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart';
+import 'dart:io';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _LoginScreenState createState() => _LoginScreenState();
+  LoginScreenState createState() => LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
   Future<String>? loginResult;
@@ -23,29 +26,14 @@ class _LoginScreenState extends State<LoginScreen> {
     final usernameOrPhone = usernameController.text;
     final password = passwordController.text;
 
-    BuildContext currentContext = context;
+    final DatabaseHelper db = DatabaseHelper.instance;
+    final result = await db.handleLogin(usernameOrPhone, password);
 
-    final loginCollection = FirebaseFirestore.instance.collection('Login');
-    final querySnapshotByUsername = await loginCollection
-        .where('Username', isEqualTo: usernameOrPhone)
-        .get();
-    final querySnapshotByPhone =
-        await loginCollection.where('Phone', isEqualTo: usernameOrPhone).get();
-
-    if (querySnapshotByUsername.docs.isEmpty &&
-        querySnapshotByPhone.docs.isEmpty) {
-      return 'No user found with that username or phone number.';
-    }
-
-    final user = querySnapshotByUsername.docs.isNotEmpty
-        ? querySnapshotByUsername.docs.first
-        : querySnapshotByPhone.docs.first;
-    if (user['Password'] != password) {
-      return 'Incorrect password.';
+    if (result != 'Success') {
+      return result;
     } else {
       await Future.delayed(const Duration(seconds: 2));
-      // ignore: use_build_context_synchronously
-      Navigator.of(currentContext).push(
+      Navigator.of(context as BuildContext).push(
         MaterialPageRoute(
           builder: (BuildContext context) {
             return const UserStatementScreen();
@@ -212,7 +200,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             loginResult = handleLogin();
                             loginResult?.then((result) async {
-                              Navigator.of(context).pop(); // Close the dialog
+                              Navigator.of(context).pop();
                               if (result != 'Success') {
                                 showDialog(
                                   context: context,
@@ -258,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   },
                                 );
                                 await Future.delayed(
-                                    const Duration(seconds: 3));
+                                    const Duration(seconds: 1));
                                 Navigator.of(context).push(
                                   MaterialPageRoute(
                                     builder: (BuildContext context) {
@@ -331,5 +319,67 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+}
+
+class DatabaseHelper {
+  static const _databaseName = "stokvel.db";
+  static const _databaseVersion = 1;
+
+  static const table = 'login';
+
+  static const columnUsername = 'Username';
+  static const columnPhone = 'Phone';
+  static const columnPassword = 'Password';
+
+  DatabaseHelper._privateConstructor();
+  static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
+
+  static Database? _database;
+  Future<Database> get database async {
+    if (_database != null) return _database!;
+    _database = await _initDatabase();
+    return _database!;
+  }
+
+  _initDatabase() async {
+    Directory documentsDirectory = await getApplicationDocumentsDirectory();
+    String path = join(documentsDirectory.path, _databaseName);
+    return await openDatabase(path,
+        version: _databaseVersion, onCreate: _onCreate);
+  }
+
+  Future _onCreate(Database db, int version) async {
+    await db.execute('''
+          CREATE TABLE $table (
+            $columnUsername TEXT NOT NULL,
+            $columnPhone TEXT NOT NULL,
+            $columnPassword TEXT NOT NULL
+          )
+          ''');
+  }
+
+  Future<String> handleLogin(String usernameOrPhone, String password) async {
+    try {
+      Database db = await instance.database;
+      var res = await db.query(table,
+          where: "$columnUsername = ? OR $columnPhone = ?",
+          whereArgs: [usernameOrPhone, usernameOrPhone]);
+
+      if (res.isEmpty) {
+        return 'No user found with that username or phone number.';
+      }
+
+      final user = res.first;
+      if (user[columnPassword] != password) {
+        return 'Incorrect password.';
+      } else {
+        await Future.delayed(const Duration(seconds: 2));
+        return 'Success';
+      }
+    } catch (e) {
+      debugPrint('Error in handleLogin: $e');
+      return 'Error occurred while logging in.';
+    }
   }
 }

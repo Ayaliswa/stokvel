@@ -1,7 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
 import 'package:stokvel/security/change_password_screen.dart';
 
@@ -16,13 +17,14 @@ class UserHeaderState extends State<UserHeader> {
   String? dropdownValue;
 
   Future<String> getUserInfo() async {
-    final username = FirebaseAuth.instance.currentUser;
-    if (username != null) {
-      final doc = await FirebaseFirestore.instance
-          .collection('Login')
-          .doc(username.uid)
-          .get();
-      return doc.data()?['Phone'] ?? doc.data()?['Username'] ?? '';
+    final Database db = await openDatabase(
+      join(await getDatabasesPath(), 'stokvel.db'),
+    );
+
+    final List<Map<String, dynamic>> maps = await db.query('Login');
+
+    if (maps.isNotEmpty) {
+      return maps.first['Phone'] ?? maps.first['Username'] ?? '';
     } else {
       return '';
     }
@@ -129,7 +131,24 @@ class UserHeaderState extends State<UserHeader> {
                                               ),
                                             );
                                           },
-                                          child: const Text('Stokvel Profile',
+                                          child: const Text('View Stokvel',
+                                              style: TextStyle(
+                                                  color: Colors.black)),
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        child: TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return const ChangePasswordScreen();
+                                                },
+                                              ),
+                                            );
+                                          },
+                                          child: const Text('Join Stokvel',
                                               style: TextStyle(
                                                   color: Colors.black)),
                                         ),
@@ -175,29 +194,45 @@ class UserHeaderState extends State<UserHeader> {
                               ),
                             ),
                             const SizedBox(height: 3),
-                            SizedBox(
-                              child: DropdownButton<String>(
-                                style: const TextStyle(
-                                    fontSize: 20, color: Colors.black),
-                                padding:
-                                    const EdgeInsets.only(left: 20, right: 20),
-                                isExpanded: true,
-                                value: dropdownValue,
-                                hint: const Text("select group"),
-                                onChanged: (String? newValue) {
-                                  setState(() {
-                                    dropdownValue = newValue;
-                                  });
-                                },
-                                items: <String>[
-                                  'City United Stokvel',
-                                  'City United Stokvel(Food Savings)',
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
+                            InputDecorator(
+                              decoration: const InputDecoration(
+                                contentPadding: EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 3),
+                                border: OutlineInputBorder(),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                ),
+                              ),
+                              child: DropdownButtonHideUnderline(
+                                child: DropdownButtonFormField<String>(
+                                  style: const TextStyle(
+                                      fontSize: 20, color: Colors.black),
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20),
+                                  isExpanded: true,
+                                  isDense: true,
+                                  value: dropdownValue,
+                                  hint: const Text("select group"),
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      dropdownValue = newValue;
+                                    });
+                                  },
+                                  items: <String>[
+                                    'Stokvel Main Savings',
+                                    'Stokvel Food Savings',
+                                  ].map<DropdownMenuItem<String>>(
+                                      (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Padding(
+                                        padding:
+                                            const EdgeInsets.only(left: 40),
+                                        child: Text(value),
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
                               ),
                             ),
                             const SizedBox(height: 3),

@@ -17,10 +17,10 @@ class PendingRequestScreen extends StatefulWidget {
   const PendingRequestScreen({super.key});
 
   @override
-  _PendingRequestScreenState createState() => _PendingRequestScreenState();
+  PendingRequestScreenState createState() => PendingRequestScreenState();
 }
 
-class _PendingRequestScreenState extends State<PendingRequestScreen> {
+class PendingRequestScreenState extends State<PendingRequestScreen> {
   int selectedItem = 2;
 
   void updateItem(int index) {

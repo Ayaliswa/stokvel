@@ -5,12 +5,10 @@ class StokvelRegistrationForm extends StatefulWidget {
   const StokvelRegistrationForm({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _StokvelRegistrationFormState createState() =>
-      _StokvelRegistrationFormState();
+  StokvelRegistrationFormState createState() => StokvelRegistrationFormState();
 }
 
-class _StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
+class StokvelRegistrationFormState extends State<StokvelRegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   final _stokvelName = TextEditingController();
   final _slogan = TextEditingController();

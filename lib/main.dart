@@ -1,12 +1,13 @@
 import "package:flutter/material.dart";
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:stokvel/security/login_screen.dart';
 import 'package:stokvel/registration/sign_up_screen.dart';
 
-void main() async {
+Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  sqfliteFfiInit();
+
+  databaseFactory = databaseFactoryFfi;
   runApp(const Stokvel());
 }
 
@@ -58,7 +59,7 @@ class MainWelcomeScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 10.0),
+                const Spacer(),
                 const Text(
                   "Hello,",
                   style: TextStyle(
@@ -93,14 +94,14 @@ class MainWelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                const Text(
+                /*const Text(
                   "Press the login button to continue to stokvel else register and get started",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       fontSize: 18,
                       color: Colors.black,
                       fontWeight: FontWeight.bold),
-                ),
+                ),*/
                 const SizedBox(height: 20.0),
                 Container(
                   width: 400.0,
@@ -162,40 +163,3 @@ class MainWelcomeScreen extends StatelessWidget {
     );
   }
 }
-/*
-How to convert flutter app code to website
-
-
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-
-class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        if (constraints.maxWidth > 600) {
-          return _WideLayout();
-        } else {
-          return _NarrowLayout();
-        }
-      },
-    );
-  }
-}
-
-class _NarrowLayout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Layout for smaller screens
-  }
-}
-
-class _WideLayout extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Layout for larger screens
-  }
-}
-
- */

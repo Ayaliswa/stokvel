@@ -1,8 +1,127 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'login_screen.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
 
+class PasswordResetScreen extends StatefulWidget {
+  const PasswordResetScreen({super.key});
+
+  @override
+  PasswordResetScreenState createState() => PasswordResetScreenState();
+}
+
+class PasswordResetScreenState extends State<PasswordResetScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  List<Map<String, dynamic>> questions = [];
+  String? answer;
+  int currentQuestionIndex = 0;
+  int correctAnswers = 0;
+
+  Future<List<Map<String, dynamic>>> fetchQuestions() async {
+    final Database database = await openDatabase(
+      join(await getDatabasesPath(), 'stokvel.db'),
+    );
+
+    final List<Map<String, dynamic>> questionsCollection =
+        await database.query('questions');
+
+    return questionsCollection;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchQuestions();
+  }
+
+  Future<void> checkSecurityQuestion() async {
+    if (questions[currentQuestionIndex]['answer'] == answer) {
+      correctAnswers++;
+      if (correctAnswers < 3) {
+        setState(() {
+          currentQuestionIndex++;
+          answer = null;
+        });
+      } else {
+        Navigator.of(context as BuildContext).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return const ChangePassword();
+            },
+          ),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+        const SnackBar(
+            content: Text(
+                'Incorrect answer. \nMake sure your answer matches exact the one you provided when creating your account')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Password Reset'),
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                Text(
+                  questions.isNotEmpty
+                      ? questions[currentQuestionIndex]['question']
+                      : '',
+                  style: const TextStyle(fontSize: 18),
+                ),
+                TextFormField(
+                  onChanged: (value) {
+                    answer = value;
+                  },
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter your answer';
+                    }
+                    return null;
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Answer',
+                    hintText: "Enter your answer",
+                    labelStyle: TextStyle(color: Colors.black, fontSize: 18),
+                    prefixIcon:
+                        Icon(Icons.question_answer, color: Colors.black),
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await checkSecurityQuestion();
+                    }
+                  },
+                  child: Text(correctAnswers < 2 ? 'Next' : 'Submit'),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/*
 class PasswordResetScreen extends StatelessWidget {
   const PasswordResetScreen({super.key});
+
+  
 
   @override
   Widget build(BuildContext context) {
@@ -217,16 +336,15 @@ class PasswordResetCode extends StatelessWidget {
     );
   }
 }
-
+*/
 class ChangePassword extends StatefulWidget {
   const ChangePassword({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ChangePasswordState createState() => _ChangePasswordState();
+  ChangePasswordState createState() => ChangePasswordState();
 }
 
-class _ChangePasswordState extends State<ChangePassword> {
+class ChangePasswordState extends State<ChangePassword> {
   bool _obscureText = true;
 
   @override

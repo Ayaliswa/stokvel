@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:stokvel/bottom_navigation_bar/user_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/user/request.dart';
@@ -8,13 +10,18 @@ class UserTransactionScreen extends StatefulWidget {
   const UserTransactionScreen({super.key});
 
   @override
-  State<UserTransactionScreen> createState() => _UserTransactionScreenState();
+  State<UserTransactionScreen> createState() => UserTransactionScreenState();
 }
 
-class _UserTransactionScreenState extends State<UserTransactionScreen> {
+class UserTransactionScreenState extends State<UserTransactionScreen> {
   int selectedItem = 1;
   int selectedPaymentMethod = 0;
   String? dropdownValue;
+  String? selectedMessage;
+  final currencyCode = 'SZL';
+  final _formKey = GlobalKey<FormState>();
+  final amountController = TextEditingController();
+  final phoneNumberController = TextEditingController();
 
   void updateItem(int index) {
     setState(() {
@@ -152,113 +159,228 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.only(
                                           left: 10, right: 10),
-                                      child: Column(
-                                        children: [
-                                          const Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                textAlign: TextAlign.start,
-                                                "Deposit via MoMo account",
-                                                style: TextStyle(
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          TextFormField(
-                                            decoration: const InputDecoration(
-                                              hintText:
-                                                  'How much do you want to deposit',
-                                              hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 16),
-                                              labelText: 'Amount',
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                              prefixIcon: Icon(
-                                                  Icons.monetization_on,
-                                                  color: Colors.black),
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return 'Please enter amount';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                          TextFormField(
-                                            decoration: const InputDecoration(
-                                              hintText: '76******',
-                                              hintStyle: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 16),
-                                              labelText: 'Phone Number',
-                                              labelStyle: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 18),
-                                              prefixIcon: Icon(Icons.phone,
-                                                  color: Colors.black),
-                                              border: OutlineInputBorder(),
-                                            ),
-                                            validator: (value) {
-                                              if (value!.isEmpty) {
-                                                return "Please enter phone number";
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          const SizedBox(
-                                            height: 35,
-                                          ),
-                                          Center(
-                                            child: Row(
+                                      child: Form(
+                                        key: _formKey,
+                                        child: Column(
+                                          children: <Widget>[
+                                            const Row(
                                               crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                ElevatedButton(
-                                                  onPressed: () {},
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.green,
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    side: const BorderSide(
-                                                        color: Colors.green),
-                                                  ),
-                                                  child: const Text('SEND...'),
-                                                ),
-                                                const SizedBox(
-                                                  width: 30,
-                                                ),
-                                                ElevatedButton(
-                                                  onPressed: () {},
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor: Colors.red,
-                                                    foregroundColor:
-                                                        Colors.white,
-                                                    side: const BorderSide(
-                                                        color: Colors.red),
-                                                  ),
-                                                  child: const Text('CANCEL'),
+                                                Text(
+                                                  textAlign: TextAlign.start,
+                                                  "Deposit via MoMo account",
+                                                  style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold),
                                                 ),
                                               ],
                                             ),
-                                          ),
-                                        ],
+                                            const SizedBox(
+                                              height: 20,
+                                            ),
+                                            TextFormField(
+                                              controller: amountController,
+                                              decoration: const InputDecoration(
+                                                hintText:
+                                                    'How much do you want to deposit',
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16),
+                                                labelText: 'Amount',
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                                prefixIcon: Icon(
+                                                    Icons.monetization_on,
+                                                    color: Colors.black),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return 'Please enter amount';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            InputDecorator(
+                                              decoration: const InputDecoration(
+                                                contentPadding:
+                                                    EdgeInsets.symmetric(
+                                                        horizontal: 5,
+                                                        vertical: 3),
+                                                border: OutlineInputBorder(),
+                                                enabledBorder:
+                                                    UnderlineInputBorder(
+                                                  borderSide: BorderSide.none,
+                                                ),
+                                              ),
+                                              child:
+                                                  DropdownButtonHideUnderline(
+                                                child: DropdownButtonFormField<
+                                                    String>(
+                                                  isDense: true,
+                                                  value: selectedMessage,
+                                                  hint: const Text(
+                                                      'Select payment type'),
+                                                  items: <String>[
+                                                    'Monthly contribution',
+                                                    'Loan repayment'
+                                                  ].map<
+                                                          DropdownMenuItem<
+                                                              String>>(
+                                                      (String value) {
+                                                    return DropdownMenuItem<
+                                                        String>(
+                                                      value: value,
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 25),
+                                                        child: Text(value),
+                                                      ),
+                                                    );
+                                                  }).toList(),
+                                                  onChanged:
+                                                      (String? newValue) {
+                                                    selectedMessage = newValue;
+                                                  },
+                                                  validator: (value) {
+                                                    if (value == null ||
+                                                        value.isEmpty) {
+                                                      return 'Please select a payment type';
+                                                    }
+                                                    return null;
+                                                  },
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(
+                                              height: 15,
+                                            ),
+                                            TextFormField(
+                                              controller: phoneNumberController,
+                                              decoration: const InputDecoration(
+                                                hintText: '76******',
+                                                hintStyle: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16),
+                                                labelText: 'Phone Number',
+                                                labelStyle: TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                                prefixIcon: Icon(Icons.phone,
+                                                    color: Colors.black),
+                                                border: OutlineInputBorder(),
+                                              ),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Please enter phone number";
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            const SizedBox(
+                                              height: 35,
+                                            ),
+                                            Center(
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () async {
+                                                      if (_formKey.currentState!
+                                                          .validate()) {
+                                                        final response =
+                                                            await http.post(
+                                                          Uri.parse(
+                                                              'https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay'),
+                                                          headers: <String,
+                                                              String>{
+                                                            'Content-Type':
+                                                                'application/json; charset=UTF-8',
+                                                            'Cache-Control':
+                                                                'no-cache',
+                                                            // You might need to include additional headers, like an API key
+                                                          },
+                                                          body:
+                                                              jsonEncode(<String,
+                                                                  dynamic>{
+                                                            'payer': {
+                                                              'partyIdType':
+                                                                  'MSISDN',
+                                                              'partyId':
+                                                                  phoneNumberController
+                                                                      .text,
+                                                            },
+                                                            'payerCurrency':
+                                                                currencyCode,
+                                                            'payerMessage':
+                                                                selectedMessage,
+                                                            'amount':
+                                                                amountController
+                                                                    .text,
+                                                            'validityTime':
+                                                                3600, // the validity time in seconds
+                                                          }),
+                                                        );
+
+                                                        if (response
+                                                                .statusCode ==
+                                                            200) {
+                                                          // If the server returns a 200 OK response, then parse the JSON.
+                                                          print(
+                                                              'Payment preapproval created successfully.');
+                                                        } else {
+                                                          // If the server returns an HTTP status code other than 200, throw an exception.
+                                                          throw Exception(
+                                                              'Failed to create payment preapproval.');
+                                                        }
+                                                      }
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.green,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      side: const BorderSide(
+                                                          color: Colors.green),
+                                                    ),
+                                                    child:
+                                                        const Text('APPROVE'),
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 30,
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      amountController.clear();
+                                                      phoneNumberController
+                                                          .clear();
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Colors.red,
+                                                      foregroundColor:
+                                                          Colors.white,
+                                                      side: const BorderSide(
+                                                          color: Colors.red),
+                                                    ),
+                                                    child: const Text('CANCEL'),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   )
@@ -307,6 +429,57 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                               }
                                               return null;
                                             },
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
+                                          InputDecorator(
+                                            decoration: const InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 3),
+                                              border: OutlineInputBorder(),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButtonFormField<
+                                                  String>(
+                                                isDense: true,
+                                                value: selectedMessage,
+                                                hint: const Text(
+                                                    'Select payment type'),
+                                                items: <String>[
+                                                  'Monthly contribution',
+                                                  'Loan repayment'
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 25),
+                                                      child: Text(value),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? newValue) {
+                                                  selectedMessage = newValue;
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please select a payment type';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
                                           ),
                                           const SizedBox(
                                             height: 15,
@@ -426,6 +599,57 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                           const SizedBox(
                                             height: 15,
                                           ),
+                                          InputDecorator(
+                                            decoration: const InputDecoration(
+                                              contentPadding:
+                                                  EdgeInsets.symmetric(
+                                                      horizontal: 5,
+                                                      vertical: 3),
+                                              border: OutlineInputBorder(),
+                                              enabledBorder:
+                                                  UnderlineInputBorder(
+                                                borderSide: BorderSide.none,
+                                              ),
+                                            ),
+                                            child: DropdownButtonHideUnderline(
+                                              child: DropdownButtonFormField<
+                                                  String>(
+                                                isDense: true,
+                                                value: selectedMessage,
+                                                hint: const Text(
+                                                    'Select payment type'),
+                                                items: <String>[
+                                                  'Monthly contribution',
+                                                  'Loan repayment'
+                                                ].map<DropdownMenuItem<String>>(
+                                                    (String value) {
+                                                  return DropdownMenuItem<
+                                                      String>(
+                                                    value: value,
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              left: 25),
+                                                      child: Text(value),
+                                                    ),
+                                                  );
+                                                }).toList(),
+                                                onChanged: (String? newValue) {
+                                                  selectedMessage = newValue;
+                                                },
+                                                validator: (value) {
+                                                  if (value == null ||
+                                                      value.isEmpty) {
+                                                    return 'Please select a payment type';
+                                                  }
+                                                  return null;
+                                                },
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 15,
+                                          ),
                                           TextFormField(
                                             decoration: const InputDecoration(
                                               hintText:
@@ -464,7 +688,6 @@ class _UserTransactionScreenState extends State<UserTransactionScreen> {
                                               prefixIcon: Icon(Icons.numbers,
                                                   color: Colors.black),
                                               border: OutlineInputBorder(),
-                                              // border: OutlineInputBorder(),
                                             ),
                                             validator: (value) {
                                               if (value!.isEmpty) {

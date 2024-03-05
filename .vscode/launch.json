@@ -8,21 +8,21 @@
             "name": "stokvel",
             "request": "launch",
             "type": "dart",
-            "program": "lib/main_screen.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "stokvel (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
-            "program": "lib/main_screen.dart"
+            "program": "lib/main.dart"
         },
         {
             "name": "stokvel (release mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
-            "program": "lib/main_screen.dart"
+            "program": "lib/main.dart"
         }
     ]
 }

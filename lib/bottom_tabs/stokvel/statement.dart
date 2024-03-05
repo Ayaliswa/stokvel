@@ -16,10 +16,10 @@ class StokvelStatementScreen extends StatefulWidget {
   const StokvelStatementScreen({super.key});
 
   @override
-  _StokvelStatementScreenState createState() => _StokvelStatementScreenState();
+  StokvelStatementScreenState createState() => StokvelStatementScreenState();
 }
 
-class _StokvelStatementScreenState extends State<StokvelStatementScreen> {
+class StokvelStatementScreenState extends State<StokvelStatementScreen> {
   int selectedItem = 0;
 
   void updateItem(int index) {

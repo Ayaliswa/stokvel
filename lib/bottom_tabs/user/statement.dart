@@ -16,10 +16,10 @@ class UserStatementScreen extends StatefulWidget {
   const UserStatementScreen({super.key});
 
   @override
-  _UserStatementScreenState createState() => _UserStatementScreenState();
+  UserStatementScreenState createState() => UserStatementScreenState();
 }
 
-class _UserStatementScreenState extends State<UserStatementScreen> {
+class UserStatementScreenState extends State<UserStatementScreen> {
   int selectedItem = 0;
 
   void updateItem(int index) {

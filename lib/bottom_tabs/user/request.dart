@@ -17,11 +17,10 @@ class UserRequestScreen extends StatefulWidget {
   const UserRequestScreen({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _UserRequestScreenState createState() => _UserRequestScreenState();
+  UserRequestScreenState createState() => UserRequestScreenState();
 }
 
-class _UserRequestScreenState extends State<UserRequestScreen> {
+class UserRequestScreenState extends State<UserRequestScreen> {
   int selectedItem = 2;
 
   void updateItem(int index) {
