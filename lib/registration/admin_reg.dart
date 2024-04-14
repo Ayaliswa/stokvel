@@ -1,19 +1,296 @@
+/*import 'package:flutter/material.dart';
+import 'package:stokvel/security/admin_login.dart';
+
+class AdminRegistrationForm extends StatefulWidget {
+  const AdminRegistrationForm({super.key});
+
+  @override
+  AdminRegistrationFormState createState() => AdminRegistrationFormState();
+}
+
+class AdminRegistrationFormState extends State<AdminRegistrationForm> {
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: "Stokvel Registration Screen",
+      home: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: const Text('Registration'),
+          backgroundColor: Colors.blue,
+        ),
+        body: Center(
+          child: SizedBox(
+            width: 500,
+            child: Center(
+              child: Form(
+                key: _formKey,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'Stokvel Registration Form',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 28,
+                          fontWeight: FontWeight.bold,
+                          shadows: [
+                            Shadow(
+                              blurRadius: 3.0,
+                              color: Colors.black,
+                              offset: Offset(2.0, 2.0),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Image.asset(
+                        "images/icon.png",
+                        height: MediaQuery.of(context).size.height / 3,
+                      ),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Register:',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your name',
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: 'First Name',
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 18),
+                          prefixIcon: Icon(Icons.person, color: Colors.black),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your first name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'Enter your surname',
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: 'Last Name',
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 18),
+                          prefixIcon: Icon(Icons.person, color: Colors.black),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your last name';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'P O Box 1 CityName',
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: 'Postal Address',
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 18),
+                          prefixIcon: Icon(Icons.local_post_office,
+                              color: Colors.black),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your postal address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          hintText: 'where do you stay?',
+                          hintStyle:
+                              TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: 'Residential Address',
+                          labelStyle:
+                              TextStyle(color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              Icon(Icons.location_on, color: Colors.black),
+                          border: OutlineInputBorder(),
+                        ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your residential address';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Proof of Residence',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          ElevatedButton.icon(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Colors.white;
+                                  }
+                                  return Colors.black;
+                                },
+                              ),
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(Icons.file_upload,
+                                color: Colors.blue),
+                            label: const Text('Upload File',
+                                style: TextStyle(color: Colors.blue)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          'Copy of ID/Passport',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: [
+                          ElevatedButton.icon(
+                            style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.resolveWith<Color>(
+                                (Set<MaterialState> states) {
+                                  if (states.contains(MaterialState.hovered)) {
+                                    return Colors.white;
+                                  }
+                                  return Colors.black;
+                                },
+                              ),
+                            ),
+                            onPressed: () {},
+                            icon: const Icon(Icons.file_upload,
+                                color: Colors.blue),
+                            label: const Text('Upload File',
+                                style: TextStyle(color: Colors.blue)),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 30),
+                      Container(
+                        width: 400.0,
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 8),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Processing Data'),
+                                ),
+                              );
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (BuildContext context) {
+                                    return const AdminLoginScreen();
+                                  },
+                                ),
+                              );
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                            side: const BorderSide(color: Colors.blue),
+                          ),
+                          child: const Text('SUBMIT FORM'),
+                        ),
+                      ),
+                      const SizedBox(height: 10),
+                      Container(
+                        width: 400.0,
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 30, vertical: 8),
+                        child: ElevatedButton(
+                          onPressed: () {
+                            _formKey.currentState!.reset();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.blue,
+                            side: const BorderSide(color: Colors.blue),
+                          ),
+                          child: const Text('CLEAR FORM'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+*/
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:stokvel/security/login_screen.dart';
+import 'package:stokvel/security/admin_login.dart';
 
-class RegistrationForm extends StatefulWidget {
+class AdminRegistrationForm extends StatefulWidget {
   final String phoneNumber;
-  const RegistrationForm({super.key, required this.phoneNumber});
+  const AdminRegistrationForm({super.key, required this.phoneNumber});
 
   @override
-  RegistrationFormState createState() => RegistrationFormState();
+  AdminRegistrationFormState createState() => AdminRegistrationFormState();
 }
 
-class RegistrationFormState extends State<RegistrationForm> {
+class AdminRegistrationFormState extends State<AdminRegistrationForm> {
   final _formKey = GlobalKey<FormState>();
   Future<String>? phoneNumber;
   final firstNameController = TextEditingController();
@@ -35,7 +312,7 @@ class RegistrationFormState extends State<RegistrationForm> {
   }
 
   Future<String> register() async {
-    print('register fuction called');
+    print('register function called');
     try {
       String phoneNumber = await getPhone();
       String url = "http://127.0.0.1/stokvel_api/member_full_reg.php";
@@ -63,7 +340,7 @@ class RegistrationFormState extends State<RegistrationForm> {
       }
     } catch (e) {
       print('Exception in register: $e');
-      return 'Failed to complete registration: $e';
+      return 'Failed to complete register: $e';
     }
   }
 
@@ -376,7 +653,7 @@ class RegistrationFormState extends State<RegistrationForm> {
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 8),
                             child: ElevatedButton(
-                              onPressed: () async {
+                              onPressed: () {
                                 if (_formKey.currentState!.validate()) {
                                   setState(() {
                                     _isLoading = true;
@@ -434,7 +711,7 @@ class RegistrationFormState extends State<RegistrationForm> {
                                                     MaterialPageRoute(
                                                       builder: (BuildContext
                                                           context) {
-                                                        return const LoginScreen();
+                                                        return const AdminLoginScreen();
                                                       },
                                                     ),
                                                   );

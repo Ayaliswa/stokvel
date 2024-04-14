@@ -1,13 +1,8 @@
 import "package:flutter/material.dart";
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:stokvel/security/login_screen.dart';
 import 'package:stokvel/registration/sign_up_screen.dart';
+import 'package:stokvel/security/login_screen.dart';
 
-Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  sqfliteFfiInit();
-
-  databaseFactory = databaseFactoryFfi;
+void main() {
   runApp(const Stokvel());
 }
 
@@ -52,7 +47,7 @@ class MainWelcomeScreen extends StatelessWidget {
         child: Container(
           height: double.infinity,
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 30),
+          padding: const EdgeInsets.only(top: 30),
           child: SizedBox(
             width: 400,
             child: Column(
@@ -94,18 +89,9 @@ class MainWelcomeScreen extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                /*const Text(
-                  "Press the login button to continue to stokvel else register and get started",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold),
-                ),*/
-                const SizedBox(height: 20.0),
                 Container(
-                  width: 400.0,
-                  height: 40,
+                  width: 300.0,
+                  //height: 40,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
@@ -126,17 +112,17 @@ class MainWelcomeScreen extends StatelessWidget {
                     child: const Text("LOGIN"),
                   ),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 5),
                 Container(
                   width: 200.0,
                   height: 1,
                   color: Colors.grey,
                   margin: const EdgeInsets.symmetric(horizontal: 16),
                 ),
-                const SizedBox(height: 16),
+                const SizedBox(height: 5),
                 Container(
-                  width: 400.0,
-                  height: 40,
+                  width: 300.0,
+                  //height: 40,
                   margin:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: ElevatedButton(
@@ -163,3 +149,78 @@ class MainWelcomeScreen extends StatelessWidget {
     );
   }
 }
+/*
+1. Fetching Transactions:
+
+Future<List<Transaction>> fetchTransactions() async {
+  // ... Your code to fetch transactions from the server
+  // (e.g., using http package to make an API call)
+
+  // Assuming your server response provides a list of transaction objects
+  final response = await http.get(Uri.parse('your_api_endpoint'));
+  final data = json.decode(response.body) as List;
+  return data.map((item) => Transaction.fromJson(item)).toList();
+}
+
+
+
+2. Creating a Transaction Class:
+
+class Transaction {
+  final double amount;
+  final DateTime timestamp; // Optional, depending on your needs
+
+  Transaction(this.amount, this.timestamp);
+
+  factory Transaction.fromJson(Map<String, dynamic> json) {
+    return Transaction(json['amount'] as double, DateTime.parse(json['timestamp'])); // Adjust property names based on your server response
+  }
+}
+
+
+
+3. Calculating Total Amount:
+
+@override
+Widget build(BuildContext context) {
+  // ... (existing code)
+
+  FutureBuilder<List<Transaction>>(
+    future: fetchTransactions(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState != ConnectionState.done) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      }
+
+      final transactions = snapshot.data!;
+      double totalAmount = transactions.fold(0.0, (sum, transaction) => sum + transaction.amount);
+
+      return Scaffold(
+        // ... (rest of your code)
+
+        Column(
+          children: [
+            Text(
+              'Available Bal',
+              style: TextStyle(
+                color: Colors.green,
+                fontSize: 20,
+              ),
+            ),
+            Text(
+              'E ${totalAmount.toStringAsFixed(2)}', // Format to 2 decimal places
+              style: TextStyle(fontSize: 20),
+            ),
+            // ... (rest of your column)
+          ],
+        ),
+      );
+    },
+  );
+
+  // ... (rest of your code)
+}
+*/

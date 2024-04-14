@@ -30,29 +30,24 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  mysql_client: ^0.0.27
 
-  # flutter_launcher_icons: ^0.13.1
+  flutter_launcher_icons: ^0.13.1
   shared_preferences: ^2.2.2 
   http: ^0.13.3
-  sqflite: any
   path: any
   path_provider: ^2.0.8
+  flutter_bloc: ^8.1.3
+  hydrated_bloc: ^9.1.3
+  intl: ^0.18.0
+  snippet_coder_utils: ^1.0.10
+  file_picker: ^4.2.0
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6
-  # flutterfire_cli: 0.3.0-dev.19
-  # firebase_core: ^2.25.3
-  flutter_bloc: ^8.1.3
-  hydrated_bloc: ^9.1.3
-  intl: ^0.18.0
-  equatable: ^2.0.5
-  # firebase_database: ^10.4.5
-  # cloud_firestore: ^4.15.4
-  # firebase_auth: ^4.17.4
-  snippet_coder_utils: ^1.0.10
-  sqflite_common_ffi: any
-  sqflite_common_ffi_web: ^0.4.2+3
+  mysql1: ^0.20.0
+  fluttertoast: ^8.2.4
 
 
 dev_dependencies:

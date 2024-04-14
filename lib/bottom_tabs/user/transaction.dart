@@ -1,6 +1,9 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:core';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stokvel/bottom_navigation_bar/user_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/user/request.dart';
 import 'package:stokvel/bottom_tabs/user/statement.dart';
@@ -20,6 +23,7 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
   String? selectedMessage;
   final currencyCode = 'SZL';
   final _formKey = GlobalKey<FormState>();
+  Future<String>? phoneNumber;
   final amountController = TextEditingController();
   final phoneNumberController = TextEditingController();
 
@@ -41,6 +45,160 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
       );
     }
   }
+/*
+  Future<http.Response> initiateTransfer(
+      String recipientPhone, double amount) async {
+    print("initiateTransfer called");
+    String url = "http://127.0.0.1/stokvel_api/initiateMoMoTransfer.php";
+    dynamic response = await http.post(Uri.parse(url), body: {
+      'recipientPhone': recipientPhone,
+      'amount': amount.toString(),
+    });
+    print("two");
+
+    print('Response body: ${response.body}');
+    if (response.statusCode == 200) {
+      var data = json.decode(response.body);
+      if (data['status'] == 'success') {
+        print('Transfer request initiated successfully!');
+      } else {
+        print('Error initiating transfer: ${data['message']}');
+      }
+    } else {
+      print('Error sending request: ${response.statusCode}');
+    }
+    return response;
+  }
+*/
+
+  Future<String> saveStokvelTransaction() async {
+    print('saveStokvelTransaction fuction called');
+    try {
+      String? username = await getUsername();
+      String? phoneNumber = await getPhoneByUsername();
+      String url = "http://127.0.0.1/stokvel_api/saveStokvelTransaction.php";
+      print('save one');
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "memberPhone": phoneNumber,
+        "depositer": username,
+        "amount": amountController.text,
+        "description": selectedMessage,
+        "source": phoneNumberController.text,
+        "timestamp": DateTime.now().toIso8601String(),
+      });
+      print('Two');
+      print('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data == "Error") {
+          return 'Error';
+        } else {
+          return 'Success';
+        }
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        return 'Request failed with status: ${response.statusCode}';
+      }
+    } catch (e) {
+      print('Exception in saveStokvelTransaction: $e');
+      return 'Failed to save transaction: $e';
+    }
+  }
+
+  /* Future<http.Response> requestToPay(
+      String phoneNumberController, double amountController) async {
+    final url = Uri.parse('https:// momo.developer.mtn.com/v1_0/requesttopay');
+    final body = jsonEncode({
+      'amount': amountController.toString(), // Convert amount to string
+      'payerPrimaryAccountNumber': '26876416393',
+      'payerReference':
+          '${DateTime.now().millisecondsSinceEpoch}-$phoneNumberController', // Example reference
+      'payeePrimaryAccountNumber': "268$phoneNumberController",
+      'currency': currencyCode, // Replace with your currency code
+    });
+
+    final headers = {
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Ocp-Apim-Subscription-Key':
+          '54b7ffd6a2d2443d8bcb542c943f0c0f',
+      'X-Reference-Id':
+          '${DateTime.now().millisecondsSinceEpoch}',
+    };
+
+    final response = await http.post(url, headers: headers, body: body);
+    return response;
+  }*/
+/*
+  Future<String> payment() async {
+    try {
+      String urlString = "http://192.168.56.1/stokvel_api/momo.php";
+      Uri url = Uri.parse(urlString);
+      var response = await http.post(url, body: {
+        "Amount": amountController.text,
+        "AccountNumber": phoneNumberController.text,
+      });
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (BuildContext context) {
+              return const UserStatementScreen();
+            },
+          ),
+        );
+        return "Success";
+      }
+    } catch (e) {
+      print('Exception in handleLogin: ${e.toString()}');
+      return 'Login failed: ${e.toString()}';
+    }
+  }
+*/
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? '';
+  }
+
+  Future<String?> getPhoneByUsername() async {
+    try {
+      String username = await getUsername();
+      print(username);
+      print('get one');
+      String url =
+          "http://127.0.0.1/stokvel_api/getPhoneByUsername.php?username=$username";
+      print('get two');
+      Map<String, String> body = {"username": username};
+      dynamic response = await http.post(Uri.parse(url), body: body);
+      print('get three');
+
+      print('get four');
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        print(response.body);
+        print('get five');
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data.isNotEmpty) {
+            return data; // Return the phone number as a string
+          } else {
+            print('Empty phone number received');
+            return null;
+          }
+        } else {
+          // ... handle other status codes
+        }
+      } else {
+        print('Error fetching phone: ${response.statusCode}');
+        throw Exception('Failed to fetch phone: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception in getPhoneByUsername: $e');
+      rethrow;
+    }
+    return null;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +219,6 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      padding: const EdgeInsets.all(5),
                       color: Colors.white,
                       child: SizedBox(
                         child: Column(
@@ -92,8 +249,8 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                           });
                                         },
                                         child: Container(
-                                          height: 60,
-                                          width: 60,
+                                          height: 50,
+                                          width: 50,
                                           decoration: const BoxDecoration(
                                             color: Colors.transparent,
                                             image: DecorationImage(
@@ -114,8 +271,8 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                           });
                                         },
                                         child: Container(
-                                          height: 60,
-                                          width: 60,
+                                          height: 50,
+                                          width: 50,
                                           decoration: const BoxDecoration(
                                             color: Colors.transparent,
                                             image: DecorationImage(
@@ -136,8 +293,8 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                           });
                                         },
                                         child: Container(
-                                          height: 60,
-                                          width: 60,
+                                          height: 50,
+                                          width: 50,
                                           decoration: const BoxDecoration(
                                             color: Colors.transparent,
                                             image: DecorationImage(
@@ -227,8 +384,8 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   hint: const Text(
                                                       'Select payment type'),
                                                   items: <String>[
-                                                    'Monthly contribution',
-                                                    'Loan repayment'
+                                                    'Monthly Contribution',
+                                                    'Loan Repayment'
                                                   ].map<
                                                           DropdownMenuItem<
                                                               String>>(
@@ -297,51 +454,96 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                     onPressed: () async {
                                                       if (_formKey.currentState!
                                                           .validate()) {
+                                                        saveStokvelTransaction();
+                                                        /*var recipientPhone =
+                                                            phoneNumberController
+                                                                .text;
+                                                        var amount =
+                                                            double.parse(
+                                                                amountController
+                                                                    .text);*/
+
+                                                        /*await initiateTransfer(
+                                                            recipientPhone,
+                                                            amount);*/
+
+                                                        //saveTransaction();
+
+                                                        /*final phoneNumber =
+                                                            phoneNumberController
+                                                                .text;
+
+                                                        // Replace with your actual MoMo API credentials (store securely)
+                                                        const apiKey =
+                                                            'YOUR_API_KEY';
+                                                        const baseUrl =
+                                                            'https://sandbox.momodeveloper.mtn.com';
+
+                                                        // Currency code (replace with your supported currency)
+                                                        const currencyCode =
+                                                            'ZAR';
+
+                                                        // Amount (convert to a number before sending)
+                                                        final double amount =
+                                                            double.tryParse(
+                                                                    amountController
+                                                                        .text) ??
+                                                                0.0;
+
+                                                        final url = Uri.parse(
+                                                            '$baseUrl/collection/v1_0/requesttopay');
+
                                                         final response =
                                                             await http.post(
-                                                          Uri.parse(
-                                                              'https://sandbox.momodeveloper.mtn.com/collection/v1_0/requesttopay'),
-                                                          headers: <String,
-                                                              String>{
+                                                          url,
+                                                          headers: {
                                                             'Content-Type':
                                                                 'application/json; charset=UTF-8',
+                                                            'Authorization':
+                                                                'Bearer $apiKey', // Assuming API key authentication
                                                             'Cache-Control':
                                                                 'no-cache',
-                                                            // You might need to include additional headers, like an API key
                                                           },
-                                                          body:
-                                                              jsonEncode(<String,
-                                                                  dynamic>{
+                                                          body: jsonEncode({
                                                             'payer': {
                                                               'partyIdType':
                                                                   'MSISDN',
                                                               'partyId':
-                                                                  phoneNumberController
-                                                                      .text,
+                                                                  phoneNumber,
                                                             },
                                                             'payerCurrency':
                                                                 currencyCode,
                                                             'payerMessage':
-                                                                selectedMessage,
-                                                            'amount':
-                                                                amountController
-                                                                    .text,
+                                                                'Payment for your order', // Optional message
+                                                            'amount': amount,
                                                             'validityTime':
-                                                                3600, // the validity time in seconds
+                                                                300, // 5 minutes in seconds
                                                           }),
                                                         );
 
                                                         if (response
                                                                 .statusCode ==
                                                             200) {
-                                                          // If the server returns a 200 OK response, then parse the JSON.
-                                                          print(
-                                                              'Payment preapproval created successfully.');
+                                                          final data =
+                                                              jsonDecode(
+                                                                  response
+                                                                      .body);
+                                                          if (data['status'] ==
+                                                              'CREATED') {
+                                                            // Assuming successful creation key
+                                                            print(
+                                                                'Payment preapproval created successfully.');
+                                                            // Handle successful preapproval (e.g., show confirmation to user)
+                                                          } else {
+                                                            print(
+                                                                'Error creating preapproval: ${data['errorMessage']}');
+                                                            // Handle specific errors from MoMo API (show user-friendly message)
+                                                          }
                                                         } else {
-                                                          // If the server returns an HTTP status code other than 200, throw an exception.
-                                                          throw Exception(
-                                                              'Failed to create payment preapproval.');
-                                                        }
+                                                          print(
+                                                              'Error requesting payment: ${response.statusCode}');
+                                                          // Handle general errors (show user-friendly message)
+                                                        }*/
                                                       }
                                                     },
                                                     style: ElevatedButton
@@ -361,9 +563,12 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   ),
                                                   ElevatedButton(
                                                     onPressed: () {
-                                                      amountController.clear();
+                                                      _formKey.currentState!
+                                                          .reset();
+                                                      /*amountController.clear();
+                                                      selectedMessage == '';
                                                       phoneNumberController
-                                                          .clear();
+                                                          .clear();*/
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -526,13 +731,20 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                     side: const BorderSide(
                                                         color: Colors.green),
                                                   ),
-                                                  child: const Text('SEND...'),
+                                                  child: const Text('APPROVE'),
                                                 ),
                                                 const SizedBox(
                                                   width: 30,
                                                 ),
                                                 ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    _formKey.currentState!
+                                                        .reset();
+                                                    /*amountController.clear();
+                                                    selectedMessage == '';
+                                                    phoneNumberController
+                                                        .clear();*/
+                                                  },
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                     backgroundColor: Colors.red,
@@ -691,7 +903,7 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                             ),
                                             validator: (value) {
                                               if (value!.isEmpty) {
-                                                return 'Please enter your card number';
+                                                return 'Card number cannot be empty';
                                               }
                                               return null;
                                             },
@@ -859,7 +1071,10 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   width: 30,
                                                 ),
                                                 ElevatedButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    _formKey.currentState!
+                                                        .reset();
+                                                  },
                                                   style:
                                                       ElevatedButton.styleFrom(
                                                     backgroundColor: Colors.red,

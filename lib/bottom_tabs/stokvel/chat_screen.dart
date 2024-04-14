@@ -1,14 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import "package:http/http.dart" as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stokvel/bottom_navigation_bar/stokvel_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/stokvel/request.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
 import 'package:stokvel/header/stokvel.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path_provider/path_provider.dart';
-import 'dart:io' as io;
-import 'dart:async';
-import 'package:path/path.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -40,112 +38,245 @@ class ChatScreenState extends State<ChatScreen> {
   }
 
   final List<Message> messages = [];
-  final TextEditingController controller = TextEditingController();
-  late Database db;
-
-  @override
-  void initState() {
-    super.initState();
-    initDatabase();
-  }
-
-  Future<void> initDatabase() async {
-    io.Directory documentDirectory = await getApplicationDocumentsDirectory();
-    final path = join(documentDirectory.path, 'messages.db');
-    db = await openDatabase(path, version: 1, onCreate: _onCreate);
-  }
-
-  FutureOr<void> _onCreate(Database db, int version) async {
-    await db.execute(
-        'CREATE TABLE Messages (id INTEGER PRIMARY KEY, text TEXT, isMine BOOLEAN, timestamp TEXT, phoneNumber TEXT, FOREIGN KEY(phoneNumber) REFERENCES login(phone))');
-  }
-
-  void sendMessage() async {
+  final TextEditingController messageController = TextEditingController();
+/*Future<void> sendMessage() async {
+  try {
     if (controller.text.isNotEmpty) {
-      await db.insert('Messages', {
-        'text': controller.text,
-        'isMine': true,
-        'timestamp': DateTime.now().toIso8601String(),
-      });
-      controller.clear();
-      setState(() {});
+      String url = "http://127.0.0.1/stokvel_api/save_messages.php";
+      final response = await http.post(
+        Uri.parse(url),
+        body: {
+          'text': controller.text,
+          'isMine': '1',
+          'timestamp': DateTime.now().toIso8601String(),
+          'username': getUsername(),
+        },
+      );
+
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) { // Example success check
+          controller.clear();
+          setState(() {});
+        } else {
+          throw Exception('Failed to save message: ${responseData['error']}'); // More specific error
+        }
+      } else {
+        throw Exception('Request failed with status: ${response.statusCode}');
+      }
+    }
+  } catch (e) {
+    print('Error sending message: $e');
+    // Handle different exception types here (e.g., network errors)
+    throw Exception('Failed to send message'); // Consider more specific user-facing error
+  }
+}
+*/
+
+  Future<void> sendMessage() async {
+    print('one');
+    try {
+      if (messageController.text.isNotEmpty) {
+        String? username = await getUsername();
+        String? phone = await getPhoneByUsername();
+        String url = "http://127.0.0.1/stokvel_api/saveMessages.php";
+        print('two');
+        dynamic response = await http.post(
+          Uri.parse(url),
+          body: {
+            'phone': phone,
+            'text': messageController.text,
+            'isMine': '1',
+            'timestamp': DateTime.now().toIso8601String(),
+            'username': username,
+          },
+        );
+        print('three');
+        if (response.statusCode == 200) {
+          messageController.clear();
+          setState(() {});
+        } else {
+          throw Exception('Failed to send message');
+        }
+      }
+    } catch (e) {
+      print('??Database connection failed: $e');
+      throw Exception("??Database connection failed");
     }
   }
 
-  Future<List<Message>> getMessages() async {
-    final List<Map<String, dynamic>> maps = await db.rawQuery('''
-    SELECT Messages.*, login.phone 
-    FROM Messages 
-    INNER JOIN login ON Messages.phoneNumber = login.phone
-    ORDER BY Messages.timestamp DESC
-  ''');
+/*Future<List<Message>> displayMessages() async {
+  try {
+    String url = "http://127.0.0.1/stokvel_api/displayMessages.php"; // Assuming separate endpoint
+    final response = await http.get(Uri.parse(url));
 
-    return List.generate(maps.length, (i) {
-      return Message(
-        maps[i]['text'],
-        maps[i]['isMine'] == 1,
-        maps[i]['phone'],
-      );
-    });
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      if (responseData['success'] == true) { // Check for success (adjust based on server response)
+        List<dynamic> data = responseData['messages']; // Assuming messages are in a nested key
+        List<Message> messages = data
+            .map((item) => Message(
+                item['text'],
+                item['isMine'] == '1',
+                item['username'],
+                DateTime.parse(item['timestamp']),
+            ))
+            .toList();
+        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        return messages;
+      } else {
+        // Handle empty messages case (check for 'no_messages' key in response)
+        if (responseData['error'] == 'no_messages') {
+          return []; // Return empty list
+        } else {
+          throw Exception('Failed to load messages: ${responseData['error']}'); // More specific error
+        }
+      }
+    } else {
+      throw Exception('Request failed with status: ${response.statusCode}');
+    }
+  } catch (e) {
+    print('Error getting messages: $e');
+    throw Exception('Failed to load messages'); // Consider more user-friendly message
+  }
+}
+*/
+
+  Future<List<Message>> fetchStokvelMessages() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
+      print("g one");
+      dynamic response = await http.get(Uri.parse(url));
+      print("g two");
+      if (response.statusCode == 200) {
+        print(response.body);
+        dynamic data = json.decode(response.body);
+        print("g two");
+        print(response.body);
+        List<dynamic> dataList = data as List;
+        List<Message> messages = dataList
+            .map((item) => Message(
+                  item['Text'],
+                  item['isMine'] == '1',
+                  item['Username'],
+                  DateTime.parse(item['Timestamp']),
+                ))
+            .toList();
+        print("g three");
+        // Sort the messages by timestamp in ascending order
+        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+
+        return messages;
+      } else {
+        throw Exception('Failed to load messages');
+      }
+    } catch (e) {
+      throw ("No Chats to display");
+    }
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? '';
+  }
+
+  Future<String?> getPhoneByUsername() async {
+    try {
+      String username = await getUsername();
+      print(username);
+      print('get one');
+      String url =
+          "http://127.0.0.1/stokvel_api/getPhoneByUsername.php?username=$username";
+      print('get two');
+      Map<String, String> body = {"username": username};
+      dynamic response = await http.post(Uri.parse(url), body: body);
+      print('get three');
+
+      print('get four');
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        print(response.body);
+        print('get five');
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data.isNotEmpty) {
+            return data; // Return the phone number as a string
+          } else {
+            print('Empty phone number received');
+            return null;
+          }
+        } else {
+          // ... handle other status codes
+        }
+      } else {
+        print('Error fetching phone: ${response.statusCode}');
+        throw Exception('Failed to fetch phone: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception in getPhoneByUsername: $e');
+      rethrow;
+    }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      bottomNavigationBar: StokvelNavigationBar(
-        currentIndex: selectedItem,
-        onTap: updateItem,
-      ),
-      body: Column(
-        children: <Widget>[
-          const StokvelHeader(),
-          Expanded(
-            child: FutureBuilder<List<Message>>(
-              future: getMessages(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState != ConnectionState.done) {
-                  return const Center(child: CircularProgressIndicator());
-                }
-                if (snapshot.hasError) {
-                  return Center(
-                      child: Text('Error: ${snapshot.error.toString()}'));
-                }
-                final messages = snapshot.data!;
-                return ListView.builder(
-                  reverse: true,
-                  itemCount: messages.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      alignment: messages[index].isMine
-                          ? Alignment.centerRight
-                          : Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.all(10),
-                        margin: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: messages[index].isMine
-                              ? Colors.blue
-                              : Colors.grey,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          messages[index].text,
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
+    return Stack(
+      children: [
+        Scaffold(
+          bottomNavigationBar: StokvelNavigationBar(
+            currentIndex: selectedItem,
+            onTap: updateItem,
+          ),
+          body: Column(
+            children: [
+              const StokvelHeader(),
+              Expanded(
+                child: FutureBuilder<List<Message>>(
+                  future: fetchStokvelMessages(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState != ConnectionState.done) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                    if (snapshot.hasError) {
+                      return Center(child: Text(snapshot.error.toString()));
+                    }
+                    final messages = snapshot.data!;
+                    return ListView.builder(
+                      reverse: false,
+                      itemCount: messages.length,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        final isMine = message.isMine;
+                        return Container(
+                          alignment: isMine
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            margin: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: messages[index].isMine
+                                  ? Colors.grey
+                                  : Colors.blue,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Text(
+                              messages[index].text,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
                     );
                   },
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(15),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: controller,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 15, right: 15, top: 5, bottom: 5),
+                child: Expanded(
+                  child: TextFormField(
+                    controller: messageController,
                     decoration: InputDecoration(
                       hintText: 'Type a message here',
                       border: OutlineInputBorder(
@@ -160,11 +291,11 @@ class ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -173,6 +304,7 @@ class Message {
   final String text;
   final bool isMine;
   final String phoneNumber;
+  final DateTime timestamp;
 
-  Message(this.text, this.isMine, this.phoneNumber);
+  Message(this.text, this.isMine, this.phoneNumber, this.timestamp);
 }

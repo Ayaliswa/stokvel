@@ -1,136 +1,9 @@
-/*import 'package:flutter/material.dart';
-
-class StokvelInfo extends StatefulWidget {
-  const StokvelInfo({super.key});
-
-  @override
-  _StokvelInfoState createState() => _StokvelInfoState();
-}
-
-class _StokvelInfoState extends State<StokvelInfo> {
-  String _groupName = 'Group Name';
-  String _groupSlogan = 'Group Slogan';
-  String _groupPhotoPath = 'assets/images/group_photo.png';
-  List<String> _members = ['Member 1', 'Member 2', 'Member 3'];
-
-  void _updateGroupPhoto() async {
-    // TODO: Implement updating group photo from user's files.
-  }
-
-  void _addMembers() async {
-    // TODO: Implement adding members to the group.
-  }
-
-  void _viewAllMembers() async {
-    // TODO: Implement displaying all members of the group.
-  }
-
-  void _exitGroup() async {
-    // TODO: Implement exiting the group.
-  }
-
-  void _reportAbuse() async {
-    // TODO: Implement reporting abuse in the group.
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text("Stokvel Information"),
-        backgroundColor: Colors.blue,
-        actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-              PopupMenuItem(
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Add members',
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ),
-              PopupMenuItem(
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Change Stokvel name',
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          GestureDetector(
-            onTap: _updateGroupPhoto,
-            child: Container(
-              width: double.infinity,
-              height: 200,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(_groupPhotoPath),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _groupName,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            _groupSlogan,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _addMembers,
-            child: const Text('Add Members'),
-          ),
-          const SizedBox(height: 16),
-          GestureDetector(
-            onTap: _viewAllMembers,
-            child: Text(
-              'View All Members (${_members.length})',
-              style: const TextStyle(
-                fontSize: 16,
-                color: Colors.blue,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _exitGroup,
-            child: const Text('Exit Group'),
-          ),
-          const SizedBox(height: 16),
-          ElevatedButton(
-            onPressed: _reportAbuse,
-            child: const Text('Report Abuse'),
-          ),
-        ],
-      ),
-    );
-  }
-}
-*/
+import 'dart:convert';
 
 import "package:flutter/material.dart";
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stokvel/registration/stokvel_members.dart';
 import 'package:stokvel/security/login_screen.dart';
 
 class StokvelInfo extends StatefulWidget {
@@ -141,154 +14,737 @@ class StokvelInfo extends StatefulWidget {
 }
 
 class _StokvelInfoState extends State<StokvelInfo> {
+  final _formKey = GlobalKey<FormState>();
+  bool _obscureText = true;
+  Future<String>? codeResult;
+  bool _isLoading = false;
+  final TextEditingController codeController = TextEditingController();
+
+  Future<List<dynamic>>? fetchStokvelMembers() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/fetchStokvelMembers.php";
+
+      dynamic response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var membersData = json.decode(response.body);
+        return membersData;
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        throw Exception('Failed to fetch transactions: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception in fetchStokvelTransactions: $e');
+      throw Exception('Failed to fetch transactions: $e');
+    }
+  }
+
+  Future<int>? countStokvelMembers() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/countStokvelMembers.php";
+
+      dynamic response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var totalMembers = json.decode(response.body)["total_members"];
+        return totalMembers;
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        throw Exception('Failed to count members: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception in countStokvelMembers: $e');
+      throw Exception('Failed to count members');
+    }
+  }
+
+  Future<String>? countRegisteredStokvelMembers() async {
+    try {
+      String url =
+          "http://127.0.0.1/stokvel_api/countRegisteredStokvelMembers.php";
+
+      dynamic response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var membersData = json.decode(response.body)["total_members"];
+        return membersData;
+      } else {
+        print('Request failed with status: ${response.statusCode}.');
+        throw Exception(
+            'Failed to count registered members: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Exception in countRegisteredStokvelMembers: $e');
+      throw Exception('Failed to count registered members: $e');
+    }
+  }
+
+  Future<String>? adminCodeAuth() async {
+    try {
+      String username = await getUsername();
+      String url = "http://127.0.0.1/stokvel_api/adminCodeAuth.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "username": username,
+        "code": codeController.text,
+      });
+      print('Response body: ${response.body}');
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        return "Success";
+      }
+    } catch (e) {
+      print('Exception in adminLogin: $e');
+      return 'Login failed: $e';
+      //return 'Login failed: ${e.toString()}';
+    }
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? '';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text("Stokvel Information"),
-        backgroundColor: Colors.blue,
-        actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) => <PopupMenuEntry>[
-              PopupMenuItem(
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Add members',
-                      style: TextStyle(color: Colors.black)),
+    return Flexible(
+      child: Stack(
+        children: [
+          Form(
+            key: _formKey,
+            child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              backgroundColor: Colors.white,
+              appBar: AppBar(
+                leading: IconButton(
+                  icon: const Icon(Icons.arrow_back),
+                  onPressed: () => Navigator.pop(context),
                 ),
-              ),
-              PopupMenuItem(
-                child: TextButton(
-                  onPressed: () {},
-                  child: const Text('Change Stokvel name',
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-      body: Column(
-        children: <Widget>[
-          Center(
-            child: Container(
-              decoration: const BoxDecoration(color: Colors.grey),
-              padding: const EdgeInsets.all(5),
-              child: SizedBox(
-                width: 400,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                title: const Text("Stokvel Information"),
+                backgroundColor: Colors.blue,
+                actions: [
+                  Row(
                     children: [
-                      const SizedBox(height: 10.0),
-                      const CircleAvatar(
-                        radius: 50,
-                        backgroundImage: AssetImage(
-                          'images/icon.png',
-                        ),
-                        backgroundColor: Colors.transparent,
-                      ),
-                      const SizedBox(width: 20),
-                      const Text(
-                        'City United Stokvel',
-                        //maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                      const SizedBox(height: 20),
-                      const Text(
-                        '33 members',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        softWrap: true,
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "View All Members",
-                          style: TextStyle(color: Colors.black, fontSize: 18),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton(
-                        onPressed: () {},
-                        child: const Text(
-                          "Add members",
-                          style: TextStyle(color: Colors.green, fontSize: 18),
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      TextButton(
+                      IconButton(
                         onPressed: () {
                           showDialog(
                             context: context,
                             builder: (BuildContext context) {
                               return AlertDialog(
                                 title: const Text(
-                                    'Are you sure you want to leave the stokvel?'),
+                                  "Stokvel Code",
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                                content: Row(
+                                  children: [
+                                    TextFormField(
+                                      controller: codeController,
+                                      obscureText: _obscureText,
+                                      decoration: InputDecoration(
+                                        hintText: "enter stokvel code",
+                                        hintStyle: const TextStyle(
+                                            color: Colors.grey, fontSize: 16),
+                                        labelText: "Stokvel Code",
+                                        labelStyle: const TextStyle(
+                                            color: Colors.black, fontSize: 18),
+                                        prefixIcon: const Icon(Icons.code,
+                                            color: Colors.black),
+                                        border: const OutlineInputBorder(),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            _obscureText
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _obscureText = !_obscureText;
+                                            });
+                                          },
+                                        ),
+                                      ),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return "Please enter stokvel code";
+                                        }
+                                        return null;
+                                      },
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ],
+                                ),
                                 actions: <Widget>[
-                                  TextButton(
-                                    child: const Text('No'),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  TextButton(
-                                    child: const Text('Yes'),
-                                    onPressed: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                                'You are no longer part of the stokvel'),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: const Text('OK'),
-                                                onPressed: () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return const LoginScreen();
-                                                      },
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          );
+                                  Row(
+                                    children: [
+                                      TextButton(
+                                        child: const Text("BACK"),
+                                        onPressed: () {
+                                          codeController.clear();
+                                          Navigator.of(context).pop();
                                         },
-                                      );
-                                    },
+                                      ),
+                                      TextButton(
+                                        child: const Text("SUBMIT"),
+                                        onPressed: () {
+                                          if (_formKey.currentState!
+                                              .validate()) {
+                                            setState(() {
+                                              _isLoading = true;
+                                            });
+                                            codeResult = adminCodeAuth();
+                                            codeResult?.then((result) async {
+                                              setState(() {
+                                                _isLoading = false;
+                                              });
+                                              if (result != 'Success') {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        "Error",
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      ),
+                                                      content: const Row(
+                                                        children: [
+                                                          Icon(
+                                                              Icons
+                                                                  .error_outline,
+                                                              color:
+                                                                  Colors.red),
+                                                          Text(
+                                                            "Code rejected",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child: const Text(
+                                                              "Try again"),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            codeController
+                                                                .clear();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              } else {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return const AddMembersScreen();
+                                                    },
+                                                  ),
+                                                );
+                                              }
+                                            });
+                                          }
+                                        },
+                                      ),
+                                    ],
                                   ),
                                 ],
                               );
                             },
                           );
                         },
-                        child: const Text(
-                          "Exit Stokvel",
-                          style: TextStyle(color: Colors.red, fontSize: 18),
-                        ),
+                        icon: const Icon(Icons.person_add),
                       ),
-                      const SizedBox(height: 10)
+                      const SizedBox(
+                        width: 15,
+                      ),
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.edit),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
                     ],
+                  )
+                ],
+              ),
+              body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    color: Colors.blueGrey,
+                    child: SizedBox(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const SizedBox(height: 10.0),
+                          const CircleAvatar(
+                            radius: 50,
+                            backgroundImage: AssetImage(
+                              'images/icon.png',
+                            ),
+                            backgroundColor: Colors.transparent,
+                          ),
+                          const SizedBox(height: 20),
+                          const Text(
+                            'City United Stokvel',
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              FutureBuilder<String>(
+                                future: countRegisteredStokvelMembers(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<String> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else {
+                                    return Text(
+                                      snapshot.data ?? '0',
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: Colors.black),
+                                    );
+                                  }
+                                },
+                              ),
+                              const Text(" / "),
+                              FutureBuilder<int>(
+                                future: countStokvelMembers(),
+                                builder: (BuildContext context,
+                                    AsyncSnapshot<int> snapshot) {
+                                  if (snapshot.connectionState ==
+                                      ConnectionState.waiting) {
+                                    return const CircularProgressIndicator();
+                                  } else {
+                                    return Text(
+                                      snapshot.data?.toString() ?? '0',
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      style: const TextStyle(
+                                          fontSize: 16, color: Colors.black),
+                                    );
+                                  }
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                              TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text(
+                                          "Stokvel Code",
+                                          style: TextStyle(color: Colors.red),
+                                        ),
+                                        content: Form(
+                                          key: _formKey,
+                                          child: Flexible(
+                                            child: TextFormField(
+                                              controller: codeController,
+                                              obscureText: _obscureText,
+                                              enableSuggestions: false,
+                                              autocorrect: false,
+                                              decoration: InputDecoration(
+                                                hintText: "enter stokvel code",
+                                                hintStyle: const TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 16),
+                                                labelText: "Stokvel Code",
+                                                labelStyle: const TextStyle(
+                                                    color: Colors.black,
+                                                    fontSize: 18),
+                                                prefixIcon: const Icon(
+                                                    Icons.code,
+                                                    color: Colors.black),
+                                                border:
+                                                    const OutlineInputBorder(),
+                                                suffixIcon: IconButton(
+                                                  icon: Icon(
+                                                    _obscureText
+                                                        ? Icons.visibility
+                                                        : Icons.visibility_off,
+                                                  ),
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      _obscureText =
+                                                          !_obscureText;
+                                                    });
+                                                  },
+                                                ),
+                                              ),
+                                              validator: (value) {
+                                                if (value!.isEmpty) {
+                                                  return "Please enter stokvel code";
+                                                }
+                                                return null;
+                                              },
+                                              textAlign: TextAlign.start,
+                                            ),
+                                          ),
+                                        ),
+                                        actions: <Widget>[
+                                          Row(
+                                            children: [
+                                              TextButton(
+                                                child: const Text("BACK"),
+                                                onPressed: () {
+                                                  codeController.clear();
+                                                  Navigator.of(context).pop();
+                                                },
+                                              ),
+                                              TextButton(
+                                                child: const Text("SUBMIT"),
+                                                onPressed: () {
+                                                  if (_formKey.currentState!
+                                                      .validate()) {
+                                                    setState(() {
+                                                      _isLoading = true;
+                                                    });
+                                                    codeResult =
+                                                        adminCodeAuth();
+                                                    codeResult
+                                                        ?.then((result) async {
+                                                      setState(() {
+                                                        _isLoading = false;
+                                                      });
+                                                      if (result != 'Success') {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext
+                                                              context) {
+                                                            return AlertDialog(
+                                                              title: const Text(
+                                                                "Error",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                              content:
+                                                                  const Row(
+                                                                children: [
+                                                                  Icon(
+                                                                      Icons
+                                                                          .error_outline,
+                                                                      color: Colors
+                                                                          .red),
+                                                                  Text(
+                                                                    "Invalid code",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .red),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              actions: <Widget>[
+                                                                TextButton(
+                                                                  child: const Text(
+                                                                      "Try again"),
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                    codeController
+                                                                        .clear();
+                                                                  },
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      } else {
+                                                        Navigator.of(context)
+                                                            .push(
+                                                          MaterialPageRoute(
+                                                            builder:
+                                                                (BuildContext
+                                                                    context) {
+                                                              return const AddMembersScreen();
+                                                            },
+                                                          ),
+                                                        );
+                                                      }
+                                                    });
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Text(
+                                  'Add Member',
+                                  overflow: TextOverflow.ellipsis,
+                                  softWrap: true,
+                                  maxLines: 1,
+                                  style: TextStyle(
+                                      fontSize: 16, color: Colors.white),
+                                ),
+                              ),
+                              const SizedBox(width: 5),
+                            ],
+                          ),
+                          const SizedBox(height: 10)
+                        ],
+                      ),
+                    ),
+                  ),
+                  Container(
+                    decoration: const BoxDecoration(color: Colors.white),
+                    child: const SizedBox(
+                      width: 400,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Stokvel Banking:',
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 22,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'MTN MoMo: +268 ',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '76416393',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                'MTN MoMo: +268 ',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                '79081803',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20.0),
+                          Text(
+                            'Stokvel Members:',
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: true,
+                            maxLines: 1,
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Flexible(
+                    child: FutureBuilder<List<dynamic>>(
+                      future: fetchStokvelMembers(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final members = snapshot.data!;
+                          return ListView.builder(
+                            itemCount: members.length,
+                            itemBuilder: (context, index) {
+                              final member = members[index];
+                              return Container(
+                                padding: const EdgeInsets.all(1),
+                                child: ListTile(
+                                  onTap: () {},
+                                  title: Row(
+                                    children: [
+                                      Flexible(
+                                        child: Text(
+                                          member['Phone Number'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          member['First Name'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          member['Last Name'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          member['Physical Address'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        } else if (snapshot.hasError) {
+                          return const Center(
+                            child: Text("No registered member found"),
+                          );
+                        }
+                        return const Center(child: CircularProgressIndicator());
+                      },
+                    ),
+                  ),
+                  Center(
+                    child: TextButton(
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: const Text(
+                                  'Are you sure you want to leave the stokvel?'),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('No'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: const Text('Yes'),
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                              'You are no longer part of the stokvel'),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                    builder:
+                                                        (BuildContext context) {
+                                                      return const LoginScreen();
+                                                    },
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      child: const Text(
+                        "Exit Stokvel",
+                        style: TextStyle(color: Colors.red, fontSize: 18),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10)
+                ],
+              ),
+            ),
+          ),
+          if (_isLoading)
+            Container(
+              color: Colors.black.withOpacity(0.5),
+              child: const Center(
+                child: SizedBox(
+                  height: 50.0,
+                  width: 50.0,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );
