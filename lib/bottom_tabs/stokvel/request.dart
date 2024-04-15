@@ -60,21 +60,19 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
     }
   }
 
-  Future<String> saveStokvelTransaction() async {
+  Future<String> saveStokvelTransaction(
+      Map<String, dynamic> request, int selectedTabIndex) async {
     print('saveStokvelTransaction fuction called');
     try {
       String url = "http://127.0.0.1/stokvel_api/saveStokvelTransaction.php";
-      print('save one');
       dynamic response = await http.post(Uri.parse(url), body: {
-        "memberPhone": ['Phone'],
+        "memberPhone": request['Phone'],
         "depositer": "Stokvel",
-        "amount": ['Amount'],
+        "amount": request['Amount'],
         "description": "Requested",
         "source": "Stokvel",
         "timestamp": DateTime.now().toIso8601String(),
       });
-      print('Two');
-      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data == "Error") {
@@ -83,27 +81,26 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
           return 'Success';
         }
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      print('Exception in saveStokvelTransaction: $e');
       return 'Failed to save transaction: $e';
     }
   }
 
-  Future<String> deleteStokvelRequest() async {
+  Future<String> deleteStokvelRequest(
+      Map<String, dynamic> request, int selectedTabIndex) async {
     print('saveStokvelTransaction fuction called');
     try {
       String url = "http://127.0.0.1/stokvel_api/deleteStokvelRequest.php";
       print('save one');
       dynamic response = await http.post(Uri.parse(url), body: {
-        "memberPhone": ['Phone'],
-        "name": ['First Name'],
-        "surname": ['Last Name'],
-        "amount": ['Amount'],
-        "description": ['Receiver'],
-        "source": ['Date'],
+        "phone": request['Phone'],
+        "name": request['Name'],
+        "surname": request['Surname'],
+        "amount": request['Amount'],
+        "receiver": request['Receiver'],
+        "timestamp": request['Date'],
       });
       print('Two');
       print('Response body: ${response.body}');
@@ -119,8 +116,8 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      print('Exception in saveStokvelTransaction: $e');
-      return 'Failed to save transaction: $e';
+      print('Exception in deleteStokvelRequest: $e');
+      return 'Failed to delete request: $e';
     }
   }
 
@@ -194,366 +191,381 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
                         itemCount: requestsData.length,
                         itemBuilder: (context, index) {
                           final request = requestsData[index];
-                          return ListTile(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Row(
-                                      children: [
-                                        Icon(Icons.recommend_sharp,
-                                            color: Colors.green),
-                                        Text(
-                                          "Approve Request",
-                                          style: TextStyle(color: Colors.green),
-                                        ),
-                                      ],
-                                    ),
-                                    content: const Text(
-                                      "NOTE: Only admin can approve request",
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    actions: <Widget>[
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
+                          int selectedTabIndex = 1;
+                          return GestureDetector(
+                            child: ListTile(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: const Row(
                                         children: [
-                                          TextButton(
-                                            child: const Text(
-                                              "Back",
-                                              style:
-                                                  TextStyle(color: Colors.red),
-                                            ),
-                                            onPressed: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const PendingRequestScreen()),
-                                              );
-                                            },
-                                          ),
-                                          TextButton(
-                                            child: const Text(
-                                              "Continue",
-                                              style: TextStyle(
-                                                  color: Colors.green),
-                                            ),
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: const Text(
-                                                      "Enter Code",
-                                                      style: TextStyle(
-                                                          color: Colors.green),
-                                                    ),
-                                                    content: Form(
-                                                      key: _formKey,
-                                                      child: Row(
-                                                        children: [
-                                                          Flexible(
-                                                            child:
-                                                                TextFormField(
-                                                              controller:
-                                                                  codeController,
-                                                              obscureText:
-                                                                  _obscureText,
-                                                              enableSuggestions:
-                                                                  false,
-                                                              autocorrect:
-                                                                  false,
-                                                              decoration:
-                                                                  InputDecoration(
-                                                                hintText:
-                                                                    "enter stokvel code",
-                                                                hintStyle: const TextStyle(
-                                                                    color: Colors
-                                                                        .grey,
-                                                                    fontSize:
-                                                                        16),
-                                                                labelText:
-                                                                    "Stokvel Code",
-                                                                labelStyle: const TextStyle(
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontSize:
-                                                                        18),
-                                                                prefixIcon: const Icon(
-                                                                    Icons.code,
-                                                                    color: Colors
-                                                                        .black),
-                                                                border:
-                                                                    const OutlineInputBorder(),
-                                                                suffixIcon:
-                                                                    IconButton(
-                                                                  icon: Icon(
-                                                                    _obscureText
-                                                                        ? Icons
-                                                                            .visibility
-                                                                        : Icons
-                                                                            .visibility_off,
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    setState(
-                                                                        () {
-                                                                      _obscureText =
-                                                                          !_obscureText;
-                                                                    });
-                                                                  },
-                                                                ),
-                                                              ),
-                                                              validator:
-                                                                  (value) {
-                                                                if (value!
-                                                                    .isEmpty) {
-                                                                  return "Please enter stokvel code";
-                                                                }
-                                                                return null;
-                                                              },
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    actions: <Widget>[
-                                                      Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          TextButton(
-                                                            child: const Text(
-                                                              "Cancel",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .red),
-                                                            ),
-                                                            onPressed:
-                                                                () async {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            const PendingRequestScreen()),
-                                                              );
-                                                            },
-                                                          ),
-                                                          TextButton(
-                                                            child: const Text(
-                                                              "Approve",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green),
-                                                            ),
-                                                            onPressed: () {
-                                                              if (_formKey
-                                                                  .currentState!
-                                                                  .validate()) {
-                                                                setState(() {
-                                                                  _isLoading =
-                                                                      true;
-                                                                });
-                                                                approveResult =
-                                                                    saveStokvelTransaction();
-                                                                approveResult
-                                                                    ?.then(
-                                                                  (result) async {
-                                                                    setState(
-                                                                        () {
-                                                                      _isLoading =
-                                                                          false;
-                                                                    });
-                                                                    if (result !=
-                                                                        'Success') {
-                                                                      showDialog(
-                                                                        context:
-                                                                            context,
-                                                                        builder:
-                                                                            (BuildContext
-                                                                                context) {
-                                                                          return AlertDialog(
-                                                                            title:
-                                                                                const Text(
-                                                                              "Error",
-                                                                              style: TextStyle(color: Colors.red),
-                                                                            ),
-                                                                            content:
-                                                                                const Row(
-                                                                              children: [
-                                                                                Icon(Icons.error_outline, color: Colors.red),
-                                                                                Text(
-                                                                                  "Failed to approve request\nTry again",
-                                                                                  style: TextStyle(color: Colors.red),
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            actions: <Widget>[
-                                                                              TextButton(
-                                                                                child: const Text("Try again"),
-                                                                                onPressed: () {
-                                                                                  codeController.clear();
-                                                                                  Navigator.of(context).push(
-                                                                                    MaterialPageRoute(
-                                                                                      builder: (BuildContext context) {
-                                                                                        return const PendingRequestScreen();
-                                                                                      },
-                                                                                    ),
-                                                                                  );
-                                                                                },
-                                                                              ),
-                                                                            ],
-                                                                          );
-                                                                        },
-                                                                      );
-                                                                    } else {
-                                                                      deleteResult =
-                                                                          deleteStokvelRequest();
-                                                                      deleteResult
-                                                                          ?.then(
-                                                                              (result) async {
-                                                                        setState(
-                                                                            () {
-                                                                          _isLoading =
-                                                                              false;
-                                                                        });
-                                                                        if (result !=
-                                                                            'Success') {
-                                                                          showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (BuildContext context) {
-                                                                              return AlertDialog(
-                                                                                title: const Text(
-                                                                                  "Warning",
-                                                                                  style: TextStyle(color: Colors.red),
-                                                                                ),
-                                                                                content: const Row(
-                                                                                  children: [
-                                                                                    Icon(Icons.warning_amber, color: Colors.amber),
-                                                                                    Text(
-                                                                                      "Request Approved but failed \nto delete it from pending\nTry again on long press",
-                                                                                      style: TextStyle(color: Colors.red),
-                                                                                    ),
-                                                                                  ],
-                                                                                ),
-                                                                                actions: <Widget>[
-                                                                                  TextButton(
-                                                                                    child: const Text("OK"),
-                                                                                    onPressed: () {
-                                                                                      codeController.clear();
-                                                                                      Navigator.of(context).push(
-                                                                                        MaterialPageRoute(
-                                                                                          builder: (BuildContext context) {
-                                                                                            return const PendingRequestScreen();
-                                                                                          },
-                                                                                        ),
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                            },
-                                                                          );
-                                                                        } else {
-                                                                          showDialog(
-                                                                            context:
-                                                                                context,
-                                                                            builder:
-                                                                                (BuildContext context) {
-                                                                              return AlertDialog(
-                                                                                content: const Text("Request Approved"),
-                                                                                actions: <Widget>[
-                                                                                  TextButton(
-                                                                                    child: const Text("Done"),
-                                                                                    onPressed: () {
-                                                                                      Navigator.of(context).push(
-                                                                                        MaterialPageRoute(
-                                                                                          builder: (BuildContext context) {
-                                                                                            return const PendingRequestScreen();
-                                                                                          },
-                                                                                        ),
-                                                                                      );
-                                                                                    },
-                                                                                  ),
-                                                                                ],
-                                                                              );
-                                                                            },
-                                                                          );
-                                                                        }
-                                                                      });
-                                                                    }
-                                                                  },
-                                                                );
-                                                              }
-                                                            },
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  );
-                                                },
-                                              );
-                                            },
+                                          Icon(Icons.recommend_sharp,
+                                              color: Colors.green),
+                                          Text(
+                                            "Approve Request",
+                                            style:
+                                                TextStyle(color: Colors.green),
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    request['Name'] + "  " + request['Surname'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.start,
+                                      content: const Text(
+                                        "NOTE: Only admin can approve request",
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      actions: <Widget>[
+                                        Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              child: const Text(
+                                                "Back",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const PendingRequestScreen()),
+                                                );
+                                              },
+                                            ),
+                                            TextButton(
+                                              child: const Text(
+                                                "Continue",
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
+                                              onPressed: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Text(
+                                                        "Enter Code",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green),
+                                                      ),
+                                                      content: Form(
+                                                        key: _formKey,
+                                                        child: Row(
+                                                          children: [
+                                                            Flexible(
+                                                              child:
+                                                                  TextFormField(
+                                                                controller:
+                                                                    codeController,
+                                                                obscureText:
+                                                                    _obscureText,
+                                                                enableSuggestions:
+                                                                    false,
+                                                                autocorrect:
+                                                                    false,
+                                                                decoration:
+                                                                    InputDecoration(
+                                                                  hintText:
+                                                                      "enter stokvel code",
+                                                                  hintStyle: const TextStyle(
+                                                                      color: Colors
+                                                                          .grey,
+                                                                      fontSize:
+                                                                          16),
+                                                                  labelText:
+                                                                      "Stokvel Code",
+                                                                  labelStyle: const TextStyle(
+                                                                      color: Colors
+                                                                          .black,
+                                                                      fontSize:
+                                                                          18),
+                                                                  prefixIcon: const Icon(
+                                                                      Icons
+                                                                          .code,
+                                                                      color: Colors
+                                                                          .black),
+                                                                  border:
+                                                                      const OutlineInputBorder(),
+                                                                  suffixIcon:
+                                                                      IconButton(
+                                                                    icon: Icon(
+                                                                      _obscureText
+                                                                          ? Icons
+                                                                              .visibility
+                                                                          : Icons
+                                                                              .visibility_off,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      setState(
+                                                                          () {
+                                                                        _obscureText =
+                                                                            !_obscureText;
+                                                                      });
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                                validator:
+                                                                    (value) {
+                                                                  if (value!
+                                                                      .isEmpty) {
+                                                                    return "Please enter stokvel code";
+                                                                  }
+                                                                  return null;
+                                                                },
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .start,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      actions: <Widget>[
+                                                        Row(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          children: [
+                                                            TextButton(
+                                                              child: const Text(
+                                                                "Cancel",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .red),
+                                                              ),
+                                                              onPressed:
+                                                                  () async {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                      builder:
+                                                                          (context) =>
+                                                                              const PendingRequestScreen()),
+                                                                );
+                                                              },
+                                                            ),
+                                                            TextButton(
+                                                              child: const Text(
+                                                                "Approve",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .green),
+                                                              ),
+                                                              onPressed: () {
+                                                                if (_formKey
+                                                                    .currentState!
+                                                                    .validate()) {
+                                                                  setState(() {
+                                                                    _isLoading =
+                                                                        true;
+                                                                  });
+
+                                                                  print(request[
+                                                                      'Name']);
+                                                                  print(request[
+                                                                      'Surname']);
+                                                                  print(
+                                                                      'E ${request['Amount']}.00');
+                                                                  print(request[
+                                                                      'Phone']);
+                                                                  print(request[
+                                                                      'Date']);
+                                                                  approveResult =
+                                                                      saveStokvelTransaction(
+                                                                          request,
+                                                                          selectedTabIndex);
+                                                                  approveResult
+                                                                      ?.then(
+                                                                    (result) async {
+                                                                      setState(
+                                                                          () {
+                                                                        _isLoading =
+                                                                            false;
+                                                                      });
+                                                                      if (result !=
+                                                                          'Success') {
+                                                                        showDialog(
+                                                                          context:
+                                                                              context,
+                                                                          builder:
+                                                                              (BuildContext context) {
+                                                                            return AlertDialog(
+                                                                              title: const Text(
+                                                                                "Error",
+                                                                                style: TextStyle(color: Colors.red),
+                                                                              ),
+                                                                              content: const Row(
+                                                                                children: [
+                                                                                  Icon(Icons.error_outline, color: Colors.red),
+                                                                                  Text(
+                                                                                    "Failed to approve request\nTry again",
+                                                                                    style: TextStyle(color: Colors.red),
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              actions: <Widget>[
+                                                                                TextButton(
+                                                                                  child: const Text("Try again"),
+                                                                                  onPressed: () {
+                                                                                    codeController.clear();
+                                                                                    Navigator.of(context).push(
+                                                                                      MaterialPageRoute(
+                                                                                        builder: (BuildContext context) {
+                                                                                          return const PendingRequestScreen();
+                                                                                        },
+                                                                                      ),
+                                                                                    );
+                                                                                  },
+                                                                                ),
+                                                                              ],
+                                                                            );
+                                                                          },
+                                                                        );
+                                                                      } else {
+                                                                        deleteResult = deleteStokvelRequest(
+                                                                            request,
+                                                                            selectedTabIndex);
+                                                                        deleteResult
+                                                                            ?.then((result) async {
+                                                                          setState(
+                                                                              () {
+                                                                            _isLoading =
+                                                                                false;
+                                                                          });
+                                                                          if (result !=
+                                                                              'Success') {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext context) {
+                                                                                return AlertDialog(
+                                                                                  title: const Text(
+                                                                                    "Warning",
+                                                                                    style: TextStyle(color: Colors.red),
+                                                                                  ),
+                                                                                  content: const Row(
+                                                                                    children: [
+                                                                                      Icon(Icons.warning_amber, color: Colors.amber),
+                                                                                      Text(
+                                                                                        "Request Approved but failed \nto delete it from pending\nTry again on long press",
+                                                                                        style: TextStyle(color: Colors.red),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                  actions: <Widget>[
+                                                                                    TextButton(
+                                                                                      child: const Text("OK"),
+                                                                                      onPressed: () {
+                                                                                        codeController.clear();
+                                                                                        Navigator.of(context).push(
+                                                                                          MaterialPageRoute(
+                                                                                            builder: (BuildContext context) {
+                                                                                              return const PendingRequestScreen();
+                                                                                            },
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          } else {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext context) {
+                                                                                return AlertDialog(
+                                                                                  content: const Text("Request Approved"),
+                                                                                  actions: <Widget>[
+                                                                                    TextButton(
+                                                                                      child: const Text("Done"),
+                                                                                      onPressed: () {
+                                                                                        Navigator.of(context).push(
+                                                                                          MaterialPageRoute(
+                                                                                            builder: (BuildContext context) {
+                                                                                              return const PendingRequestScreen();
+                                                                                            },
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          }
+                                                                        });
+                                                                      }
+                                                                    },
+                                                                  );
+                                                                }
+                                                              },
+                                                            )
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      request['Name'] +
+                                          "  " +
+                                          request['Surname'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    'E ${request['Amount']}.00',
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
-                                    style: orangeTextStyle,
+                                  Expanded(
+                                    child: Text(
+                                      'E ${request['Amount']}.00',
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                      style: orangeTextStyle,
+                                    ),
                                   ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    request['Phone'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
+                                  Expanded(
+                                    child: Text(
+                                      request['Phone'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    request['Date'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
+                                  Flexible(
+                                    child: Text(
+                                      request['Date'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           );
                         },

@@ -125,62 +125,69 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                         itemCount: transactions.length,
                         itemBuilder: (context, index) {
                           final transaction = transactions[index];
-                          return ListTile(
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    transaction['Phone'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text.rich(
-                                    TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: 'E ${transaction['Amount']}.00',
-                                          style: (transaction['Description'] ==
-                                                      'Monthly Contribution' ||
-                                                  transaction['Description'] ==
-                                                      'Loan Repayment')
-                                              ? const TextStyle(
-                                                  color: Colors.green)
-                                              : const TextStyle(
-                                                  color: Colors.red),
-                                        ),
-                                      ],
+                          return GestureDetector(
+                            onTap: () {},
+                            child: ListTile(
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      transaction['Phone'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
                                     ),
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: false,
-                                    maxLines: 1,
-                                    textAlign: TextAlign.start,
                                   ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    transaction['Description'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.start,
+                                  Expanded(
+                                    child: Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                'E ${transaction['Amount']}.00',
+                                            style: (transaction[
+                                                            'Description'] ==
+                                                        'Monthly Contribution' ||
+                                                    transaction[
+                                                            'Description'] ==
+                                                        'Loan Repayment')
+                                                ? const TextStyle(
+                                                    color: Colors.green)
+                                                : const TextStyle(
+                                                    color: Colors.red),
+                                          ),
+                                        ],
+                                      ),
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: false,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    transaction['Date'],
-                                    overflow: TextOverflow.ellipsis,
-                                    softWrap: true,
-                                    maxLines: 2,
-                                    textAlign: TextAlign.start,
+                                  Expanded(
+                                    child: Text(
+                                      transaction['Description'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Flexible(
+                                    child: Text(
+                                      transaction['Date'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           );
                         },

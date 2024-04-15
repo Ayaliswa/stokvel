@@ -39,48 +39,13 @@ class ChatScreenState extends State<ChatScreen> {
 
   final List<Message> messages = [];
   final TextEditingController messageController = TextEditingController();
-/*Future<void> sendMessage() async {
-  try {
-    if (controller.text.isNotEmpty) {
-      String url = "http://127.0.0.1/stokvel_api/save_messages.php";
-      final response = await http.post(
-        Uri.parse(url),
-        body: {
-          'text': controller.text,
-          'isMine': '1',
-          'timestamp': DateTime.now().toIso8601String(),
-          'username': getUsername(),
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final responseData = json.decode(response.body);
-        if (responseData['success'] == true) { // Example success check
-          controller.clear();
-          setState(() {});
-        } else {
-          throw Exception('Failed to save message: ${responseData['error']}'); // More specific error
-        }
-      } else {
-        throw Exception('Request failed with status: ${response.statusCode}');
-      }
-    }
-  } catch (e) {
-    print('Error sending message: $e');
-    // Handle different exception types here (e.g., network errors)
-    throw Exception('Failed to send message'); // Consider more specific user-facing error
-  }
-}
-*/
 
   Future<void> sendMessage() async {
-    print('one');
     try {
       if (messageController.text.isNotEmpty) {
         String? username = await getUsername();
         String? phone = await getPhoneByUsername();
         String url = "http://127.0.0.1/stokvel_api/saveMessages.php";
-        print('two');
         dynamic response = await http.post(
           Uri.parse(url),
           body: {
@@ -91,7 +56,6 @@ class ChatScreenState extends State<ChatScreen> {
             'username': username,
           },
         );
-        print('three');
         if (response.statusCode == 200) {
           messageController.clear();
           setState(() {});
@@ -100,7 +64,6 @@ class ChatScreenState extends State<ChatScreen> {
         }
       }
     } catch (e) {
-      print('??Database connection failed: $e');
       throw Exception("??Database connection failed");
     }
   }
@@ -145,14 +108,9 @@ class ChatScreenState extends State<ChatScreen> {
   Future<List<Message>> fetchStokvelMessages() async {
     try {
       String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
-      print("g one");
       dynamic response = await http.get(Uri.parse(url));
-      print("g two");
       if (response.statusCode == 200) {
-        print(response.body);
         dynamic data = json.decode(response.body);
-        print("g two");
-        print(response.body);
         List<dynamic> dataList = data as List;
         List<Message> messages = dataList
             .map((item) => Message(
@@ -162,7 +120,6 @@ class ChatScreenState extends State<ChatScreen> {
                   DateTime.parse(item['Timestamp']),
                 ))
             .toList();
-        print("g three");
         // Sort the messages by timestamp in ascending order
         messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
 

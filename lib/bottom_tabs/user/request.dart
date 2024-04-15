@@ -17,12 +17,12 @@ class UserRequestScreen extends StatefulWidget {
 
 class UserRequestScreenState extends State<UserRequestScreen> {
   final _formKey = GlobalKey<FormState>();
-  final TextEditingController nameController = TextEditingController();
-  final TextEditingController surnameController = TextEditingController();
   final TextEditingController amountController = TextEditingController();
   final TextEditingController accountReceiverController =
       TextEditingController();
-  Future<String>? phoneNumber;
+  //Future<String>? phoneNumber;
+  Future<String>? firstName;
+  Future<String>? lastName;
   int selectedItem = 2;
 
   void updateItem(int index) {
@@ -75,22 +75,98 @@ class UserRequestScreenState extends State<UserRequestScreen> {
     return null;
   }
 
+  /* Future<String?> getNameByPhone() async {
+    try {
+      String? phone = await getPhoneByUsername();
+      String url =
+          "http://127.0.0.1/stokvel_api/getNameByPhone.php?phone=$phone";
+      dynamic response = await http.post(Uri.parse(url));
+
+      if (response.statusCode != 200 || response.body.isEmpty) {
+        print(response.body);
+        throw Exception('Failed to fetch name: ${response.statusCode}');
+      }
+      var data = json.decode(response.body);
+      if (data.isNotEmpty) {
+        return data; // Assuming data contains the name
+      } else {
+        return null;
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }*/
+
+  Future<String?> getNameByPhone() async {
+    try {
+      String? phone = await getPhoneByUsername();
+      print("name 1");
+      String url =
+          "http://127.0.0.1/stokvel_api/getNameByPhone.php?phone=$phone";
+      print("name 2");
+      Map<String, String?> body = {"phone": phone};
+      dynamic response = await http.post(Uri.parse(url), body: body);
+
+      print(response.body);
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data.isNotEmpty) {
+            return data;
+          } else {
+            return null;
+          }
+        }
+      } else {
+        throw Exception('Failed to fetch name: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
+
+  Future<String?> getSurnameByPhone() async {
+    try {
+      String? phone = await getPhoneByUsername();
+      String url =
+          "http://127.0.0.1/stokvel_api/getSurnameByPhone.php?phone=$phone";
+      Map<String, String?> body = {"phone": phone};
+      dynamic response = await http.post(Uri.parse(url), body: body);
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data.isNotEmpty) {
+            return data;
+          } else {
+            return null;
+          }
+        }
+      } else {
+        throw Exception('Failed to fetch name: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
+
   Future<String> saveStokvelRequest() async {
-    print('saveStokvelTransaction fuction called');
     try {
       String? phoneNumber = await getPhoneByUsername();
+      String? firstName = await getNameByPhone();
+      print("6");
+      String? lastName = await getSurnameByPhone();
       String url = "http://127.0.0.1/stokvel_api/saveStokvelRequest.php";
-      print('save one');
       dynamic response = await http.post(Uri.parse(url), body: {
         "phone": phoneNumber,
-        "name": nameController.text,
-        "surname": surnameController.text,
+        "name": firstName,
+        "surname": lastName,
         "amount": amountController.text,
         "receiver": accountReceiverController.text,
         "timestamp": DateTime.now().toIso8601String(),
       });
-      print('Two');
-      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data == "Error") {
@@ -99,11 +175,9 @@ class UserRequestScreenState extends State<UserRequestScreen> {
           return 'Success';
         }
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      print('Exception in saveStokvelTransaction: $e');
       return 'Failed to save transaction: $e';
     }
   }
@@ -115,164 +189,127 @@ class UserRequestScreenState extends State<UserRequestScreen> {
         currentIndex: selectedItem,
         onTap: updateItem,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const UserHeader(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        color: Colors.white,
-                        child: SizedBox(
-                          child: Column(
-                            children: [
-                              const SizedBox(
-                                height: 10,
+      body: Column(
+        children: [
+          const UserHeader(),
+          const SizedBox(
+            height: 10,
+          ),
+          const Text(
+            "How much do you want to request from the stokvel "
+            "and which phone number to receive request once approved",
+            textAlign: TextAlign.center,
+            style: TextStyle(fontSize: 18),
+          ),
+          Expanded(
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      color: Colors.white,
+                      child: SizedBox(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: amountController,
+                              decoration: const InputDecoration(
+                                hintText: "enter request amount",
+                                hintStyle:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
+                                labelText: 'Amount',
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 18),
+                                prefixIcon:
+                                    Icon(Icons.money, color: Colors.black),
+                                border: OutlineInputBorder(),
                               ),
-                              const SizedBox(height: 30),
-                              TextFormField(
-                                controller: nameController,
-                                decoration: const InputDecoration(
-                                  hintText: "enter your first name",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 16),
-                                  labelText: 'Name',
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                  prefixIcon:
-                                      Icon(Icons.person, color: Colors.black),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your name';
-                                  }
-                                  return null;
-                                },
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter an amount';
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'Please enter a valid number';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            TextFormField(
+                              controller: accountReceiverController,
+                              decoration: const InputDecoration(
+                                hintText: "enter beneficiary phone number",
+                                hintStyle:
+                                    TextStyle(color: Colors.grey, fontSize: 16),
+                                labelText: 'Account Receiver',
+                                labelStyle: TextStyle(
+                                    color: Colors.black, fontSize: 18),
+                                prefixIcon:
+                                    Icon(Icons.phone, color: Colors.black),
+                                border: OutlineInputBorder(),
                               ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: surnameController,
-                                decoration: const InputDecoration(
-                                  hintText: "enter your surname",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 16),
-                                  labelText: 'Surname',
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                  prefixIcon:
-                                      Icon(Icons.person, color: Colors.black),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter your surname';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: amountController,
-                                decoration: const InputDecoration(
-                                  hintText: "enter request amount",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 16),
-                                  labelText: 'Amount',
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                  prefixIcon:
-                                      Icon(Icons.money, color: Colors.black),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter an amount';
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'Please enter a valid number';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              TextFormField(
-                                controller: accountReceiverController,
-                                decoration: const InputDecoration(
-                                  hintText: "enter beneficiary phone number",
-                                  hintStyle: TextStyle(
-                                      color: Colors.grey, fontSize: 16),
-                                  labelText: 'Account Receiver',
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 18),
-                                  prefixIcon:
-                                      Icon(Icons.phone, color: Colors.black),
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter phone number to receive amount';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: 20),
-                              Center(
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        if (_formKey.currentState!.validate()) {
-                                          saveStokvelRequest();
-                                        }
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.green,
-                                        foregroundColor: Colors.white,
-                                        side: const BorderSide(
-                                            color: Colors.green),
-                                      ),
-                                      child: const Text('SUBMIT'),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter phone number to receive amount';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            Center(
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      if (_formKey.currentState!.validate()) {
+                                        saveStokvelRequest();
+                                      }
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.green,
+                                      foregroundColor: Colors.white,
+                                      side:
+                                          const BorderSide(color: Colors.green),
                                     ),
-                                    const SizedBox(
-                                      width: 30,
+                                    child: const Text('SUBMIT'),
+                                  ),
+                                  const SizedBox(
+                                    width: 30,
+                                  ),
+                                  ElevatedButton(
+                                    onPressed: () {
+                                      _formKey.currentState!.reset();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.red,
+                                      foregroundColor: Colors.white,
+                                      side: const BorderSide(color: Colors.red),
                                     ),
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _formKey.currentState!.reset();
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.red,
-                                        foregroundColor: Colors.white,
-                                        side:
-                                            const BorderSide(color: Colors.red),
-                                      ),
-                                      child: const Text('CANCEL'),
-                                    ),
-                                  ],
-                                ),
+                                    child: const Text('CANCEL'),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
