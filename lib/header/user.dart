@@ -36,11 +36,9 @@ class UserHeaderState extends State<UserHeader> {
         var totalAmount = json.decode(response.body);
         return totalAmount;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to fetch transactions: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getStokvelTotalContributions: $e');
       throw Exception('Failed to fetch stokvel available balance: $e');
     }
   }

@@ -201,8 +201,23 @@ class RegistrationFormState extends State<RegistrationForm> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'ID No. is required';
+                              } else if (value.length != 13) {
+                                return 'ID Number must be 13 digits';
+                              } else if (!RegExp(r'^[0-9]{2}$')
+                                  .hasMatch(value.substring(0, 2))) {
+                                return 'First two digits must be between 01 and 99';
+                              } else if (!RegExp(r'^0[1-9]|1[0-2]$')
+                                  .hasMatch(value.substring(2, 4))) {
+                                return 'Second two digits must be a month (01-12)';
+                              } else if (!RegExp(r'^[0-2][1-9]|3[0-1]$')
+                                  .hasMatch(value.substring(4, 6))) {
+                                return 'Third two digits must be a day (01-31)';
+                              } else if (!RegExp(r'^[67]1$')
+                                  .hasMatch(value.substring(6, 8))) {
+                                return 'Fourth two digits must be 61 or 71';
+                              } else {
+                                return null; // Valid ID number
                               }
-                              return null;
                             },
                           ),
                           const SizedBox(height: 16),
@@ -222,8 +237,13 @@ class RegistrationFormState extends State<RegistrationForm> {
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Please enter your postal address';
+                              } /*else if (!RegExp(r'^P O Box [0-9]{1,3}$')
+                                  .hasMatch(value)) {
+                                return 'Invalid format: P.O. Box followed by a number (max 3 digits)';
+                              }*/
+                              else {
+                                return null;
                               }
-                              return null;
                             },
                           ),
                           const SizedBox(height: 16),

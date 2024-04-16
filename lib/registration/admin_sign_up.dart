@@ -28,6 +28,7 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
   Future<String>? signupResult;
   Future<String>? signupAuthResult;
   Future<String>? signupResultAsMember;
+  Future<String>? signupAuthPhoneResult;
   bool _isLoading = false;
 
   @override
@@ -122,6 +123,23 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
     }
   }
 
+  Future<String> signUpPhoneAuth() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/signUpPhoneAuth.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "Phone": phoneController.text,
+      });
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        return "Success";
+      }
+    } catch (e) {
+      return 'sign up failed: $e';
+    }
+  }
+
   bool passwordConfirmed() {
     if (passwordController.text.trim() ==
         confirmPasswordController.text.trim()) {
@@ -129,6 +147,18 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
     } else {
       return false;
     }
+  }
+
+  String validatePhoneNumber(String phoneNumber) {
+    final RegExp phoneRegExp = RegExp(r'^[7689]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNumber)) {
+      if (phoneNumber.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'Phone number is too long or invalid format\nshould start with 7 (6/8/9) and not more than 8';
+      }
+    }
+    return 'Valid';
   }
 
   void storePhone(String phoneController) async {
@@ -228,6 +258,8 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Please enter username";
+                            } else if (value.length < 6 || value.length > 10) {
+                              return 'Username must be between 6 and 10 characters';
                             }
                             return null;
                           },
@@ -253,8 +285,15 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                             if (value!.isEmpty) {
                               return "Please enter phone number";
                             }
+
+                            final String validationResult =
+                                validatePhoneNumber(value);
+                            if (validationResult != 'Valid') {
+                              return validationResult;
+                            }
                             return null;
                           },
+                          maxLength: 8,
                           textAlign: TextAlign.start,
                         ),
                         const SizedBox(height: 20),
@@ -292,8 +331,8 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your password';
-                            } else if (value.length < 8) {
-                              return 'Password must be at least 8 characters long';
+                            } else if (value.length < 8 || value.length > 15) {
+                              return 'Password must be at least 8 characters long\n and not more than 15';
                             }
                             return null;
                           },
@@ -494,12 +533,14 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                             },
                                           );
                                         } else {
-                                          var signupResult = signUp();
-                                          signupResult.then((result) async {
+                                          var signupAuthPhoneResult =
+                                              signUpPhoneAuth();
+                                          signupAuthPhoneResult
+                                              .then((result) async {
                                             setState(() {
                                               _isLoading = false;
                                             });
-                                            if (result != 'Success') {
+                                            if (result == 'Success') {
                                               showDialog(
                                                 context: context,
                                                 builder:
@@ -509,9 +550,7 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                       children: [
                                                         Icon(Icons.close,
                                                             color: Colors.red),
-                                                        SizedBox(
-                                                          width: 5,
-                                                        ),
+                                                        SizedBox(width: 5),
                                                         Text(
                                                           "Error",
                                                           style: TextStyle(
@@ -521,7 +560,7 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                       ],
                                                     ),
                                                     content: const Text(
-                                                      "Failed to create account\nPlease try again",
+                                                      "Account already exist with this phone number\nTry another phone",
                                                       style: TextStyle(
                                                           color: Colors.red),
                                                     ),
@@ -531,8 +570,6 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                         onPressed: () {
                                                           Navigator.of(context)
                                                               .pop();
-                                                          _formKey.currentState!
-                                                              .reset();
                                                         },
                                                       ),
                                                     ],
@@ -540,10 +577,8 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                 },
                                               );
                                             } else {
-                                              var signupResultAsMember =
-                                                  signUpAsMember();
-                                              signupResultAsMember
-                                                  .then((result) async {
+                                              var signupResult = signUp();
+                                              signupResult.then((result) async {
                                                 setState(() {
                                                   _isLoading = false;
                                                 });
@@ -555,59 +590,37 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                       return AlertDialog(
                                                         title: const Row(
                                                           children: [
-                                                            Icon(
-                                                                Icons
-                                                                    .warning_amber,
-                                                                color: Colors
-                                                                    .amber),
+                                                            Icon(Icons.close,
+                                                                color:
+                                                                    Colors.red),
                                                             SizedBox(
                                                               width: 5,
                                                             ),
                                                             Text(
-                                                              "Warning",
+                                                              "Error",
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .red),
                                                             ),
                                                           ],
                                                         ),
-                                                        content: const Column(
-                                                          children: [
-                                                            Text(
-                                                              "Failed to create \naccount as member",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .amber),
-                                                            ),
-                                                            Text(
-                                                              "Admin account created \nsuccessfully",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green),
-                                                            ),
-                                                          ],
+                                                        content: const Text(
+                                                          "Failed to create account\nPlease try again",
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red),
                                                         ),
                                                         actions: <Widget>[
                                                           TextButton(
                                                             child: const Text(
                                                                 "OK"),
                                                             onPressed: () {
-                                                              storePhone(
-                                                                  phoneController
-                                                                      .text);
                                                               Navigator.of(
                                                                       context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return AdminRegistrationForm(
-                                                                        phoneNumber:
-                                                                            phoneController.text);
-                                                                  },
-                                                                ),
-                                                              );
+                                                                  .pop();
+                                                              _formKey
+                                                                  .currentState!
+                                                                  .reset();
                                                             },
                                                           ),
                                                         ],
@@ -615,58 +628,138 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                                                     },
                                                   );
                                                 } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons.check,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Text(
-                                                              "Account created successfully",
-                                                              style: TextStyle(
-                                                                  color: Colors
-                                                                      .green),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        content: const Text(
-                                                            "Please continue and \ncomplete your registration"),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            child: const Text(
-                                                                "OK"),
-                                                            onPressed: () {
-                                                              storePhone(
-                                                                  phoneController
-                                                                      .text);
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return AdminRegistrationForm(
-                                                                        phoneNumber:
-                                                                            phoneController.text);
-                                                                  },
+                                                  var signupResultAsMember =
+                                                      signUpAsMember();
+                                                  signupResultAsMember
+                                                      .then((result) async {
+                                                    setState(() {
+                                                      _isLoading = false;
+                                                    });
+                                                    if (result != 'Success') {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons
+                                                                        .warning_amber,
+                                                                    color: Colors
+                                                                        .amber),
+                                                                SizedBox(
+                                                                  width: 5,
                                                                 ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ],
+                                                                Text(
+                                                                  "Warning",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .red),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            content:
+                                                                const Column(
+                                                              children: [
+                                                                Text(
+                                                                  "Failed to create \naccount as member",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .amber),
+                                                                ),
+                                                                Text(
+                                                                  "Admin account created \nsuccessfully",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .green),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        "OK"),
+                                                                onPressed: () {
+                                                                  storePhone(
+                                                                      phoneController
+                                                                          .text);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return AdminRegistrationForm(
+                                                                            phoneNumber:
+                                                                                phoneController.text);
+                                                                      },
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
-                                                    },
-                                                  );
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.check,
+                                                                  color: Colors
+                                                                      .green,
+                                                                ),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "Account created successfully",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .green),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            content: const Text(
+                                                                "Please continue and \ncomplete your registration"),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        "OK"),
+                                                                onPressed: () {
+                                                                  storePhone(
+                                                                      phoneController
+                                                                          .text);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return AdminRegistrationForm(
+                                                                            phoneNumber:
+                                                                                phoneController.text);
+                                                                      },
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    }
+                                                  });
                                                 }
                                               });
                                             }

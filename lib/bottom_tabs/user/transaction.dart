@@ -230,7 +230,7 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Text(
-                                  "Available Stokvel Accounts",
+                                  "Stokvel Accounts",
                                   style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
                                 const SizedBox(

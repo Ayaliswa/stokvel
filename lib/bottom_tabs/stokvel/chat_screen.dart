@@ -105,7 +105,7 @@ class ChatScreenState extends State<ChatScreen> {
 }
 */
 
-  Future<List<Message>> fetchStokvelMessages() async {
+  /*Future<List<Message>> fetchStokvelMessages() async {
     try {
       String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
       dynamic response = await http.get(Uri.parse(url));
@@ -129,6 +129,31 @@ class ChatScreenState extends State<ChatScreen> {
       }
     } catch (e) {
       throw ("No Chats to display");
+    }
+  }*/
+
+  Future<List<Message>> fetchStokvelMessages() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
+      dynamic response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        dynamic data = json.decode(response.body);
+        List<dynamic> dataList = data as List;
+
+        List<Message> messages = dataList
+            .map((item) => Message(
+                  item['Text'],
+                  item['Username'],
+                  DateTime.parse(item['Timestamp']),
+                ))
+            .toList();
+        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+        return messages;
+      } else {
+        throw Exception('Failed to load messages');
+      }
+    } catch (e) {
+      throw Exception('No Chats to display');
     }
   }
 
@@ -197,30 +222,36 @@ class ChatScreenState extends State<ChatScreen> {
                     if (snapshot.hasError) {
                       return Center(child: Text(snapshot.error.toString()));
                     }
+
                     final messages = snapshot.data!;
                     return ListView.builder(
                       reverse: false,
                       itemCount: messages.length,
                       itemBuilder: (context, index) {
                         final message = messages[index];
-                        final isMine = message.isMine;
+                        final username = message.username;
                         return Container(
-                          alignment: isMine
+                          alignment: username == getUsername()
                               ? Alignment.centerLeft
                               : Alignment.centerRight,
-                          child: Container(
-                            padding: const EdgeInsets.all(10),
-                            margin: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              color: messages[index].isMine
-                                  ? Colors.grey
-                                  : Colors.blue,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              messages[index].text,
-                              style: const TextStyle(color: Colors.white),
-                            ),
+                          child: Column(
+                            children: [
+                              Text(username,
+                                  style: const TextStyle(color: Colors.black)),
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: username == getUsername()
+                                      ? Colors.grey[300]
+                                      : Colors.blue,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -259,9 +290,19 @@ class ChatScreenState extends State<ChatScreen> {
 
 class Message {
   final String text;
+  final String username;
+  final DateTime timestamp;
+
+  Message(this.text, this.username, this.timestamp);
+}
+
+/*
+
+class Message {
+  final String text;
   final bool isMine;
   final String phoneNumber;
   final DateTime timestamp;
 
   Message(this.text, this.isMine, this.phoneNumber, this.timestamp);
-}
+}*/

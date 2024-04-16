@@ -29,6 +29,7 @@ class SignUpScreenState extends State<SignUpScreen> {
   bool? _isChecked = false;
   Future<String>? signupResult;
   Future<String>? signupAuthResult;
+  Future<String>? signupAuthPhoneResult;
   bool _isLoading = false;
 
   @override
@@ -47,7 +48,6 @@ class SignUpScreenState extends State<SignUpScreen> {
       dynamic response = await http.post(Uri.parse(url), body: {
         "Phone": phoneController.text,
       });
-      print('Response body: ${response.body}');
       var data = json.decode(response.body);
       if (data == "Error") {
         return "Error";
@@ -55,9 +55,24 @@ class SignUpScreenState extends State<SignUpScreen> {
         return "Success";
       }
     } catch (e) {
-      print('Exception in handleLogin: $e');
-      return 'Login failed: $e';
-      //return 'Login failed: ${e.toString()}';
+      return 'sign up failed: $e';
+    }
+  }
+
+  Future<String> signUpPhoneAuth() async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/signUpPhoneAuth.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "Phone": phoneController.text,
+      });
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        return "Success";
+      }
+    } catch (e) {
+      return 'sign up failed: $e';
     }
   }
 
@@ -72,7 +87,6 @@ class SignUpScreenState extends State<SignUpScreen> {
           "Gender": groupValue,
           "BestFriend": bestFriendController.text
         });
-        print('Response body: ${response.body}');
         if (response.statusCode == 200) {
           var data = json.decode(response.body);
           if (data == "Error") {
@@ -81,15 +95,12 @@ class SignUpScreenState extends State<SignUpScreen> {
             return 'Success';
           }
         } else {
-          print('Request failed with status: ${response.statusCode}.');
           return 'Request failed with status: ${response.statusCode}';
         }
       } else {
-        print('passwords do not match');
         return 'Passwords do not match';
       }
     } catch (e) {
-      print('Exception in signUp: $e');
       return 'Failed to create account: $e';
     }
   }
@@ -101,6 +112,18 @@ class SignUpScreenState extends State<SignUpScreen> {
     } else {
       return false;
     }
+  }
+
+  String validatePhoneNumber(String phoneNumber) {
+    final RegExp phoneRegExp = RegExp(r'^[7689]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNumber)) {
+      if (phoneNumber.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'Phone number is too long or invalid format\nshould start with 7 (6/8/9) and not more than 8';
+      }
+    }
+    return 'Valid';
   }
 
   void storePhone(String phoneController) async {
@@ -200,6 +223,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return "Please enter username";
+                            } else if (value.length < 6 || value.length > 10) {
+                              return 'Username must be between 6 and 10 characters';
                             }
                             return null;
                           },
@@ -225,8 +250,15 @@ class SignUpScreenState extends State<SignUpScreen> {
                             if (value!.isEmpty) {
                               return "Please enter phone number";
                             }
+
+                            final String validationResult =
+                                validatePhoneNumber(value);
+                            if (validationResult != 'Valid') {
+                              return validationResult;
+                            }
                             return null;
                           },
+                          maxLength: 8,
                           textAlign: TextAlign.start,
                         ),
                         const SizedBox(height: 20),
@@ -264,8 +296,8 @@ class SignUpScreenState extends State<SignUpScreen> {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your password';
-                            } else if (value.length < 8) {
-                              return 'Password must be at least 8 characters long';
+                            } else if (value.length < 8 || value.length > 15) {
+                              return 'Password must be at least 8 characters long\n and not more than 15';
                             }
                             return null;
                           },
@@ -420,160 +452,211 @@ class SignUpScreenState extends State<SignUpScreen> {
                                         _isLoading = true;
                                       });
                                       var signupAuthResult = signUpAuth();
-                                      signupAuthResult.then(
-                                        (result) async {
-                                          setState(() {
-                                            _isLoading = false;
-                                          });
-                                          if (result != 'Success') {
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Row(
-                                                    children: [
-                                                      Icon(Icons.close,
+                                      signupAuthResult.then((result) async {
+                                        setState(() {
+                                          _isLoading = false;
+                                        });
+                                        if (result != 'Success') {
+                                          showDialog(
+                                            context: context,
+                                            builder: (BuildContext context) {
+                                              return AlertDialog(
+                                                title: const Row(
+                                                  children: [
+                                                    Icon(Icons.close,
+                                                        color: Colors.red),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      "Error",
+                                                      style: TextStyle(
                                                           color: Colors.red),
-                                                      SizedBox(
-                                                        width: 5,
+                                                    ),
+                                                  ],
+                                                ),
+                                                content: const Text(
+                                                  "Access denied \nplease contact admin",
+                                                  style: TextStyle(
+                                                      color: Colors.red),
+                                                ),
+                                                actions: <Widget>[
+                                                  TextButton(
+                                                    child: const Text("OK"),
+                                                    onPressed: () {
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      _formKey.currentState!
+                                                          .reset();
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            },
+                                          );
+                                        } else {
+                                          var signupAuthPhoneResult =
+                                              signUpPhoneAuth();
+                                          signupAuthPhoneResult.then(
+                                            (result) async {
+                                              setState(() {
+                                                _isLoading = false;
+                                              });
+                                              if (result == 'Success') {
+                                                showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title: const Row(
+                                                        children: [
+                                                          Icon(Icons.close,
+                                                              color:
+                                                                  Colors.red),
+                                                          SizedBox(width: 5),
+                                                          Text(
+                                                            "Error",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    Colors.red),
+                                                          ),
+                                                        ],
                                                       ),
-                                                      Text(
-                                                        "Error",
+                                                      content: const Text(
+                                                        "Account already exist with this phone number\nTry another phone",
                                                         style: TextStyle(
                                                             color: Colors.red),
                                                       ),
-                                                    ],
-                                                  ),
-                                                  content: const Text(
-                                                    "Access dinied \nplease contact admin",
-                                                    style: TextStyle(
-                                                        color: Colors.red),
-                                                  ),
-                                                  actions: <Widget>[
-                                                    TextButton(
-                                                      child: const Text("OK"),
-                                                      onPressed: () {
-                                                        Navigator.of(context)
-                                                            .pop();
-                                                        _formKey.currentState!
-                                                            .reset();
-                                                      },
-                                                    ),
-                                                  ],
+                                                      actions: <Widget>[
+                                                        TextButton(
+                                                          child:
+                                                              const Text("OK"),
+                                                          onPressed: () {
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
                                                 );
-                                              },
-                                            );
-                                          } else {
-                                            var signupResult = signUp();
-                                            signupResult.then(
-                                              (result) async {
-                                                setState(() {
-                                                  _isLoading = false;
-                                                });
-                                                if (result != 'Success') {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Row(
-                                                          children: [
-                                                            Icon(Icons.close,
-                                                                color:
-                                                                    Colors.red),
-                                                            SizedBox(
-                                                              width: 5,
+                                              } else {
+                                                var signupResult = signUp();
+                                                signupResult.then(
+                                                  (result) async {
+                                                    setState(() {
+                                                      _isLoading = false;
+                                                    });
+                                                    if (result != 'Success') {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Row(
+                                                              children: [
+                                                                Icon(
+                                                                    Icons.close,
+                                                                    color: Colors
+                                                                        .red),
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "Error",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .red),
+                                                                ),
+                                                              ],
                                                             ),
-                                                            Text(
-                                                              "Error",
+                                                            content: const Text(
+                                                              "Failed to create account\nPlease try again",
                                                               style: TextStyle(
                                                                   color: Colors
                                                                       .red),
                                                             ),
-                                                          ],
-                                                        ),
-                                                        content: const Text(
-                                                          "Failed to create account\nPlease try again",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  Colors.red),
-                                                        ),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            child: const Text(
-                                                                "OK"),
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                              _formKey
-                                                                  .currentState!
-                                                                  .reset();
-                                                            },
-                                                          ),
-                                                        ],
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        "OK"),
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                  _formKey
+                                                                      .currentState!
+                                                                      .reset();
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
-                                                    },
-                                                  );
-                                                } else {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Row(
-                                                          children: [
-                                                            Icon(
-                                                              Icons.check,
-                                                              color:
-                                                                  Colors.green,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Text(
-                                                              "Account \ncreated successfully",
-                                                              style: TextStyle(
+                                                    } else {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            title: const Row(
+                                                              children: [
+                                                                Icon(
+                                                                  Icons.check,
                                                                   color: Colors
-                                                                      .green),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                        content: const Text(
-                                                            "Please continue and \ncomplete your registration"),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            child: const Text(
-                                                                "OK"),
-                                                            onPressed: () {
-                                                              storePhone(
-                                                                  phoneController
-                                                                      .text);
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .push(
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (BuildContext
-                                                                          context) {
-                                                                    return RegistrationForm(
-                                                                        phoneNumber:
-                                                                            phoneController.text);
-                                                                  },
+                                                                      .green,
                                                                 ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ],
+                                                                SizedBox(
+                                                                  width: 5,
+                                                                ),
+                                                                Text(
+                                                                  "Account \ncreated successfully",
+                                                                  style: TextStyle(
+                                                                      color: Colors
+                                                                          .green),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            content: const Text(
+                                                                "Please continue and \ncomplete your registration"),
+                                                            actions: <Widget>[
+                                                              TextButton(
+                                                                child:
+                                                                    const Text(
+                                                                        "OK"),
+                                                                onPressed: () {
+                                                                  storePhone(
+                                                                      phoneController
+                                                                          .text);
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .push(
+                                                                    MaterialPageRoute(
+                                                                      builder:
+                                                                          (BuildContext
+                                                                              context) {
+                                                                        return RegistrationForm(
+                                                                            phoneNumber:
+                                                                                phoneController.text);
+                                                                      },
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
                                                       );
-                                                    },
-                                                  );
-                                                }
-                                              },
-                                            );
-                                          }
-                                        },
-                                      );
+                                                    }
+                                                  },
+                                                );
+                                              }
+                                            },
+                                          );
+                                        }
+                                      });
                                     }
                                   }
                                 : null,

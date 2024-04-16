@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stokvel/bottom_navigation_bar/stokvel_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/stokvel/chat_screen.dart';
 import 'package:stokvel/bottom_tabs/stokvel/request.dart';
@@ -59,6 +60,11 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
     } catch (e) {
       throw Exception('Failed to fetch transactions: $e');
     }
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? '';
   }
 
   @override
@@ -125,69 +131,62 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                         itemCount: transactions.length,
                         itemBuilder: (context, index) {
                           final transaction = transactions[index];
-                          return GestureDetector(
-                            onTap: () {},
-                            child: ListTile(
-                              title: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      transaction['Phone'],
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
-                                    ),
+                          return ListTile(
+                            title: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    transaction['Phone'],
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
                                   ),
-                                  Expanded(
-                                    child: Text.rich(
-                                      TextSpan(
-                                        children: [
-                                          TextSpan(
-                                            text:
-                                                'E ${transaction['Amount']}.00',
-                                            style: (transaction[
-                                                            'Description'] ==
-                                                        'Monthly Contribution' ||
-                                                    transaction[
-                                                            'Description'] ==
-                                                        'Loan Repayment')
-                                                ? const TextStyle(
-                                                    color: Colors.green)
-                                                : const TextStyle(
-                                                    color: Colors.red),
-                                          ),
-                                        ],
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: false,
-                                      maxLines: 1,
-                                      textAlign: TextAlign.start,
+                                ),
+                                Expanded(
+                                  child: Text.rich(
+                                    TextSpan(
+                                      children: [
+                                        TextSpan(
+                                          text: 'E ${transaction['Amount']}.00',
+                                          style: (transaction['Description'] ==
+                                                      'Monthly Contribution' ||
+                                                  transaction['Description'] ==
+                                                      'Loan Repayment')
+                                              ? const TextStyle(
+                                                  color: Colors.green)
+                                              : const TextStyle(
+                                                  color: Colors.red),
+                                        ),
+                                      ],
                                     ),
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: false,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      transaction['Description'],
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.start,
-                                    ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    transaction['Description'],
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.start,
                                   ),
-                                  Flexible(
-                                    child: Text(
-                                      transaction['Date'],
-                                      overflow: TextOverflow.ellipsis,
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      textAlign: TextAlign.start,
-                                    ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    transaction['Date'],
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 2,
+                                    textAlign: TextAlign.start,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           );
                         },

@@ -17,10 +17,12 @@ class UserRequestScreen extends StatefulWidget {
 
 class UserRequestScreenState extends State<UserRequestScreen> {
   final _formKey = GlobalKey<FormState>();
+  String description = "Monthly Contribution";
+  String description2 = "Loan Repayment";
   final TextEditingController amountController = TextEditingController();
   final TextEditingController accountReceiverController =
       TextEditingController();
-  //Future<String>? phoneNumber;
+  Future<String>? phoneNumber;
   Future<String>? firstName;
   Future<String>? lastName;
   int selectedItem = 2;
@@ -75,28 +77,6 @@ class UserRequestScreenState extends State<UserRequestScreen> {
     return null;
   }
 
-  /* Future<String?> getNameByPhone() async {
-    try {
-      String? phone = await getPhoneByUsername();
-      String url =
-          "http://127.0.0.1/stokvel_api/getNameByPhone.php?phone=$phone";
-      dynamic response = await http.post(Uri.parse(url));
-
-      if (response.statusCode != 200 || response.body.isEmpty) {
-        print(response.body);
-        throw Exception('Failed to fetch name: ${response.statusCode}');
-      }
-      var data = json.decode(response.body);
-      if (data.isNotEmpty) {
-        return data; // Assuming data contains the name
-      } else {
-        return null;
-      }
-    } catch (e) {
-      rethrow;
-    }
-  }*/
-
   Future<String?> getNameByPhone() async {
     try {
       String? phone = await getPhoneByUsername();
@@ -150,6 +130,30 @@ class UserRequestScreenState extends State<UserRequestScreen> {
       rethrow;
     }
     return null;
+  }
+
+  Future<String> getMemberTotalContributions() async {
+    try {
+      String? phoneNumber = await getPhoneByUsername();
+      String url =
+          "http://127.0.0.1/stokvel_api/getMemberTotalContributions.php?phoneNumber=$phoneNumber";
+
+      Map<String, String?> body = {
+        "description": description,
+        "description2": description2,
+        "phoneNumber": phoneNumber
+      };
+      dynamic response = await http.post(Uri.parse(url), body: body);
+
+      if (response.statusCode == 200) {
+        var totalAmount = json.decode(response.body);
+        return totalAmount;
+      } else {
+        throw Exception('Failed to fetch transactions: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch stokvel available balance: $e');
+    }
   }
 
   Future<String> saveStokvelRequest() async {
