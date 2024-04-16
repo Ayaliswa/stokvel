@@ -256,10 +256,6 @@ class _StokvelInfoState extends State<StokvelInfo> {
                     const SizedBox(
                       width: 15,
                     ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.edit),
-                    ),
                     const SizedBox(
                       width: 5,
                     ),
@@ -595,7 +591,7 @@ class _StokvelInfoState extends State<StokvelInfo> {
                   ),
                 ),
                 const Padding(
-                  padding: EdgeInsets.only(left: 15, right: 80),
+                  padding: EdgeInsets.only(left: 15, right: 60),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -672,6 +668,9 @@ class _StokvelInfoState extends State<StokvelInfo> {
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
+                                  SizedBox(
+                                    width: 10,
+                                  )
                                 ],
                               ),
                             );

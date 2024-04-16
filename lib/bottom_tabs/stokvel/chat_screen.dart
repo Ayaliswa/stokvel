@@ -230,29 +230,60 @@ class ChatScreenState extends State<ChatScreen> {
                       itemBuilder: (context, index) {
                         final message = messages[index];
                         final username = message.username;
-                        return Container(
-                          alignment: username == getUsername()
-                              ? Alignment.centerLeft
-                              : Alignment.centerRight,
-                          child: Column(
-                            children: [
-                              Text(username,
-                                  style: const TextStyle(color: Colors.black)),
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: username == getUsername()
-                                      ? Colors.grey[300]
-                                      : Colors.blue,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  message.text,
-                                  style: const TextStyle(color: Colors.black),
-                                ),
+                        return Column(
+                          children: [
+                            Container(
+                              alignment: username == getUsername()
+                                  ? Alignment.centerLeft
+                                  : Alignment.centerRight,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 1, left: 15),
+                                        child: Text(username,
+                                            style: const TextStyle(
+                                                color: Colors.black)),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 10, left: 10),
+                                        child: Container(
+                                          padding: const EdgeInsets.all(10),
+                                          decoration: BoxDecoration(
+                                            color: username == getUsername()
+                                                ? Colors.grey[300]
+                                                : Colors.grey[400],
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                right: 10, left: 10),
+                                            child: Text(
+                                              message.text,
+                                              style: const TextStyle(
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5,
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         );
                       },
                     );

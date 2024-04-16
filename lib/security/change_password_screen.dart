@@ -108,7 +108,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        "images/icon.png",
+                        "images/newpass.jpeg",
                         height: MediaQuery.of(context).size.height / 3,
                       ),
                       const Align(
