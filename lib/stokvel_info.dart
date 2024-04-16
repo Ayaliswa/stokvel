@@ -637,43 +637,42 @@ class _StokvelInfoState extends State<StokvelInfo> {
                           itemCount: members.length,
                           itemBuilder: (context, index) {
                             final member = members[index];
-                            return Container(
-                              padding: const EdgeInsets.all(1),
-                              child: ListTile(
-                                onTap: () {},
-                                title: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        member['First Name'] +
-                                            " " +
-                                            member['Last Name'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.start,
-                                      ),
+                            return ListTile(
+                              title: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      member['First Name'] +
+                                          " " +
+                                          member['Last Name'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
                                     ),
-                                    Expanded(
-                                      child: Text(
-                                        member['Phone Number'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.start,
-                                      ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      member['Phone Number'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 1,
+                                      textAlign: TextAlign.start,
                                     ),
-                                    Flexible(
-                                      child: Text(
-                                        member['Physical Address'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.start,
-                                      ),
+                                  ),
+                                  Flexible(
+                                    child: Text(
+                                      member['Physical Address'],
+                                      overflow: TextOverflow.ellipsis,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      textAlign: TextAlign.start,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             );
                           },

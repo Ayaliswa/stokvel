@@ -208,7 +208,7 @@ class AdminSignUpScreenState extends State<AdminSignUpScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
-                          "images/signupphoto.png",
+                          "images/signupnow.jpeg",
                           height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),

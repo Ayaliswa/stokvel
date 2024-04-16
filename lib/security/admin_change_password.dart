@@ -16,6 +16,8 @@ class AdminChangePasswordScreen extends StatefulWidget {
 
 class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
   bool _obscureText = true;
+  String? password;
+  String? confirmPassword;
   final _formKey = GlobalKey<FormState>();
   Future<String>? authResult;
   Future<String>? changeResult;
@@ -156,17 +158,20 @@ class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
                       margin: const EdgeInsets.symmetric(horizontal: 16),
                     ),
                     const SizedBox(height: 20),
-                    TextField(
+                    TextFormField(
                       controller: newPassController,
                       obscureText: _obscureText,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       decoration: InputDecoration(
-                        hintText: "create your new password",
+                        hintText: "create password",
                         hintStyle:
                             const TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: "New Password",
+                        labelText: "Password",
                         labelStyle:
                             const TextStyle(color: Colors.black, fontSize: 18),
-                        prefixIcon: const Icon(Icons.key, color: Colors.black),
+                        prefixIcon:
+                            const Icon(Icons.vpn_key, color: Colors.black),
                         border: const OutlineInputBorder(),
                         suffixIcon: IconButton(
                           icon: Icon(
@@ -181,17 +186,30 @@ class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
                           },
                         ),
                       ),
+                      onChanged: (value) {
+                        password = value;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your password';
+                        } else if (value.length < 8 || value.length > 15) {
+                          return 'Password must be at least 8 characters long\n and not more than 15';
+                        }
+                        return null;
+                      },
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(height: 10),
-                    TextField(
+                    TextFormField(
                       controller: newPassConfController,
                       obscureText: _obscureText,
+                      enableSuggestions: false,
+                      autocorrect: false,
                       decoration: InputDecoration(
-                        hintText: "corfirm your password",
+                        hintText: "confirm your password",
                         hintStyle:
                             const TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: "Confirm New Password",
+                        labelText: "Confirm Password",
                         labelStyle:
                             const TextStyle(color: Colors.black, fontSize: 18),
                         prefixIcon: const Icon(Icons.lock, color: Colors.black),
@@ -209,6 +227,18 @@ class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
                           },
                         ),
                       ),
+                      onChanged: (value) {
+                        confirmPassword = value;
+                      },
+                      validator: (value) {
+                        if (value!.isEmpty || value != password) {
+                          return "Password do not match";
+                        }
+                        if (password == null) {
+                          return 'Please confirm your password';
+                        }
+                        return null;
+                      },
                       textAlign: TextAlign.start,
                     ),
                     const SizedBox(height: 20.0),

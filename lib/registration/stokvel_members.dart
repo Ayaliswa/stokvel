@@ -42,6 +42,18 @@ class AddMembersScreenState extends State<AddMembersScreen> {
     }
   }
 
+  String validatePhoneNumber(String phoneNumber) {
+    final RegExp phoneRegExp = RegExp(r'^[7689]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNumber)) {
+      if (phoneNumber.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'Phone number is too long or invalid format\nshould start with 7 (6/8/9) and not more than 8';
+      }
+    }
+    return 'Valid';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -90,22 +102,28 @@ class AddMembersScreenState extends State<AddMembersScreen> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: const InputDecoration(
-                          hintText: "enter member phone number",
+                          hintText: "+268 7......",
                           hintStyle:
                               TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Phone Number",
+                          labelText: "Phone",
                           labelStyle:
                               TextStyle(color: Colors.black, fontSize: 18),
-                          prefixIcon:
-                              Icon(Icons.group_add, color: Colors.black),
+                          prefixIcon: Icon(Icons.phone, color: Colors.black),
                           border: OutlineInputBorder(),
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return "member phone is required";
+                            return "Please enter phone number";
+                          }
+
+                          final String validationResult =
+                              validatePhoneNumber(value);
+                          if (validationResult != 'Valid') {
+                            return validationResult;
                           }
                           return null;
                         },
+                        maxLength: 8,
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),

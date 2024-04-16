@@ -84,7 +84,7 @@ class AdminPasswordResetScreenState extends State<AdminPasswordResetScreen> {
               ),
             ),
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white.withOpacity(0.8),
+            backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 400,
@@ -96,11 +96,9 @@ class AdminPasswordResetScreenState extends State<AdminPasswordResetScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const CircleAvatar(
-                          minRadius: 100,
-                          backgroundImage: AssetImage(
-                            "images/loginphoto.png",
-                          ),
+                        Image.asset(
+                          "images/passforgoten.jpeg",
+                          height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),
                         const Text(
@@ -391,7 +389,7 @@ class AdminChangePasswordState extends State<AdminChangePassword> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        "images/icon.png",
+                        "images/newpass.jpeg",
                         height: MediaQuery.of(context).size.height / 3,
                       ),
                       const Align(
@@ -413,7 +411,7 @@ class AdminChangePasswordState extends State<AdminChangePassword> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
-                          hintText: "enter new password",
+                          hintText: "create password",
                           hintStyle:
                               const TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Password",
@@ -441,8 +439,8 @@ class AdminChangePasswordState extends State<AdminChangePassword> {
                         validator: (value) {
                           if (value!.isEmpty) {
                             return 'Please enter your password';
-                          } else if (value.length < 8) {
-                            return 'Password must be at least 8 characters long';
+                          } else if (value.length < 8 || value.length > 15) {
+                            return 'Password must be at least 8 characters long\n and not more than 15';
                           }
                           return null;
                         },
@@ -455,7 +453,7 @@ class AdminChangePasswordState extends State<AdminChangePassword> {
                         enableSuggestions: false,
                         autocorrect: false,
                         decoration: InputDecoration(
-                          hintText: "confirm your new password",
+                          hintText: "confirm your password",
                           hintStyle:
                               const TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Confirm Password",
@@ -681,7 +679,7 @@ class AdminCodeResetScreenState extends State<AdminCodeResetScreen> {
               ),
             ),
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white.withOpacity(0.8),
+            backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 400,
@@ -696,7 +694,7 @@ class AdminCodeResetScreenState extends State<AdminCodeResetScreen> {
                         const CircleAvatar(
                           minRadius: 100,
                           backgroundImage: AssetImage(
-                            "images/loginphoto.png",
+                            "images/resetcode.jpeg",
                           ),
                         ),
                         const SizedBox(height: 5.0),
@@ -1026,7 +1024,7 @@ class AdminChangeCodeState extends State<AdminChangeCode> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Image.asset(
-                        "images/icon.png",
+                        "images/newcode.jpeg",
                         height: MediaQuery.of(context).size.height / 3,
                       ),
                       const Align(

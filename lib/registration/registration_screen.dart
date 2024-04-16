@@ -129,7 +129,7 @@ class RegistrationFormState extends State<RegistrationForm> {
                             ),
                           ),
                           Image.asset(
-                            "images/icon.png",
+                            "images/register.jpeg",
                             height: MediaQuery.of(context).size.height / 3,
                           ),
                           const Align(

@@ -99,7 +99,7 @@ class LoginScreenState extends State<AdminLoginScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Image.asset(
-                          "images/loginphoto.png",
+                          "images/admin.jpeg",
                           height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),

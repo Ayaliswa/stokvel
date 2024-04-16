@@ -85,7 +85,7 @@ class LoginScreenState extends State<LoginScreen> {
               ),
             ),
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white.withOpacity(0.8),
+            backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 400,
@@ -97,11 +97,9 @@ class LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const CircleAvatar(
-                          minRadius: 100,
-                          backgroundImage: AssetImage(
-                            "images/loginphoto.png",
-                          ),
+                        Image.asset(
+                          "images/member.jpeg",
+                          height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),
                         const Text(
@@ -224,20 +222,6 @@ class LoginScreenState extends State<LoginScreen> {
                                 setState(() {
                                   _isLoading = true;
                                 });
-                                /*showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (BuildContext context) {
-                                    return const Dialog(
-                                      child: Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          CircularProgressIndicator(),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );*/
                                 loginResult = handleLogin();
                                 loginResult?.then((result) async {
                                   setState(() {
@@ -290,33 +274,6 @@ class LoginScreenState extends State<LoginScreen> {
                                         },
                                       ),
                                     );
-                                    /*showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content:
-                                              const Text("Login Successful"),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text("Continue"),
-                                              onPressed: () {
-                                                storeUsername(
-                                                    usernameOrPhoneController
-                                                        .text);
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return const UserStatementScreen();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );*/
                                   }
                                 });
                               }
@@ -329,33 +286,6 @@ class LoginScreenState extends State<LoginScreen> {
                             child: const Text("LOGIN"),
                           ),
                         ),
-                        /*FutureBuilder<String>(
-                        future: loginResult,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            if (snapshot.data == 'Connection failed') {
-                              // Clear the text form field and return to the screen
-                              usernameController.clear();
-                              passwordController.clear();
-                              return const Text(
-                                  'Connection failed. Please try again.');
-                            } else if (snapshot.data ==
-                                'Welcome Back to \nCity United Stokvel') {
-                              return Container();
-                            } else {
-                              return Text(snapshot.data!);
-                            }
-                          } else {
-                            return Container();
-                          }
-                        },
-                      ),*/
                         const SizedBox(height: 10),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,

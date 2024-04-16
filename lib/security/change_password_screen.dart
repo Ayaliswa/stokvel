@@ -16,6 +16,8 @@ class ChangePasswordScreen extends StatefulWidget {
 class ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
+  String? password;
+  String? confirmPassword;
   Future<String>? authResult;
   Future<String>? changeResult;
   bool _isLoading = false;
@@ -122,79 +124,16 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      TextField(
+                      TextFormField(
                         controller: passwordController,
                         obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
                         decoration: InputDecoration(
-                          hintText: "enter current password",
+                          hintText: "Password",
                           hintStyle:
                               const TextStyle(color: Colors.grey, fontSize: 16),
                           labelText: "Password",
-                          labelStyle: const TextStyle(
-                              color: Colors.black, fontSize: 18),
-                          prefixIcon:
-                              const Icon(Icons.key, color: Colors.black),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                      const SizedBox(height: 20),
-                      Container(
-                        width: 200.0,
-                        height: 1,
-                        color: Colors.black,
-                        margin: const EdgeInsets.symmetric(horizontal: 16),
-                      ),
-                      const SizedBox(height: 20),
-                      TextField(
-                        controller: newPassController,
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: "create your new password",
-                          hintStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "New Password",
-                          labelStyle: const TextStyle(
-                              color: Colors.black, fontSize: 18),
-                          prefixIcon:
-                              const Icon(Icons.key, color: Colors.black),
-                          border: const OutlineInputBorder(),
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              _obscureText
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _obscureText = !_obscureText;
-                              });
-                            },
-                          ),
-                        ),
-                        textAlign: TextAlign.start,
-                      ),
-                      const SizedBox(height: 10),
-                      TextField(
-                        controller: newPassConfController,
-                        obscureText: _obscureText,
-                        decoration: InputDecoration(
-                          hintText: "corfirm your password",
-                          hintStyle:
-                              const TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Confirm New Password",
                           labelStyle: const TextStyle(
                               color: Colors.black, fontSize: 18),
                           prefixIcon:
@@ -213,6 +152,104 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                             },
                           ),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return "Please enter password";
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 20),
+                      Container(
+                        width: 200.0,
+                        height: 1,
+                        color: Colors.black,
+                        margin: const EdgeInsets.symmetric(horizontal: 16),
+                      ),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: newPassController,
+                        obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          hintText: "create password",
+                          hintStyle:
+                              const TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: "Password",
+                          labelStyle: const TextStyle(
+                              color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              const Icon(Icons.vpn_key, color: Colors.black),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
+                        ),
+                        onChanged: (value) {
+                          password = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          } else if (value.length < 8 || value.length > 15) {
+                            return 'Password must be at least 8 characters long\n and not more than 15';
+                          }
+                          return null;
+                        },
+                        textAlign: TextAlign.start,
+                      ),
+                      const SizedBox(height: 10),
+                      TextFormField(
+                        controller: newPassConfController,
+                        obscureText: _obscureText,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        decoration: InputDecoration(
+                          hintText: "confirm your password",
+                          hintStyle:
+                              const TextStyle(color: Colors.grey, fontSize: 16),
+                          labelText: "Confirm Password",
+                          labelStyle: const TextStyle(
+                              color: Colors.black, fontSize: 18),
+                          prefixIcon:
+                              const Icon(Icons.lock, color: Colors.black),
+                          border: const OutlineInputBorder(),
+                          suffixIcon: IconButton(
+                            icon: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                          ),
+                        ),
+                        onChanged: (value) {
+                          confirmPassword = value;
+                        },
+                        validator: (value) {
+                          if (value!.isEmpty || value != password) {
+                            return "Password do not match";
+                          }
+                          if (password == null) {
+                            return 'Please confirm your password';
+                          }
+                          return null;
+                        },
                         textAlign: TextAlign.start,
                       ),
                       const SizedBox(height: 20.0),

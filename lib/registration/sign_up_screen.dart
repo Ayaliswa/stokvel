@@ -160,7 +160,7 @@ class SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white.withOpacity(0.8),
+            backgroundColor: Colors.white,
             body: Center(
               child: SizedBox(
                 width: 400,
@@ -173,7 +173,7 @@ class SignUpScreenState extends State<SignUpScreen> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
                         Image.asset(
-                          "images/signupphoto.png",
+                          "images/signupnow.jpeg",
                           height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),

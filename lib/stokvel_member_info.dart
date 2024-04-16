@@ -84,7 +84,7 @@ class StokvelMemberInfoState extends State<StokvelMemberInfo> {
         ),
         title: const Text("Profile Information"),
         backgroundColor: Colors.blue,
-        actions: [
+        /*actions: [
           IconButton(
             onPressed: () {},
             icon: const Icon(Icons.edit),
@@ -92,115 +92,189 @@ class StokvelMemberInfoState extends State<StokvelMemberInfo> {
           const SizedBox(
             width: 5,
           ),
-        ],
+        ],*/
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            color: Colors.blueGrey,
-            child: SizedBox(
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 10.0),
-                  const CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage(
-                      'images/icon.png',
+      body: Container(
+        color: Colors.blueGrey,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              color: Colors.blueGrey,
+              child: SizedBox(
+                width: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 10.0),
+                    const CircleAvatar(
+                      radius: 50,
+                      backgroundImage: AssetImage(
+                        'images/me.jpeg',
+                      ),
+                      backgroundColor: Colors.transparent,
                     ),
-                    backgroundColor: Colors.transparent,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const Text(
-                        "Username:",
-                        style: TextStyle(
-                          fontSize: 26,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Username:",
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10.0),
-                      FutureBuilder<String>(
-                        future: getUsername(),
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else {
-                            return Column(
-                              children: [
-                                Text(
-                                  "${snapshot.data}",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  style: const TextStyle(
-                                    fontSize: 26,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
+                        const SizedBox(width: 10.0),
+                        FutureBuilder<String>(
+                          future: getUsername(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<String> snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const CircularProgressIndicator();
+                            } else {
+                              return Column(
+                                children: [
+                                  Text(
+                                    "${snapshot.data}",
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.start,
+                                    style: const TextStyle(
+                                      fontSize: 26,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10)
-                ],
+                                ],
+                              );
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 10)
+                  ],
+                ),
               ),
             ),
-          ),
-          Flexible(
-            child: FutureBuilder<List<dynamic>>(
-              future: fetchStokvelMember(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  final members = snapshot.data!;
-                  return ListView.builder(
-                    itemCount: members.length,
-                    itemBuilder: (context, index) {
-                      final member = members[index];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: double.infinity,
-                            color: Colors.grey,
-                            child: const Text(
-                              'Full Name:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
+            Expanded(
+              child: FutureBuilder<List<dynamic>>(
+                future: fetchStokvelMember(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final members = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: members.length,
+                      itemBuilder: (context, index) {
+                        final member = members[index];
+                        return Container(
+                          color: Colors.blueGrey,
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
+                              const Text(
+                                'Full Name:',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    member['First Name'],
+                                    style: const TextStyle(fontSize: 20),
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Text(
+                                    member['Last Name'],
+                                    style: const TextStyle(fontSize: 20),
+                                    overflow: TextOverflow.ellipsis,
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    textAlign: TextAlign.start,
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 5.0),
+                              const Text(
+                                'ID Card No.:',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
                               Text(
-                                member['First Name'],
+                                member['ID Number'],
                                 style: const TextStyle(fontSize: 20),
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,
                                 maxLines: 1,
                                 textAlign: TextAlign.start,
                               ),
-                              const SizedBox(width: 10),
+                              const SizedBox(height: 5.0),
+                              const Text(
+                                'Contact:',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
                               Text(
-                                member['Last Name'],
+                                member['Phone Number'],
+                                style: const TextStyle(fontSize: 20),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(height: 5.0),
+                              const Text(
+                                'Postal Address:',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                member['Postal Address'],
+                                style: const TextStyle(fontSize: 20),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(height: 5.0),
+                              const Text(
+                                'Physical Address:',
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 1,
+                                textAlign: TextAlign.center,
+                              ),
+                              Text(
+                                member['Physical Address'],
                                 style: const TextStyle(fontSize: 20),
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,
@@ -209,115 +283,27 @@ class StokvelMemberInfoState extends State<StokvelMemberInfo> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 5.0),
-                          Container(
-                            width: double.infinity,
-                            color: Colors.grey,
-                            child: const Text(
-                              'ID Card No.:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            member['ID Number'],
-                            style: const TextStyle(fontSize: 20),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                          ),
-                          const SizedBox(height: 5.0),
-                          Container(
-                            width: double.infinity,
-                            color: Colors.grey,
-                            child: const Text(
-                              'Contact:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            member['Phone Number'],
-                            style: const TextStyle(fontSize: 20),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                          ),
-                          const SizedBox(height: 5.0),
-                          Container(
-                            width: double.infinity,
-                            color: Colors.grey,
-                            child: const Text(
-                              'Postal Address:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            member['Postal Address'],
-                            style: const TextStyle(fontSize: 20),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                          ),
-                          const SizedBox(height: 5.0),
-                          Container(
-                            width: double.infinity,
-                            color: Colors.grey,
-                            child: const Text(
-                              'Physical Address:',
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                              overflow: TextOverflow.ellipsis,
-                              softWrap: true,
-                              maxLines: 1,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                          Text(
-                            member['Physical Address'],
-                            style: const TextStyle(fontSize: 20),
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: true,
-                            maxLines: 1,
-                            textAlign: TextAlign.start,
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                } else if (snapshot.hasError) {
-                  return const Center(
-                    child: Text(
-                      "No personal data found\nPlease make sure you have registered",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                        );
+                      },
+                    );
+                  } else if (snapshot.hasError) {
+                    return const Center(
+                      child: Text(
+                        "No personal data found\nPlease make sure you have registered",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-                return const Center(child: CircularProgressIndicator());
-              },
+                    );
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
