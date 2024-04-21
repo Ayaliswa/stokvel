@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:stokvel/bottom_tabs/user/statement.dart';
+import 'package:stokvel/security/login_screen.dart';
 import 'package:stokvel/stokvel_info.dart';
 
 class StokvelHeader extends StatefulWidget {
@@ -17,49 +17,42 @@ class StokvelHeaderState extends State<StokvelHeader> {
   String description = "Monthly Contribution";
   String description2 = "Loan Repayment";
 
-  Future<String> getStokvelTotalContributions() async {
+  Future<String?> getStokvelTotalContributions() async {
     try {
       String url =
           "http://127.0.0.1/stokvel_api/getStokvelTotalContributions.php";
 
       Map<String, String?> body = {
         "description": description,
-        "description2": description2
+        "description2": description2,
       };
       dynamic response = await http.post(Uri.parse(url), body: body);
-
       if (response.statusCode == 200) {
         var totalAmount = json.decode(response.body);
         return totalAmount;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to fetch transactions: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getStokvelTotalContributions: $e');
       throw Exception('Failed to fetch stokvel available balance: $e');
     }
   }
 
-  Future<String> getStokvelTotalRequested() async {
+  Future<String?> getStokvelTotalRequested() async {
     try {
       String url = "http://127.0.0.1/stokvel_api/getStokvelTotalRequested.php";
-
       Map<String, String?> body = {
         "description": description,
-        "description2": description2
+        "description2": description2,
       };
       dynamic response = await http.post(Uri.parse(url), body: body);
-
       if (response.statusCode == 200) {
         var totalAmount = json.decode(response.body);
         return totalAmount;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to fetch requested: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getStokvelTotalRequested: $e');
       throw Exception('Failed to fetch stokvel requested total: $e');
     }
   }
@@ -248,8 +241,15 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                                                   ),
                                                                   onPressed:
                                                                       () {
-                                                                    SystemNavigator
-                                                                        .pop();
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .push(
+                                                                      MaterialPageRoute(
+                                                                        builder:
+                                                                            (context) =>
+                                                                                const LoginScreen(),
+                                                                      ),
+                                                                    );
                                                                   },
                                                                 ),
                                                               ],
@@ -287,12 +287,12 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                               children: [
                                                 Column(
                                                   children: [
-                                                    FutureBuilder<String>(
+                                                    FutureBuilder<String?>(
                                                       future:
                                                           getStokvelTotalContributions(),
                                                       builder: (BuildContext
                                                               context,
-                                                          AsyncSnapshot<String>
+                                                          AsyncSnapshot<String?>
                                                               snapshot) {
                                                         if (snapshot
                                                                 .connectionState ==
@@ -327,12 +327,12 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                                 const Spacer(),
                                                 Column(
                                                   children: [
-                                                    FutureBuilder<String>(
+                                                    FutureBuilder<String?>(
                                                       future:
                                                           getStokvelTotalRequested(),
                                                       builder: (BuildContext
                                                               context,
-                                                          AsyncSnapshot<String>
+                                                          AsyncSnapshot<String?>
                                                               snapshot) {
                                                         if (snapshot
                                                                 .connectionState ==

@@ -137,7 +137,7 @@ class UserStatementScreenState extends State<UserStatementScreen> {
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "Phone No.",
+                      "Source of Fund",
                       textAlign: TextAlign.start,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

@@ -549,7 +549,7 @@ class _StokvelInfoState extends State<StokvelInfo> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Text(
-                            'MTN MoMo: +268 ',
+                            'MTN eMali: +268 ',
                             overflow: TextOverflow.ellipsis,
                             softWrap: true,
                             maxLines: 1,

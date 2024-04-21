@@ -19,6 +19,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   String description = "Monthly Contribution";
   String description2 = "Loan Repayment";
+  String description3 = "Loan Requested";
   bool _isLoading = false;
   final TextEditingController amountController = TextEditingController();
   final TextEditingController accountReceiverController =
@@ -29,6 +30,12 @@ class UserRequestScreenState extends State<UserRequestScreen> {
   Future<String>? firstName;
   Future<String>? lastName;
   int selectedItem = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    calculateAndFormatAmount();
+  }
 
   void updateItem(int index) {
     setState(() {
@@ -47,6 +54,105 @@ class UserRequestScreenState extends State<UserRequestScreen> {
       );
     }
     if (index == 2) {}
+  }
+
+  calculateInterest() {
+    String amountString = amountController.text;
+
+    if (amountString.isEmpty) {
+      return "0.00";
+    }
+
+    double amount = double.parse(amountString);
+    double interest = amount * 0.2;
+
+    String formattedInterest = interest.toStringAsFixed(2);
+
+    return formattedInterest;
+  }
+
+  addInterest() {
+    String amountString = amountController.text;
+    String interestOnAmount = calculateInterest();
+
+    if (amountString.isEmpty) {
+      return "0.00";
+    }
+
+    double interest = double.parse(interestOnAmount);
+    double amount = double.parse(amountString);
+    double finalAmount = amount + interest;
+
+    String formattedAmount = finalAmount.toStringAsFixed(2);
+
+    return formattedAmount;
+  }
+
+  showInterestDetails() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Column(
+            children: [
+              const Text(
+                "Request Interest Calculation",
+                style: TextStyle(color: Colors.green),
+              ),
+              const SizedBox(
+                height: 5,
+              ),
+              Container(
+                width: double.infinity,
+                height: 1,
+                color: Colors.grey,
+                margin: const EdgeInsets.symmetric(horizontal: 1),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                "INTEREST FOR E ${amountController.text}.00 = ",
+                textAlign: TextAlign.center,
+                overflow: TextOverflow.ellipsis,
+                softWrap: true,
+                maxLines: 2,
+                style: const TextStyle(fontSize: 20),
+              ),
+              Text(
+                "E ${calculateInterest()}",
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 20, color: Colors.green),
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    "RETURN AMOUNT = ",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  Text(
+                    "E ${addInterest()}",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 20, color: Colors.green),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Future<String> getUsername() async {
@@ -83,14 +189,11 @@ class UserRequestScreenState extends State<UserRequestScreen> {
   Future<String?> getNameByPhone() async {
     try {
       String? phone = await getPhoneByUsername();
-      print("name 1");
       String url =
           "http://127.0.0.1/stokvel_api/getNameByPhone.php?phone=$phone";
-      print("name 2");
       Map<String, String?> body = {"phone": phone};
       dynamic response = await http.post(Uri.parse(url), body: body);
 
-      print(response.body);
       if (response.statusCode == 200 && response.body.isNotEmpty) {
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
@@ -135,43 +238,19 @@ class UserRequestScreenState extends State<UserRequestScreen> {
     return null;
   }
 
-  Future<String> getMemberTotalContributions() async {
-    try {
-      String? phoneNumber = await getPhoneByUsername();
-      String url =
-          "http://127.0.0.1/stokvel_api/getMemberTotalContributions.php?phoneNumber=$phoneNumber";
-
-      Map<String, String?> body = {
-        "description": description,
-        "description2": description2,
-        "phoneNumber": phoneNumber
-      };
-      dynamic response = await http.post(Uri.parse(url), body: body);
-
-      if (response.statusCode == 200) {
-        var totalAmount = json.decode(response.body);
-        return totalAmount;
-      } else {
-        throw Exception('Failed to fetch transactions: ${response.statusCode}');
-      }
-    } catch (e) {
-      throw Exception('Failed to fetch stokvel available balance: $e');
-    }
-  }
-
-  Future<String> validateRequestLimit() async {
+  Future<String>? validateRequestLimit() async {
     try {
       String? phoneNumber = await getPhoneByUsername();
       String url =
           "http://127.0.0.1/stokvel_api/validateRequestLimit.php?phoneNumber=$phoneNumber";
 
-      Map<String, String?> body = {
+      dynamic response = await http.post(Uri.parse(url), body: {
         "description": description,
         "description2": description2,
+        "description3": description3,
         "phoneNumber": phoneNumber,
         "requestAmount": amountController.text,
-      };
-      dynamic response = await http.post(Uri.parse(url), body: body);
+      });
 
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
@@ -184,25 +263,35 @@ class UserRequestScreenState extends State<UserRequestScreen> {
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      throw Exception('Failed to validate request: $e');
+      return 'Failed to save transaction: $e';
     }
+  }
+
+  Future<String> calculateAndFormatAmount() async {
+    double amountAsDouble = double.parse(addInterest());
+    int amountAsInteger = amountAsDouble.truncate();
+    String amountAsString = amountAsInteger.toString();
+    return amountAsString;
   }
 
   Future<String> saveStokvelRequest() async {
     try {
       String? phoneNumber = await getPhoneByUsername();
       String? firstName = await getNameByPhone();
-      print("6");
       String? lastName = await getSurnameByPhone();
+      String? amount = await calculateAndFormatAmount();
+
       String url = "http://127.0.0.1/stokvel_api/saveStokvelRequest.php";
+
       dynamic response = await http.post(Uri.parse(url), body: {
         "phone": phoneNumber,
         "name": firstName,
         "surname": lastName,
-        "amount": amountController.text,
+        "amount": amount,
         "receiver": accountReceiverController.text,
         "timestamp": DateTime.now().toIso8601String(),
       });
+
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data == "Error") {
@@ -238,6 +327,9 @@ class UserRequestScreenState extends State<UserRequestScreen> {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18),
             ),
+            const SizedBox(
+              height: 10,
+            ),
             Expanded(
               child: Form(
                 key: _formKey,
@@ -253,7 +345,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                           child: Column(
                             children: [
                               const SizedBox(
-                                height: 10,
+                                height: 5,
                               ),
                               const SizedBox(height: 20),
                               TextFormField(
@@ -301,6 +393,64 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                 },
                               ),
                               const SizedBox(height: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  if (amountController.text != "") {
+                                    calculateInterest();
+                                    addInterest();
+                                    showInterestDetails();
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Text(
+                                            "No amount found",
+                                            style: TextStyle(color: Colors.red),
+                                          ),
+                                          content: const Row(
+                                            children: [
+                                              Icon(Icons.error_outline,
+                                                  color: Colors.red),
+                                              Text(
+                                                "Please enter amount to calculate intrest from",
+                                                overflow: TextOverflow.ellipsis,
+                                                softWrap: true,
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            ],
+                                          ),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text("Try again"),
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                amountController.clear();
+                                                accountReceiverController
+                                                    .clear();
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  minimumSize: const Size(40, 40),
+                                  backgroundColor: Colors.blueGrey,
+                                  foregroundColor: Colors.white,
+                                  side:
+                                      const BorderSide(color: Colors.blueGrey),
+                                ),
+                                child: const Text(
+                                  'CALCULATE INTEREST %\nOn Request',
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                              const SizedBox(height: 30),
                               Center(
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -318,7 +468,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                             setState(() {
                                               _isLoading = false;
                                             });
-                                            if (result != 'Success') {
+                                            if (result != "Success") {
                                               showDialog(
                                                 context: context,
                                                 builder:
@@ -492,6 +642,8 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                     ElevatedButton(
                                       onPressed: () {
                                         _formKey.currentState!.reset();
+                                        amountController.clear();
+                                        accountReceiverController.clear();
                                       },
                                       style: ElevatedButton.styleFrom(
                                         backgroundColor: Colors.red,

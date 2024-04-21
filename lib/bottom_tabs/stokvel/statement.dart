@@ -89,7 +89,7 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "Phone No.",
+                      "Depositer",
                       textAlign: TextAlign.left,
                       style:
                           TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
@@ -138,10 +138,12 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                               children: [
                                 Expanded(
                                   child: Text(
-                                    transaction['Phone'],
+                                    transaction['Name'] +
+                                        "\n" +
+                                        transaction['Phone'],
                                     overflow: TextOverflow.ellipsis,
                                     softWrap: true,
-                                    maxLines: 1,
+                                    maxLines: 2,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),

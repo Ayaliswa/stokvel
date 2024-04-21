@@ -19,6 +19,7 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
   bool _obscureText = true;
   Future<String>? approveResult;
   Future<String>? deleteResult;
+  String description3 = "Loan Requested";
   bool _isLoading = false;
 
   int selectedItem = 2;
@@ -69,7 +70,7 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
         "memberPhone": request['Phone'],
         "depositer": "Stokvel",
         "amount": request['Amount'],
-        "description": "Requested",
+        "description": description3,
         "source": "Stokvel",
         "timestamp": DateTime.now().toIso8601String(),
       });

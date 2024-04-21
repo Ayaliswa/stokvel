@@ -691,11 +691,9 @@ class AdminCodeResetScreenState extends State<AdminCodeResetScreen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        const CircleAvatar(
-                          minRadius: 100,
-                          backgroundImage: AssetImage(
-                            "images/resetcode.jpeg",
-                          ),
+                        Image.asset(
+                          "images/resetcode.jpeg",
+                          height: MediaQuery.of(context).size.height / 3,
                         ),
                         const SizedBox(height: 5.0),
                         const Text(

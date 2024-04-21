@@ -1,11 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
 import 'package:stokvel/security/change_password_screen.dart';
+import 'package:stokvel/security/login_screen.dart';
 import 'package:stokvel/stokvel_member_info.dart';
 
 class UserHeader extends StatefulWidget {
@@ -18,8 +18,9 @@ class UserHeader extends StatefulWidget {
 class UserHeaderState extends State<UserHeader> {
   String description = "Monthly Contribution";
   String description2 = "Loan Repayment";
+  String description3 = "Loan Requested";
 
-  Future<String> getMemberTotalContributions() async {
+  Future<String?> getMemberTotalContributions() async {
     try {
       String? phoneNumber = await getPhoneByUsername();
       String url =
@@ -28,13 +29,14 @@ class UserHeaderState extends State<UserHeader> {
       Map<String, String?> body = {
         "description": description,
         "description2": description2,
+        "description3": description3,
         "phoneNumber": phoneNumber
       };
       dynamic response = await http.post(Uri.parse(url), body: body);
 
       if (response.statusCode == 200) {
-        var totalAmount = json.decode(response.body);
-        return totalAmount;
+        var totalAmountData = json.decode(response.body);
+        return totalAmountData;
       } else {
         throw Exception('Failed to fetch transactions: ${response.statusCode}');
       }
@@ -43,7 +45,7 @@ class UserHeaderState extends State<UserHeader> {
     }
   }
 
-  Future<String> getMemberTotalRequested() async {
+  Future<String?> getMemberTotalRequested() async {
     try {
       String? phoneNumber = await getPhoneByUsername();
       String url =
@@ -52,19 +54,18 @@ class UserHeaderState extends State<UserHeader> {
       Map<String, String?> body = {
         "description": description,
         "description2": description2,
+        "description3": description3,
         "phoneNumber": phoneNumber
       };
       dynamic response = await http.post(Uri.parse(url), body: body);
 
       if (response.statusCode == 200) {
-        var totalAmount = json.decode(response.body);
-        return totalAmount;
+        var totalAmountData = json.decode(response.body);
+        return totalAmountData;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to fetch requested: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getStokvelTotalRequested: $e');
       throw Exception('Failed to fetch stokvel requested total: $e');
     }
   }
@@ -251,17 +252,32 @@ class UserHeaderState extends State<UserHeader> {
                                                         'Are you sure you want to logout?'),
                                                     actions: <Widget>[
                                                       TextButton(
-                                                        child: const Text('No'),
+                                                        child: const Text(
+                                                          'No',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.red),
+                                                        ),
                                                         onPressed: () {
                                                           Navigator.of(context)
                                                               .pop();
                                                         },
                                                       ),
                                                       TextButton(
-                                                        child:
-                                                            const Text('Yes'),
+                                                        child: const Text(
+                                                          'Yes',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.green),
+                                                        ),
                                                         onPressed: () {
-                                                          SystemNavigator.pop();
+                                                          Navigator.of(context)
+                                                              .push(
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  const LoginScreen(),
+                                                            ),
+                                                          );
                                                         },
                                                       ),
                                                     ],
@@ -326,11 +342,11 @@ class UserHeaderState extends State<UserHeader> {
                                     children: [
                                       Column(
                                         children: [
-                                          FutureBuilder<String>(
+                                          FutureBuilder<String?>(
                                             future:
                                                 getMemberTotalContributions(),
                                             builder: (BuildContext context,
-                                                AsyncSnapshot<String>
+                                                AsyncSnapshot<String?>
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
@@ -359,10 +375,10 @@ class UserHeaderState extends State<UserHeader> {
                                       const Spacer(),
                                       Column(
                                         children: [
-                                          FutureBuilder<String>(
+                                          FutureBuilder<String?>(
                                             future: getMemberTotalRequested(),
                                             builder: (BuildContext context,
-                                                AsyncSnapshot<String>
+                                                AsyncSnapshot<String?>
                                                     snapshot) {
                                               if (snapshot.connectionState ==
                                                   ConnectionState.waiting) {
