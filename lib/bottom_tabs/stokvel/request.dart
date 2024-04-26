@@ -70,6 +70,7 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
         "memberPhone": request['Phone'],
         "depositer": "Stokvel",
         "amount": request['Amount'],
+        "repay": request['Repay'],
         "description": description3,
         "source": "Stokvel",
         "timestamp": DateTime.now().toIso8601String(),
@@ -91,20 +92,17 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
 
   Future<String> deleteStokvelRequest(
       Map<String, dynamic> request, int selectedTabIndex) async {
-    print('saveStokvelTransaction fuction called');
     try {
       String url = "http://127.0.0.1/stokvel_api/deleteStokvelRequest.php";
-      print('save one');
       dynamic response = await http.post(Uri.parse(url), body: {
         "phone": request['Phone'],
         "name": request['Name'],
         "surname": request['Surname'],
         "amount": request['Amount'],
+        "repay": request['Repay'],
         "receiver": request['Receiver'],
         "timestamp": request['Date'],
       });
-      print('Two');
-      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data == "Error") {
@@ -113,11 +111,9 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
           return 'Success';
         }
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      print('Exception in deleteStokvelRequest: $e');
       return 'Failed to delete request: $e';
     }
   }

@@ -48,7 +48,7 @@ class StokvelHeaderState extends State<StokvelHeader> {
       dynamic response = await http.post(Uri.parse(url), body: body);
       if (response.statusCode == 200) {
         var totalAmount = json.decode(response.body);
-        return totalAmount;
+        return totalAmount < 0 ? 0 : totalAmount;
       } else {
         throw Exception('Failed to fetch requested: ${response.statusCode}');
       }
@@ -343,7 +343,7 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                                           return Column(
                                                             children: [
                                                               const Text(
-                                                                'Requested',
+                                                                'Requested Balance',
                                                                 style: TextStyle(
                                                                     color: Colors
                                                                         .red,

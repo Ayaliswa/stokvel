@@ -287,7 +287,8 @@ class UserRequestScreenState extends State<UserRequestScreen> {
         "phone": phoneNumber,
         "name": firstName,
         "surname": lastName,
-        "amount": amount,
+        "amount": amountController.text,
+        "repay": amount,
         "receiver": accountReceiverController.text,
         "timestamp": DateTime.now().toIso8601String(),
       });

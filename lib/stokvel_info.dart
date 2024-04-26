@@ -3,8 +3,8 @@ import 'dart:convert';
 import "package:flutter/material.dart";
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:stokvel/registration/sign_up_screen.dart';
 import 'package:stokvel/registration/stokvel_members.dart';
-import 'package:stokvel/security/login_screen.dart';
 
 class StokvelInfo extends StatefulWidget {
   const StokvelInfo({super.key});
@@ -17,6 +17,7 @@ class _StokvelInfoState extends State<StokvelInfo> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
   Future<String>? codeResult;
+  Future<String>? exitResult;
   bool _isLoading = false;
   final TextEditingController codeController = TextEditingController();
 
@@ -30,11 +31,9 @@ class _StokvelInfoState extends State<StokvelInfo> {
         var membersData = json.decode(response.body);
         return membersData;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to fetch transactions: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in fetchStokvelTransactions: $e');
       throw Exception('Failed to fetch transactions: $e');
     }
   }
@@ -49,11 +48,9 @@ class _StokvelInfoState extends State<StokvelInfo> {
         var totalMembers = json.decode(response.body);
         return totalMembers;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception('Failed to count members: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in countStokvelMembers: $e');
       throw Exception('Failed to count members');
     }
   }
@@ -69,12 +66,10 @@ class _StokvelInfoState extends State<StokvelInfo> {
         var registeredMembers = json.decode(response.body);
         return registeredMembers;
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         throw Exception(
             'Failed to count registered members: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in countRegisteredStokvelMembers: $e');
       throw Exception('Failed to count registered members: $e');
     }
   }
@@ -87,7 +82,6 @@ class _StokvelInfoState extends State<StokvelInfo> {
         "username": username,
         "code": codeController.text,
       });
-      print('Response body: ${response.body}');
       var data = json.decode(response.body);
       if (data == "Error") {
         return "Error";
@@ -95,7 +89,6 @@ class _StokvelInfoState extends State<StokvelInfo> {
         return "Success";
       }
     } catch (e) {
-      print('Exception in adminLogin: $e');
       return 'Login failed: $e';
       //return 'Login failed: ${e.toString()}';
     }
@@ -104,6 +97,57 @@ class _StokvelInfoState extends State<StokvelInfo> {
   Future<String> getUsername() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     return prefs.getString('username') ?? '';
+  }
+
+  Future<String?> getPhoneByUsername() async {
+    try {
+      String username = await getUsername();
+      String url =
+          "http://127.0.0.1/stokvel_api/getPhoneByUsername.php?username=$username";
+      Map<String, String> body = {"username": username};
+      dynamic response = await http.post(Uri.parse(url), body: body);
+
+      if (response.statusCode == 200 && response.body.isNotEmpty) {
+        var data = json.decode(response.body);
+        if (response.statusCode == 200) {
+          if (data.isNotEmpty) {
+            return data;
+          } else {
+            return null;
+          }
+        }
+      } else {
+        throw Exception('Failed to fetch phone: ${response.statusCode}');
+      }
+    } catch (e) {
+      rethrow;
+    }
+    return null;
+  }
+
+  Future<String>? validateMemberExit() async {
+    try {
+      String? phoneNumber = await getPhoneByUsername();
+      String url =
+          "http://127.0.0.1/stokvel_api/validateMemberExit.php?phoneNumber=$phoneNumber";
+
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "phoneNumber": phoneNumber,
+      });
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data == "Error") {
+          return 'Error';
+        } else {
+          return 'Success';
+        }
+      } else {
+        return 'Request failed with status: ${response.statusCode}';
+      }
+    } catch (e) {
+      return 'Failed to save transaction: $e';
+    }
   }
 
   @override
@@ -668,7 +712,7 @@ class _StokvelInfoState extends State<StokvelInfo> {
                                       textAlign: TextAlign.start,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   )
                                 ],
@@ -704,30 +748,79 @@ class _StokvelInfoState extends State<StokvelInfo> {
                               TextButton(
                                 child: const Text('Yes'),
                                 onPressed: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: const Text(
-                                            'You are no longer part of the stokvel'),
-                                        actions: <Widget>[
-                                          TextButton(
-                                            child: const Text('OK'),
-                                            onPressed: () {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) {
-                                                    return const LoginScreen();
+                                  if (_formKey.currentState!.validate()) {
+                                    setState(() {
+                                      _isLoading = true;
+                                    });
+                                    exitResult = validateMemberExit();
+                                    exitResult?.then((result) async {
+                                      setState(() {
+                                        _isLoading = false;
+                                      });
+                                      if (result != 'Success') {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                "Error",
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                              content: const Row(
+                                                children: [
+                                                  Icon(Icons.error_outline,
+                                                      color: Colors.red),
+                                                  Text(
+                                                    "Request to exit stokvel denied\nPlease clear your requested balance first",
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    softWrap: true,
+                                                    maxLines: 2,
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                ],
+                                              ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text("OK"),
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
                                                   },
                                                 ),
-                                              );
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      } else {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              title: const Text(
+                                                  'We have saved your transactions\nPlease come back again, we will miss you'),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  child: const Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.of(context).push(
+                                                      MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return const SignUpScreen();
+                                                        },
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      }
+                                    });
+                                  }
                                 },
                               ),
                             ],

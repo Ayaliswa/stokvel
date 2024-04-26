@@ -82,12 +82,11 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
         "memberPhone": phoneNumber,
         "depositer": username,
         "amount": amountController.text,
+        "request": "0",
         "description": selectedMessage,
         "source": phoneNumberController.text,
         "timestamp": DateTime.now().toIso8601String(),
       });
-      print('Two');
-      print('Response body: ${response.body}');
       if (response.statusCode == 200) {
         var data = json.decode(response.body);
         if (data == "Error") {
@@ -96,11 +95,9 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
           return 'Success';
         }
       } else {
-        print('Request failed with status: ${response.statusCode}.');
         return 'Request failed with status: ${response.statusCode}';
       }
     } catch (e) {
-      print('Exception in saveStokvelTransaction: $e');
       return 'Failed to save transaction: $e';
     }
   }
@@ -165,39 +162,52 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
   Future<String?> getPhoneByUsername() async {
     try {
       String username = await getUsername();
-      print(username);
-      print('get one');
       String url =
           "http://127.0.0.1/stokvel_api/getPhoneByUsername.php?username=$username";
-      print('get two');
       Map<String, String> body = {"username": username};
       dynamic response = await http.post(Uri.parse(url), body: body);
-      print('get three');
-
-      print('get four');
       if (response.statusCode == 200 && response.body.isNotEmpty) {
-        print(response.body);
-        print('get five');
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
           if (data.isNotEmpty) {
             return data; // Return the phone number as a string
           } else {
-            print('Empty phone number received');
             return null;
           }
         } else {
           // ... handle other status codes
         }
       } else {
-        print('Error fetching phone: ${response.statusCode}');
         throw Exception('Failed to fetch phone: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getPhoneByUsername: $e');
       rethrow;
     }
     return null;
+  }
+
+  String validateMTNPhoneNumber(String phoneNumber) {
+    final RegExp phoneRegExp = RegExp(r'^[768]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNumber)) {
+      if (phoneNumber.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'MoMo number is too long or invalid format\nshould start with 76/78 and not more than 8';
+      }
+    }
+    return 'Valid';
+  }
+
+  String validateSMPhoneNumber(String phoneNumber) {
+    final RegExp phoneRegExp = RegExp(r'^[79]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNumber)) {
+      if (phoneNumber.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'eMali number is too long or invalid format\nshould start with 79 and not more than 8';
+      }
+    }
+    return 'Valid';
   }
 
   @override
@@ -420,12 +430,15 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                             ),
                                             TextFormField(
                                               controller: phoneNumberController,
+                                              keyboardType: TextInputType.phone,
+                                              enableSuggestions: false,
+                                              autocorrect: false,
                                               decoration: const InputDecoration(
-                                                hintText: '76******',
+                                                hintText: "76/78......",
                                                 hintStyle: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 16),
-                                                labelText: 'Phone Number',
+                                                labelText: "Phone",
                                                 labelStyle: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 18),
@@ -437,8 +450,18 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                 if (value!.isEmpty) {
                                                   return "Please enter phone number";
                                                 }
+
+                                                final String validationResult =
+                                                    validateMTNPhoneNumber(
+                                                        value);
+                                                if (validationResult !=
+                                                    'Valid') {
+                                                  return validationResult;
+                                                }
                                                 return null;
                                               },
+                                              maxLength: 8,
+                                              textAlign: TextAlign.start,
                                             ),
                                             const SizedBox(
                                               height: 35,
@@ -565,10 +588,10 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                     onPressed: () {
                                                       _formKey.currentState!
                                                           .reset();
-                                                      /*amountController.clear();
+                                                      amountController.clear();
                                                       selectedMessage == '';
                                                       phoneNumberController
-                                                          .clear();*/
+                                                          .clear();
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -690,12 +713,16 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                             height: 15,
                                           ),
                                           TextFormField(
+                                            controller: phoneNumberController,
+                                            keyboardType: TextInputType.phone,
+                                            enableSuggestions: false,
+                                            autocorrect: false,
                                             decoration: const InputDecoration(
-                                              hintText: "79******",
+                                              hintText: "79......",
                                               hintStyle: TextStyle(
                                                   color: Colors.grey,
                                                   fontSize: 16),
-                                              labelText: "Phone Number",
+                                              labelText: "Phone",
                                               labelStyle: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 18),
@@ -705,10 +732,18 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                             ),
                                             validator: (value) {
                                               if (value!.isEmpty) {
-                                                return 'Please enter phone number';
+                                                return "Please enter phone number";
+                                              }
+
+                                              final String validationResult =
+                                                  validateSMPhoneNumber(value);
+                                              if (validationResult != 'Valid') {
+                                                return validationResult;
                                               }
                                               return null;
                                             },
+                                            maxLength: 8,
+                                            textAlign: TextAlign.start,
                                           ),
                                           const SizedBox(
                                             height: 35,
@@ -740,10 +775,10 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   onPressed: () {
                                                     _formKey.currentState!
                                                         .reset();
-                                                    /*amountController.clear();
+                                                    amountController.clear();
                                                     selectedMessage == '';
                                                     phoneNumberController
-                                                        .clear();*/
+                                                        .clear();
                                                   },
                                                   style:
                                                       ElevatedButton.styleFrom(

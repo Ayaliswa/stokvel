@@ -387,7 +387,7 @@ class UserHeaderState extends State<UserHeader> {
                                                 return Column(
                                                   children: [
                                                     const Text(
-                                                      'Requested',
+                                                      'Requested Balance',
                                                       style: TextStyle(
                                                           color: Colors.red,
                                                           fontSize: 20),
