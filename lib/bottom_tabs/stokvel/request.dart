@@ -21,11 +21,22 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
   Future<String>? deleteResult;
   String description3 = "Loan Requested";
   bool _isLoading = false;
+  Map<String, List<dynamic>>? groupedRequests;
+  List<bool> isExpanded = List.generate(12, (_) => false);
+  double totalAmountRequested = 0;
 
   int selectedItem = 2;
   final TextEditingController codeController = TextEditingController();
   final TextStyle orangeTextStyle =
       const TextStyle(color: Colors.deepOrangeAccent);
+
+  @override
+  void initState() {
+    super.initState();
+    //fetchStokvelTransactions();
+    fetchStokvelRequests().then((requests) => groupRequestsByMonth(requests));
+    //fetchStokvelTransactions().then((transactions) => groupTransactionsByMonth(transactions));
+  }
 
   void updateItem(int index) {
     setState(() {
@@ -59,6 +70,49 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
     } catch (e) {
       throw ("No request \nto display yet\n\nclick on request tab on you profile page to make one");
     }
+  }
+
+  Map<String, List<dynamic>> groupRequestsByMonth(List<dynamic> requests) {
+    Map<String, List<dynamic>> groupedRequests = {};
+    for (var request in requests) {
+      String dateString = request['Date'];
+      DateTime date = DateTime.parse(dateString);
+      String monthKey =
+          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
+      if (!groupedRequests.containsKey(monthKey)) {
+        groupedRequests[monthKey] = [];
+      }
+      groupedRequests[monthKey]!.add(request);
+    }
+    return groupedRequests;
+  }
+
+  final List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  void toggleExpansion(int index) {
+    setState(() {
+      isExpanded[index] = !isExpanded[index];
+      if (isExpanded[index]) {
+        // Fetch transactions for the expanded month
+        fetchStokvelRequests().then((requests) {
+          // Update _groupedTransactions with filtered transactions for the month
+          groupedRequests = groupRequestsByMonth(requests);
+        });
+      }
+    });
   }
 
   Future<String> saveStokvelTransaction(
@@ -173,6 +227,447 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 2),
               ),
               Expanded(
+                child: ListView.builder(
+                  itemCount: months.length,
+                  itemBuilder: (context, index) {
+                    String month = months[index];
+                    return ExpansionTile(
+                      title: Text(
+                        month,
+                        style: const TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      onExpansionChanged: (isExpanded) =>
+                          toggleExpansion(index),
+                      children: [
+                        if (isExpanded[(index)] && groupedRequests != null)
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: groupedRequests![
+                                        '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                    ?.length ??
+                                0,
+                            itemBuilder: (context, innerIndex) {
+                              final request = groupedRequests![
+                                      '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                  ?[innerIndex];
+
+                              if (request != null) {
+                                totalAmountRequested = 0;
+
+                                for (var innerRequest in groupedRequests![
+                                    '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']!) {
+                                  totalAmountRequested +=
+                                      double.parse(innerRequest['Amount']);
+                                  print(
+                                      "Total Amount Requested: E $totalAmountRequested");
+                                }
+                              }
+                              int selectedTabIndex = 1;
+                              return GestureDetector(
+                                child: ListTile(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Row(
+                                            children: [
+                                              Icon(Icons.recommend_sharp,
+                                                  color: Colors.green),
+                                              Text(
+                                                "Approve Request",
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
+                                            ],
+                                          ),
+                                          content: const Text(
+                                            "NOTE: Only admin can approve request",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          actions: <Widget>[
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  child: const Text(
+                                                    "Back",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const PendingRequestScreen()),
+                                                    );
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text(
+                                                    "Continue",
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  ),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                            "Enter Code",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .green),
+                                                          ),
+                                                          content: Form(
+                                                            key: _formKey,
+                                                            child: Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        codeController,
+                                                                    obscureText:
+                                                                        _obscureText,
+                                                                    enableSuggestions:
+                                                                        false,
+                                                                    autocorrect:
+                                                                        false,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          "enter stokvel code",
+                                                                      hintStyle: const TextStyle(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              16),
+                                                                      labelText:
+                                                                          "Stokvel Code",
+                                                                      labelStyle: const TextStyle(
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontSize:
+                                                                              18),
+                                                                      prefixIcon: const Icon(
+                                                                          Icons
+                                                                              .code,
+                                                                          color:
+                                                                              Colors.black),
+                                                                      border:
+                                                                          const OutlineInputBorder(),
+                                                                      suffixIcon:
+                                                                          IconButton(
+                                                                        icon:
+                                                                            Icon(
+                                                                          _obscureText
+                                                                              ? Icons.visibility
+                                                                              : Icons.visibility_off,
+                                                                        ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          setState(
+                                                                              () {
+                                                                            _obscureText =
+                                                                                !_obscureText;
+                                                                          });
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value!
+                                                                          .isEmpty) {
+                                                                        return "Please enter stokvel code";
+                                                                      }
+                                                                      return null;
+                                                                    },
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          actions: <Widget>[
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .red),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () async {
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              const PendingRequestScreen()),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                                TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                    "Approve",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .green),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () {
+                                                                    if (_formKey
+                                                                        .currentState!
+                                                                        .validate()) {
+                                                                      setState(
+                                                                          () {
+                                                                        _isLoading =
+                                                                            true;
+                                                                      });
+
+                                                                      print(request[
+                                                                          'Name']);
+                                                                      print(request[
+                                                                          'Surname']);
+                                                                      print(
+                                                                          'E ${request['Amount']}.00');
+                                                                      print(request[
+                                                                          'Phone']);
+                                                                      print(request[
+                                                                          'Date']);
+                                                                      approveResult = saveStokvelTransaction(
+                                                                          request,
+                                                                          selectedTabIndex);
+                                                                      approveResult
+                                                                          ?.then(
+                                                                        (result) async {
+                                                                          setState(
+                                                                              () {
+                                                                            _isLoading =
+                                                                                false;
+                                                                          });
+                                                                          if (result !=
+                                                                              'Success') {
+                                                                            showDialog(
+                                                                              context: context,
+                                                                              builder: (BuildContext context) {
+                                                                                return AlertDialog(
+                                                                                  title: const Text(
+                                                                                    "Error",
+                                                                                    style: TextStyle(color: Colors.red),
+                                                                                  ),
+                                                                                  content: const Row(
+                                                                                    children: [
+                                                                                      Icon(Icons.error_outline, color: Colors.red),
+                                                                                      Text(
+                                                                                        "Failed to approve request\nTry again",
+                                                                                        style: TextStyle(color: Colors.red),
+                                                                                      ),
+                                                                                    ],
+                                                                                  ),
+                                                                                  actions: <Widget>[
+                                                                                    TextButton(
+                                                                                      child: const Text("Try again"),
+                                                                                      onPressed: () {
+                                                                                        codeController.clear();
+                                                                                        Navigator.of(context).push(
+                                                                                          MaterialPageRoute(
+                                                                                            builder: (BuildContext context) {
+                                                                                              return const PendingRequestScreen();
+                                                                                            },
+                                                                                          ),
+                                                                                        );
+                                                                                      },
+                                                                                    ),
+                                                                                  ],
+                                                                                );
+                                                                              },
+                                                                            );
+                                                                          } else {
+                                                                            deleteResult =
+                                                                                deleteStokvelRequest(request, selectedTabIndex);
+                                                                            deleteResult?.then((result) async {
+                                                                              setState(() {
+                                                                                _isLoading = false;
+                                                                              });
+                                                                              if (result != 'Success') {
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return AlertDialog(
+                                                                                      title: const Text(
+                                                                                        "Warning",
+                                                                                        style: TextStyle(color: Colors.red),
+                                                                                      ),
+                                                                                      content: const Row(
+                                                                                        children: [
+                                                                                          Icon(Icons.warning_amber, color: Colors.amber),
+                                                                                          Text(
+                                                                                            "Request Approved but failed \nto delete it from pending\nTry again on long press",
+                                                                                            style: TextStyle(color: Colors.red),
+                                                                                          ),
+                                                                                        ],
+                                                                                      ),
+                                                                                      actions: <Widget>[
+                                                                                        TextButton(
+                                                                                          child: const Text("OK"),
+                                                                                          onPressed: () {
+                                                                                            codeController.clear();
+                                                                                            Navigator.of(context).push(
+                                                                                              MaterialPageRoute(
+                                                                                                builder: (BuildContext context) {
+                                                                                                  return const PendingRequestScreen();
+                                                                                                },
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        ),
+                                                                                      ],
+                                                                                    );
+                                                                                  },
+                                                                                );
+                                                                              } else {
+                                                                                showDialog(
+                                                                                  context: context,
+                                                                                  builder: (BuildContext context) {
+                                                                                    return AlertDialog(
+                                                                                      content: const Text("Request Approved"),
+                                                                                      actions: <Widget>[
+                                                                                        TextButton(
+                                                                                          child: const Text("Done"),
+                                                                                          onPressed: () {
+                                                                                            Navigator.of(context).push(
+                                                                                              MaterialPageRoute(
+                                                                                                builder: (BuildContext context) {
+                                                                                                  return const PendingRequestScreen();
+                                                                                                },
+                                                                                              ),
+                                                                                            );
+                                                                                          },
+                                                                                        ),
+                                                                                      ],
+                                                                                    );
+                                                                                  },
+                                                                                );
+                                                                              }
+                                                                            });
+                                                                          }
+                                                                        },
+                                                                      );
+                                                                    }
+                                                                  },
+                                                                )
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          request['Name'] +
+                                              "  " +
+                                              request['Surname'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          'E ${request['Amount']}.00',
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                          style: orangeTextStyle,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          request['Phone'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          request['Date'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        if (isExpanded[(index)] && groupedRequests != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Total Amount Requested: E $totalAmountRequested",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+
+              /*Expanded(
                 child: FutureBuilder<List<dynamic>>(
                   future: fetchStokvelRequests(),
                   builder: (context, snapshot) {
@@ -575,7 +1070,7 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
                     return const Center(child: CircularProgressIndicator());
                   },
                 ),
-              ),
+              ),*/
             ],
           ),
         ),
@@ -596,391 +1091,3 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
     );
   }
 }
-
-/*
-class ApproveRequest extends StatefulWidget {
-  const ApproveRequest({super.key});
-
-  @override
-  ApproveRequestState createState() => ApproveRequestState();
-}
-
-class ApproveRequestState extends State<ApproveRequest> {
-  final _formKey = GlobalKey<FormState>();
-  bool _obscureText = true;
-  Future<String>? loginResult;
-  bool _isLoading = false;
-  final TextEditingController usernameOrPhoneController =
-      TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
-
-  @override
-  void dispose() {
-    usernameOrPhoneController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Login Screen",
-      home: Stack(
-        children: [
-          Image.asset(
-            "images/background3.png",
-            fit: BoxFit.cover,
-            height: double.infinity,
-            width: double.infinity,
-            errorBuilder: (BuildContext context, Object exception,
-                StackTrace? stackTrace) {
-              return const Center(
-                child: Text('Failed to load image'),
-              );
-            },
-          ),
-          Scaffold(
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: AppBar(
-                backgroundColor: Colors.blue,
-              ),
-            ),
-            resizeToAvoidBottomInset: false,
-            backgroundColor: Colors.white.withOpacity(0.8),
-            body: Center(
-              child: SizedBox(
-                width: 400,
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(10),
-                  child: Form(
-                    key: _formKey,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const CircleAvatar(
-                          minRadius: 100,
-                          backgroundImage: AssetImage(
-                            "images/loginphoto.png",
-                          ),
-                        ),
-                        const SizedBox(height: 5.0),
-                        const Text(
-                          "Welcome Back\n you've been missed",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 24.0,
-                            fontWeight: FontWeight.bold,
-                            shadows: [
-                              Shadow(
-                                blurRadius: 3.0,
-                                color: Colors.black,
-                                offset: Offset(2.0, 2.0),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 20.0),
-                        const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Login:",
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 20.0),
-                        TextFormField(
-                          controller: usernameOrPhoneController,
-                          decoration: const InputDecoration(
-                            hintText: "Username or Phone",
-                            hintStyle:
-                                TextStyle(color: Colors.grey, fontSize: 16),
-                            labelText: "Username",
-                            labelStyle:
-                                TextStyle(color: Colors.black, fontSize: 18),
-                            prefixIcon: Icon(Icons.person, color: Colors.black),
-                            border: OutlineInputBorder(),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Please enter username";
-                            }
-                            return null;
-                          },
-                          textAlign: TextAlign.start,
-                        ),
-                        const SizedBox(height: 20.0),
-                        TextFormField(
-                          controller: passwordController,
-                          obscureText: _obscureText,
-                          enableSuggestions: false,
-                          autocorrect: false,
-                          decoration: InputDecoration(
-                            hintText: "Password",
-                            hintStyle: const TextStyle(
-                                color: Colors.grey, fontSize: 16),
-                            labelText: "Password",
-                            labelStyle: const TextStyle(
-                                color: Colors.black, fontSize: 18),
-                            prefixIcon:
-                                const Icon(Icons.lock, color: Colors.black),
-                            border: const OutlineInputBorder(),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return "Please enter password";
-                            }
-                            return null;
-                          },
-                          textAlign: TextAlign.start,
-                        ),
-                        const SizedBox(height: 20.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            TextButton(
-                              onPressed: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (BuildContext context) {
-                                      return const PasswordResetScreen();
-                                    },
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Forgot Password?",
-                                style: TextStyle(
-                                  color: Colors.blue,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 2),
-                        Container(
-                          width: 400.0,
-                          height: 40,
-                          margin: const EdgeInsets.symmetric(
-                              horizontal: 30, vertical: 8),
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              if (_formKey.currentState!.validate()) {
-                                setState(() {
-                                  _isLoading = true;
-                                });
-                                loginResult = handleLogin();
-                                loginResult?.then((result) async {
-                                  setState(() {
-                                    _isLoading = false;
-                                  });
-                                  if (result != 'Success') {
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title: const Text(
-                                            "Error",
-                                            style: TextStyle(color: Colors.red),
-                                          ),
-                                          content: const Row(
-                                            children: [
-                                              Icon(Icons.error_outline,
-                                                  color: Colors.red),
-                                              Text(
-                                                "The username and password \nmatch was not found",
-                                                overflow: TextOverflow.ellipsis,
-                                                softWrap: true,
-                                                maxLines: 2,
-                                                style: TextStyle(
-                                                    color: Colors.red),
-                                              ),
-                                            ],
-                                          ),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text("Try again"),
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                usernameOrPhoneController
-                                                    .clear();
-                                                passwordController.clear();
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  } else {
-                                    storeUsername(
-                                        usernameOrPhoneController.text);
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (BuildContext context) {
-                                          return const UserStatementScreen();
-                                        },
-                                      ),
-                                    );
-                                    /*showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          content:
-                                              const Text("Login Successful"),
-                                          actions: <Widget>[
-                                            TextButton(
-                                              child: const Text("Continue"),
-                                              onPressed: () {
-                                                storeUsername(
-                                                    usernameOrPhoneController
-                                                        .text);
-                                                Navigator.of(context).push(
-                                                  MaterialPageRoute(
-                                                    builder:
-                                                        (BuildContext context) {
-                                                      return const UserStatementScreen();
-                                                    },
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );*/
-                                  }
-                                });
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.blue,
-                              foregroundColor: Colors.white,
-                              side: const BorderSide(color: Colors.white),
-                            ),
-                            child: const Text("LOGIN"),
-                          ),
-                        ),
-                        /*FutureBuilder<String>(
-                        future: loginResult,
-                        builder: (BuildContext context,
-                            AsyncSnapshot<String> snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const CircularProgressIndicator();
-                          } else if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          } else if (snapshot.hasData) {
-                            if (snapshot.data == 'Connection failed') {
-                              // Clear the text form field and return to the screen
-                              usernameController.clear();
-                              passwordController.clear();
-                              return const Text(
-                                  'Connection failed. Please try again.');
-                            } else if (snapshot.data ==
-                                'Welcome Back to \nCity United Stokvel') {
-                              return Container();
-                            } else {
-                              return Text(snapshot.data!);
-                            }
-                          } else {
-                            return Container();
-                          }
-                        },
-                      ),*/
-                        const SizedBox(height: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Don't have an account?",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16),
-                            ),
-                            const SizedBox(width: .2),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const SignUpScreen(),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                "Register...",
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Are you Admin/Tressurer?",
-                              style:
-                                  TextStyle(color: Colors.black, fontSize: 16),
-                            ),
-                            const SizedBox(width: .2),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AdminLoginScreen()),
-                                );
-                              },
-                              child: const Text(
-                                "Login here..",
-                                style:
-                                    TextStyle(color: Colors.blue, fontSize: 16),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          if (_isLoading)
-            Container(
-              color: Colors.black.withOpacity(0.5),
-              child: const Center(
-                child: SizedBox(
-                  height: 50.0,
-                  width: 50.0,
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-*/

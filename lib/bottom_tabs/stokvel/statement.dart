@@ -23,6 +23,14 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
   String description = "Monthly Contribution";
   String description2 = "Loan Repayment";
   String description3 = "Loan Requested";
+  Map<String, List<dynamic>>? groupedTransactions;
+  double totalAmount = 0;
+  double totalAmountContributed = 0;
+  double totalAmountRequested = 0;
+  double totalAmountRequestedWithInterest = 0;
+  double totalAmountAvailable = 0;
+  double totalRequestAmountPaid = 0;
+  double totalRequestAmountPending = 0;
 
   void updateItem(int index) {
     setState(() {
@@ -91,19 +99,87 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
     return groupedTransactions;
   }
 
-  Map<String, double> calculateMonthlyTotalDeposits(String description,
-      String description2, Map<String, List<dynamic>> groupedTransactions) {
-    Map<String, double> monthlyTotals = {};
-    groupedTransactions.forEach((key, transactions) {
-      double monthTotal = 0.0;
-      for (var transaction in transactions) {
-        if (transaction['Description'] == description ||
-            transaction['Description'] == description2) {
-          monthTotal += double.parse(transaction['Amount']);
+  Map<String, double> groupTransactionsByMonthWithTotal(
+      List<dynamic> transactions) {
+    Map<String, double> groupedTotals = {};
+    for (var transaction in transactions) {
+      String dateString = transaction['Date'];
+      DateTime date = DateTime.parse(dateString);
+      String monthKey =
+          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
+
+      if (!groupedTotals.containsKey(monthKey)) {
+        groupedTotals[monthKey] = 0.0;
+      }
+
+      double? amount = transaction['Amount']?.toDouble();
+      groupedTotals[monthKey] = amount!;
+    }
+    return groupedTotals;
+  }
+
+  Map<String, Map<String, double>> calculateMonthlyTotalsByDescription(
+    List<dynamic> transactions,
+  ) {
+    Map<String, Map<String, double>> groupedTotals = {};
+    for (var transaction in transactions) {
+      String dateString = transaction['Date'];
+      DateTime date = DateTime.parse(dateString);
+      String monthKey =
+          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
+
+      if (!groupedTotals.containsKey(monthKey)) {
+        groupedTotals[monthKey] = {
+          'Requested': 0.0,
+          'Contributed': 0.0,
+          'PendingRequest': 0.0,
+        };
+      }
+
+      String description = transaction['Description'];
+      double amount = transaction['Amount'];
+
+      if (description == 'description3') {
+        groupedTotals[monthKey]?['Requested'] =
+            (groupedTotals[monthKey]?['Requested'] ?? 0.0) + amount;
+      } else {
+        groupedTotals[monthKey]?['Contributed'] =
+            (groupedTotals[monthKey]?['Contributed'] ?? 0.0) + amount;
+        if (description == 'description2') {
+          groupedTotals[monthKey]?['PendingRequest'] =
+              (groupedTotals[monthKey]?['PendingRequest'] ?? 0.0) + amount;
         }
       }
-      monthlyTotals[key] = monthTotal;
+    }
+
+    for (var monthKey in groupedTotals.keys) {
+      Map<String, double> monthTotals = groupedTotals[monthKey]!;
+      monthTotals['PendingRequest'] =
+          monthTotals['Requested']! - monthTotals['PendingRequest']!;
+    }
+
+    return groupedTotals;
+  }
+
+  Map<String, double> calculateMonthlyTotalDeposits(
+      String description, Map<String, List<dynamic>> groupedTransactions) {
+    Map<String, double> monthlyTotals = {};
+
+    groupedTransactions.forEach((key, transactions) {
+      double monthTotal = 0.0;
+      bool isApril = key == "2024-04" || key.endsWith(" (Expanded)");
+
+      if (isApril) {
+        for (var transaction in transactions) {
+          if (transaction['Description'] == description) {
+            monthTotal += double.parse(transaction['Amount']);
+          }
+        }
+        monthlyTotals[key] =
+            monthTotal; // Update total for "2024-04" or its expanded form
+      }
     });
+
     return monthlyTotals;
   }
 
@@ -134,7 +210,6 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
     "November",
     "December"
   ];
-  Map<String, List<dynamic>>? groupedTransactions;
 
   @override
   Widget build(BuildContext context) {
@@ -191,6 +266,227 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 2),
               ),
               Expanded(
+                child: ListView.builder(
+                  itemCount: months.length,
+                  itemBuilder: (context, index) {
+                    String month = months[index];
+                    return ExpansionTile(
+                      title: Text(
+                        month,
+                        style: const TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      onExpansionChanged: (isExpanded) =>
+                          toggleExpansion(index),
+                      children: [
+                        if (isExpanded[(index)] && groupedTransactions != null)
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: groupedTransactions![
+                                        '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                    ?.length ??
+                                0,
+                            itemBuilder: (context, innerIndex) {
+                              final transaction = groupedTransactions![
+                                      '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                  ?[innerIndex];
+
+                              if (transaction != null) {
+                                totalAmount = 0;
+                                totalAmountContributed = 0;
+                                totalAmountRequested = 0;
+                                totalAmountRequestedWithInterest = 0;
+                                totalRequestAmountPaid = 0;
+                                totalAmountAvailable = 0;
+                                totalRequestAmountPending = 0;
+
+                                for (var innerTransaction in groupedTransactions![
+                                    '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']!) {
+                                  totalAmount +=
+                                      double.parse(innerTransaction['Amount']);
+                                  if (innerTransaction['Description'] !=
+                                      description3) {
+                                    totalAmountContributed += double.parse(
+                                        innerTransaction['Amount']);
+                                    print(
+                                        "Total Amount Contributed: E $totalAmountContributed");
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description3) {
+                                    totalAmountRequested += double.parse(
+                                        innerTransaction['Amount']);
+                                    print(
+                                        "Total Amount Requested: E $totalAmountRequested");
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description2) {
+                                    totalRequestAmountPaid += double.parse(
+                                        innerTransaction['Amount']);
+                                    print(
+                                        "Total Amount Request Paid: E $totalRequestAmountPaid");
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description3) {
+                                    totalAmountRequestedWithInterest +=
+                                        double.parse(innerTransaction['Repay']);
+                                    print(
+                                        "Total Amount Request Not Paid: E $totalAmountRequestedWithInterest");
+                                  }
+
+                                  if (totalRequestAmountPaid != 0 &&
+                                      totalAmountRequested != 0) {
+                                    totalRequestAmountPending =
+                                        totalAmountRequestedWithInterest -
+                                            totalRequestAmountPaid;
+                                  } else if (totalAmountRequested != 0) {
+                                    totalRequestAmountPending =
+                                        totalAmountRequestedWithInterest;
+                                  }
+
+                                  totalAmountAvailable = totalAmountContributed;
+                                  print(
+                                      "Total Amount Available: E $totalAmountAvailable");
+                                }
+                              }
+
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        transaction['Name'] +
+                                            "\n" +
+                                            transaction['Phone'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  'E ${transaction['Amount']}.00',
+                                              style: (transaction[
+                                                              'Description'] ==
+                                                          'Monthly Contribution' ||
+                                                      transaction[
+                                                              'Description'] ==
+                                                          'Loan Repayment')
+                                                  ? const TextStyle(
+                                                      color: Colors.green)
+                                                  : const TextStyle(
+                                                      color: Colors.red),
+                                            ),
+                                          ],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
+                                        maxLines: 1,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        transaction['Description'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        transaction['Date'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        if (isExpanded[(index)] && groupedTransactions != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Total Amount Contributed: E $totalAmountContributed",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Total Amount Requested: E $totalAmountRequested",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Total Requests Repayed: E $totalRequestAmountPaid",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                "Monthly Available Balance: E $totalAmountAvailable",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Monthly Pending Requests: E $totalRequestAmountPending",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+
+              /*Expanded(
                 child: ListView.builder(
                   itemCount: months.length,
                   itemBuilder: (context, index) {
@@ -285,13 +581,12 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                         const SizedBox(
                           height: 15,
                         ),
-                        Column(
+                        const Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Monthly Total Deposits: E"
-                              "${groupedTransactions != null ? calculateMonthlyTotalDeposits(description, description2, groupedTransactions!).values.first : ''}",
+                              "Monthly Total Deposits: E",
                               style:
                                   TextStyle(fontSize: 18, color: Colors.green),
                               overflow: TextOverflow.ellipsis,
@@ -346,7 +641,7 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                     );
                   },
                 ),
-              ),
+              ),*/
               /*Expanded(
                 child: FutureBuilder<List<dynamic>>(
                   future: fetchStokvelTransactions(),

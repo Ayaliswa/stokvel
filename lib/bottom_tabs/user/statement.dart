@@ -19,6 +19,18 @@ class UserStatementScreenState extends State<UserStatementScreen> {
   int selectedItem = 0;
   final TextStyle greenTextStyle = const TextStyle(color: Colors.green);
   final TextStyle redTextStyle = const TextStyle(color: Colors.red);
+  List<bool> isExpanded = List.generate(12, (_) => false);
+  String description = "Monthly Contribution";
+  String description2 = "Loan Repayment";
+  String description3 = "Loan Requested";
+  Map<String, List<dynamic>>? groupedTransactions;
+  double totalAmount = 0;
+  double totalAmountContributed = 0;
+  double totalAmountRequested = 0;
+  double totalAmountRequestedWithInterest = 0;
+  double totalAmountAvailable = 0;
+  double totalRequestAmountPaid = 0;
+  double totalRequestAmountPending = 0;
 
   void updateItem(int index) {
     setState(() {
@@ -46,7 +58,10 @@ class UserStatementScreenState extends State<UserStatementScreen> {
   @override
   void initState() {
     super.initState();
-    fetchMemberStokvelTransactions();
+    //fetchStokvelTransactions();
+    fetchMemberStokvelTransactions()
+        .then((transactions) => groupTransactionsByMonth(transactions));
+    //fetchStokvelTransactions().then((transactions) => groupTransactionsByMonth(transactions));
   }
 
   Future<List<dynamic>> fetchMemberStokvelTransactions() async {
@@ -67,6 +82,50 @@ class UserStatementScreenState extends State<UserStatementScreen> {
     } catch (e) {
       throw Exception('Failed to fetch transactions: $e');
     }
+  }
+
+  Map<String, List<dynamic>> groupTransactionsByMonth(
+      List<dynamic> transactions) {
+    Map<String, List<dynamic>> groupedTransactions = {};
+    for (var transaction in transactions) {
+      String dateString = transaction['Date'];
+      DateTime date = DateTime.parse(dateString);
+      String monthKey =
+          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
+      if (!groupedTransactions.containsKey(monthKey)) {
+        groupedTransactions[monthKey] = [];
+      }
+      groupedTransactions[monthKey]!.add(transaction);
+    }
+    return groupedTransactions;
+  }
+
+  final List<String> months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+
+  void toggleExpansion(int index) {
+    setState(() {
+      isExpanded[index] = !isExpanded[index];
+      if (isExpanded[index]) {
+        // Fetch transactions for the expanded month
+        fetchMemberStokvelTransactions().then((transactions) {
+          // Update _groupedTransactions with filtered transactions for the month
+          groupedTransactions = groupTransactionsByMonth(transactions);
+        });
+      }
+    });
   }
 
   Future<String> getUsername() async {
@@ -158,6 +217,218 @@ class UserStatementScreenState extends State<UserStatementScreen> {
                 margin: const EdgeInsets.symmetric(horizontal: 2),
               ),
               Expanded(
+                child: ListView.builder(
+                  itemCount: months.length,
+                  itemBuilder: (context, index) {
+                    String month = months[index];
+                    return ExpansionTile(
+                      title: Text(
+                        month,
+                        style: const TextStyle(
+                            color: Colors.blue, fontWeight: FontWeight.bold),
+                      ),
+                      onExpansionChanged: (isExpanded) =>
+                          toggleExpansion(index),
+                      children: [
+                        if (isExpanded[(index)] && groupedTransactions != null)
+                          ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: groupedTransactions![
+                                        '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                    ?.length ??
+                                0,
+                            itemBuilder: (context, innerIndex) {
+                              final transaction = groupedTransactions![
+                                      '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']
+                                  ?[innerIndex];
+
+                              if (transaction != null) {
+                                totalAmount = 0;
+                                totalAmountContributed = 0;
+                                totalAmountRequested = 0;
+                                totalAmountRequestedWithInterest = 0;
+                                totalRequestAmountPaid = 0;
+                                totalAmountAvailable = 0;
+                                totalRequestAmountPending = 0;
+
+                                for (var innerTransaction in groupedTransactions![
+                                    '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']!) {
+                                  totalAmount +=
+                                      double.parse(innerTransaction['Amount']);
+                                  print(totalAmount);
+
+                                  if (innerTransaction['Description'] !=
+                                      description3) {
+                                    totalAmountContributed += double.parse(
+                                        innerTransaction['Amount']);
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description3) {
+                                    totalAmountRequested += double.parse(
+                                        innerTransaction['Amount']);
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description2) {
+                                    totalRequestAmountPaid += double.parse(
+                                        innerTransaction['Amount']);
+                                  }
+
+                                  if (innerTransaction['Description'] ==
+                                      description3) {
+                                    totalAmountRequestedWithInterest +=
+                                        double.parse(innerTransaction['Repay']);
+                                  }
+                                  if (totalRequestAmountPaid != 0 &&
+                                      totalAmountRequested != 0) {
+                                    totalRequestAmountPending =
+                                        totalAmountRequestedWithInterest -
+                                            totalRequestAmountPaid;
+                                  } else if (totalAmountRequested != 0) {
+                                    totalRequestAmountPending =
+                                        totalAmountRequestedWithInterest;
+                                  }
+
+                                  totalAmountAvailable =
+                                      (totalAmountContributed -
+                                          totalAmountRequested);
+                                }
+                              }
+
+                              return ListTile(
+                                title: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        transaction['Description'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  'E ${transaction['Amount']}.00',
+                                              style: (transaction[
+                                                              'Description'] ==
+                                                          'Monthly Contribution' ||
+                                                      transaction[
+                                                              'Description'] ==
+                                                          'Loan Repayment')
+                                                  ? const TextStyle(
+                                                      color: Colors.green)
+                                                  : const TextStyle(
+                                                      color: Colors.red),
+                                            ),
+                                          ],
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: false,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        transaction['Source'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        transaction['Date'],
+                                        overflow: TextOverflow.ellipsis,
+                                        softWrap: true,
+                                        maxLines: 2,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                        if (isExpanded[(index)] && groupedTransactions != null)
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Total Amount Contributed: E $totalAmountContributed",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Total Amount Requested: E $totalAmountRequested",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Total Requests Repayed: E $totalRequestAmountPaid",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                "Monthly Available Balance: E $totalAmountAvailable",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                              Text(
+                                "Monthly Pending Requests: E $totalRequestAmountPending",
+                                style: const TextStyle(
+                                    fontSize: 18, color: Colors.blue),
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 2,
+                                textAlign: TextAlign.start,
+                              ),
+                            ],
+                          ),
+                        const SizedBox(
+                          height: 15,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+
+              /*Expanded(
                 child: FutureBuilder<List<dynamic>>(
                   future: fetchMemberStokvelTransactions(),
                   builder: (context, snapshot) {
@@ -235,7 +506,7 @@ class UserStatementScreenState extends State<UserStatementScreen> {
                     return const Center(child: CircularProgressIndicator());
                   },
                 ),
-              ),
+              ),*/
             ],
           ),
         ),

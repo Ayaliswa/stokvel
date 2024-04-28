@@ -16,6 +16,7 @@ class StokvelHeader extends StatefulWidget {
 class StokvelHeaderState extends State<StokvelHeader> {
   String description = "Monthly Contribution";
   String description2 = "Loan Repayment";
+  String description3 = "Loan Requested";
 
   Future<String?> getStokvelTotalContributions() async {
     try {
@@ -44,11 +45,12 @@ class StokvelHeaderState extends State<StokvelHeader> {
       Map<String, String?> body = {
         "description": description,
         "description2": description2,
+        "description3": description3,
       };
       dynamic response = await http.post(Uri.parse(url), body: body);
       if (response.statusCode == 200) {
         var totalAmount = json.decode(response.body);
-        return totalAmount < 0 ? 0 : totalAmount;
+        return totalAmount;
       } else {
         throw Exception('Failed to fetch requested: ${response.statusCode}');
       }
