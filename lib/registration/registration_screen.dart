@@ -428,41 +428,12 @@ class RegistrationFormState extends State<RegistrationForm> {
                                         },
                                       );
                                     } else {
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.check,
-                                                  color: Colors.green,
-                                                ),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-                                                Text("Registration Success"),
-                                              ],
-                                            ),
-                                            content: const Text(
-                                                "Welcome to City United Stokvel\nYou can now log in"),
-                                            actions: <Widget>[
-                                              TextButton(
-                                                child: const Text("OK"),
-                                                onPressed: () {
-                                                  Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                      builder: (BuildContext
-                                                          context) {
-                                                        return const LoginScreen();
-                                                      },
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        },
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (BuildContext context) {
+                                            return const LoginScreen();
+                                          },
+                                        ),
                                       );
                                     }
                                   });

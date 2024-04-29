@@ -308,6 +308,18 @@ class UserRequestScreenState extends State<UserRequestScreen> {
     }
   }
 
+  String validatePhoneNumber(String phoneNum) {
+    final RegExp phoneRegExp = RegExp(r'^[7689]\d{7}$');
+    if (!phoneRegExp.hasMatch(phoneNum)) {
+      if (phoneNum.length < 8) {
+        return 'Phone number is too short';
+      } else {
+        return 'Phone number is too long or invalid format\nshould start with 7 (6/8/9) and not more than 8';
+      }
+    }
+    return 'Valid';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
@@ -375,11 +387,14 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: accountReceiverController,
+                                keyboardType: TextInputType.phone,
+                                enableSuggestions: false,
+                                autocorrect: false,
                                 decoration: const InputDecoration(
-                                  hintText: "enter beneficiary phone number",
+                                  hintText: "76/78/79......",
                                   hintStyle: TextStyle(
                                       color: Colors.grey, fontSize: 16),
-                                  labelText: 'Account Receiver',
+                                  labelText: "Send Amount To",
                                   labelStyle: TextStyle(
                                       color: Colors.black, fontSize: 18),
                                   prefixIcon:
@@ -387,11 +402,19 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                   border: OutlineInputBorder(),
                                 ),
                                 validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Please enter phone number to receive amount';
+                                  if (value!.isEmpty) {
+                                    return "Please enter phone number";
+                                  }
+
+                                  final String validationResult =
+                                      validatePhoneNumber(value);
+                                  if (validationResult != 'Valid') {
+                                    return validationResult;
                                   }
                                   return null;
                                 },
+                                maxLength: 8,
+                                textAlign: TextAlign.start,
                               ),
                               const SizedBox(height: 20),
                               ElevatedButton(

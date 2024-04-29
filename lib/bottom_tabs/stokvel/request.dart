@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stokvel/bottom_navigation_bar/stokvel_navigation_bar.dart';
 import 'package:stokvel/bottom_tabs/stokvel/chat_screen.dart';
 import 'package:stokvel/bottom_tabs/stokvel/statement.dart';
@@ -17,6 +18,7 @@ class PendingRequestScreen extends StatefulWidget {
 class PendingRequestScreenState extends State<PendingRequestScreen> {
   final _formKey = GlobalKey<FormState>();
   bool _obscureText = true;
+  Future<String>? codeResult;
   Future<String>? approveResult;
   Future<String>? deleteResult;
   String description3 = "Loan Requested";
@@ -113,6 +115,31 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
         });
       }
     });
+  }
+
+  Future<String>? adminCodeAuth() async {
+    try {
+      String username = await getUsername();
+      String url = "http://127.0.0.1/stokvel_api/adminCodeAuth.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "username": username,
+        "code": codeController.text,
+      });
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        return "Success";
+      }
+    } catch (e) {
+      return 'Login failed: $e';
+      //return 'Login failed: ${e.toString()}';
+    }
+  }
+
+  Future<String> getUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString('username') ?? '';
   }
 
   Future<String> saveStokvelTransaction(
@@ -242,6 +269,7 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
                       children: [
                         if (isExpanded[(index)] && groupedRequests != null)
                           ListView.builder(
+                            reverse: true,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: groupedRequests![
@@ -423,156 +451,180 @@ class PendingRequestScreenState extends State<PendingRequestScreen> {
                                                                   },
                                                                 ),
                                                                 TextButton(
-                                                                  child:
-                                                                      const Text(
-                                                                    "Approve",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .green),
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    if (_formKey
-                                                                        .currentState!
-                                                                        .validate()) {
-                                                                      setState(
-                                                                          () {
-                                                                        _isLoading =
-                                                                            true;
-                                                                      });
-
-                                                                      print(request[
-                                                                          'Name']);
-                                                                      print(request[
-                                                                          'Surname']);
-                                                                      print(
-                                                                          'E ${request['Amount']}.00');
-                                                                      print(request[
-                                                                          'Phone']);
-                                                                      print(request[
-                                                                          'Date']);
-                                                                      approveResult = saveStokvelTransaction(
-                                                                          request,
-                                                                          selectedTabIndex);
-                                                                      approveResult
-                                                                          ?.then(
-                                                                        (result) async {
-                                                                          setState(
-                                                                              () {
-                                                                            _isLoading =
-                                                                                false;
-                                                                          });
-                                                                          if (result !=
-                                                                              'Success') {
-                                                                            showDialog(
-                                                                              context: context,
-                                                                              builder: (BuildContext context) {
-                                                                                return AlertDialog(
-                                                                                  title: const Text(
-                                                                                    "Error",
-                                                                                    style: TextStyle(color: Colors.red),
-                                                                                  ),
-                                                                                  content: const Row(
-                                                                                    children: [
-                                                                                      Icon(Icons.error_outline, color: Colors.red),
-                                                                                      Text(
-                                                                                        "Failed to approve request\nTry again",
-                                                                                        style: TextStyle(color: Colors.red),
+                                                                    child:
+                                                                        const Text(
+                                                                      "Approve",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.green),
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      if (_formKey
+                                                                          .currentState!
+                                                                          .validate()) {
+                                                                        setState(
+                                                                            () {
+                                                                          _isLoading =
+                                                                              true;
+                                                                        });
+                                                                        codeResult =
+                                                                            adminCodeAuth();
+                                                                        codeResult
+                                                                            ?.then(
+                                                                          (result) async {
+                                                                            setState(() {
+                                                                              _isLoading = false;
+                                                                            });
+                                                                            if (result !=
+                                                                                'Success') {
+                                                                              showDialog(
+                                                                                context: context,
+                                                                                builder: (BuildContext context) {
+                                                                                  return AlertDialog(
+                                                                                    title: const Text(
+                                                                                      "Error",
+                                                                                      style: TextStyle(color: Colors.red),
+                                                                                    ),
+                                                                                    content: const Row(
+                                                                                      children: [
+                                                                                        Icon(Icons.error_outline, color: Colors.red),
+                                                                                        Text(
+                                                                                          "Code rejected",
+                                                                                          style: TextStyle(color: Colors.red),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    actions: <Widget>[
+                                                                                      TextButton(
+                                                                                        child: const Text("Try again"),
+                                                                                        onPressed: () {
+                                                                                          Navigator.of(context).pop();
+                                                                                          codeController.clear();
+                                                                                        },
                                                                                       ),
                                                                                     ],
-                                                                                  ),
-                                                                                  actions: <Widget>[
-                                                                                    TextButton(
-                                                                                      child: const Text("Try again"),
-                                                                                      onPressed: () {
-                                                                                        codeController.clear();
-                                                                                        Navigator.of(context).push(
-                                                                                          MaterialPageRoute(
-                                                                                            builder: (BuildContext context) {
-                                                                                              return const PendingRequestScreen();
-                                                                                            },
-                                                                                          ),
-                                                                                        );
-                                                                                      },
-                                                                                    ),
-                                                                                  ],
-                                                                                );
-                                                                              },
-                                                                            );
-                                                                          } else {
-                                                                            deleteResult =
-                                                                                deleteStokvelRequest(request, selectedTabIndex);
-                                                                            deleteResult?.then((result) async {
-                                                                              setState(() {
-                                                                                _isLoading = false;
-                                                                              });
-                                                                              if (result != 'Success') {
-                                                                                showDialog(
-                                                                                  context: context,
-                                                                                  builder: (BuildContext context) {
-                                                                                    return AlertDialog(
-                                                                                      title: const Text(
-                                                                                        "Warning",
-                                                                                        style: TextStyle(color: Colors.red),
-                                                                                      ),
-                                                                                      content: const Row(
-                                                                                        children: [
-                                                                                          Icon(Icons.warning_amber, color: Colors.amber),
-                                                                                          Text(
-                                                                                            "Request Approved but failed \nto delete it from pending\nTry again on long press",
+                                                                                  );
+                                                                                },
+                                                                              );
+                                                                            } else {
+                                                                              approveResult = saveStokvelTransaction(request, selectedTabIndex);
+                                                                              approveResult?.then(
+                                                                                (result) async {
+                                                                                  setState(() {
+                                                                                    _isLoading = false;
+                                                                                  });
+                                                                                  if (result != 'Success') {
+                                                                                    showDialog(
+                                                                                      context: context,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return AlertDialog(
+                                                                                          title: const Text(
+                                                                                            "Error",
                                                                                             style: TextStyle(color: Colors.red),
                                                                                           ),
-                                                                                        ],
-                                                                                      ),
-                                                                                      actions: <Widget>[
-                                                                                        TextButton(
-                                                                                          child: const Text("OK"),
-                                                                                          onPressed: () {
-                                                                                            codeController.clear();
-                                                                                            Navigator.of(context).push(
-                                                                                              MaterialPageRoute(
-                                                                                                builder: (BuildContext context) {
-                                                                                                  return const PendingRequestScreen();
-                                                                                                },
+                                                                                          content: const Row(
+                                                                                            children: [
+                                                                                              Icon(Icons.error_outline, color: Colors.red),
+                                                                                              Text(
+                                                                                                "Failed to approve request\nTry again",
+                                                                                                style: TextStyle(color: Colors.red),
                                                                                               ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          actions: <Widget>[
+                                                                                            TextButton(
+                                                                                              child: const Text("Try again"),
+                                                                                              onPressed: () {
+                                                                                                codeController.clear();
+                                                                                                Navigator.of(context).push(
+                                                                                                  MaterialPageRoute(
+                                                                                                    builder: (BuildContext context) {
+                                                                                                      return const PendingRequestScreen();
+                                                                                                    },
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                            ),
+                                                                                          ],
+                                                                                        );
+                                                                                      },
+                                                                                    );
+                                                                                  } else {
+                                                                                    deleteResult = deleteStokvelRequest(request, selectedTabIndex);
+                                                                                    deleteResult?.then((result) async {
+                                                                                      setState(() {
+                                                                                        _isLoading = false;
+                                                                                      });
+                                                                                      if (result != 'Success') {
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          builder: (BuildContext context) {
+                                                                                            return AlertDialog(
+                                                                                              title: const Text(
+                                                                                                "Warning",
+                                                                                                style: TextStyle(color: Colors.red),
+                                                                                              ),
+                                                                                              content: const Row(
+                                                                                                children: [
+                                                                                                  Icon(Icons.warning_amber, color: Colors.amber),
+                                                                                                  Text(
+                                                                                                    "Request Approved but failed \nto delete it from pending\nTry again on long press",
+                                                                                                    style: TextStyle(color: Colors.red),
+                                                                                                  ),
+                                                                                                ],
+                                                                                              ),
+                                                                                              actions: <Widget>[
+                                                                                                TextButton(
+                                                                                                  child: const Text("OK"),
+                                                                                                  onPressed: () {
+                                                                                                    codeController.clear();
+                                                                                                    Navigator.of(context).push(
+                                                                                                      MaterialPageRoute(
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return const PendingRequestScreen();
+                                                                                                        },
+                                                                                                      ),
+                                                                                                    );
+                                                                                                  },
+                                                                                                ),
+                                                                                              ],
                                                                                             );
                                                                                           },
-                                                                                        ),
-                                                                                      ],
-                                                                                    );
-                                                                                  },
-                                                                                );
-                                                                              } else {
-                                                                                showDialog(
-                                                                                  context: context,
-                                                                                  builder: (BuildContext context) {
-                                                                                    return AlertDialog(
-                                                                                      content: const Text("Request Approved"),
-                                                                                      actions: <Widget>[
-                                                                                        TextButton(
-                                                                                          child: const Text("Done"),
-                                                                                          onPressed: () {
-                                                                                            Navigator.of(context).push(
-                                                                                              MaterialPageRoute(
-                                                                                                builder: (BuildContext context) {
-                                                                                                  return const PendingRequestScreen();
-                                                                                                },
-                                                                                              ),
+                                                                                        );
+                                                                                      } else {
+                                                                                        showDialog(
+                                                                                          context: context,
+                                                                                          builder: (BuildContext context) {
+                                                                                            return AlertDialog(
+                                                                                              content: const Text("Request Approved"),
+                                                                                              actions: <Widget>[
+                                                                                                TextButton(
+                                                                                                  child: const Text("Done"),
+                                                                                                  onPressed: () {
+                                                                                                    Navigator.of(context).push(
+                                                                                                      MaterialPageRoute(
+                                                                                                        builder: (BuildContext context) {
+                                                                                                          return const PendingRequestScreen();
+                                                                                                        },
+                                                                                                      ),
+                                                                                                    );
+                                                                                                  },
+                                                                                                ),
+                                                                                              ],
                                                                                             );
                                                                                           },
-                                                                                        ),
-                                                                                      ],
-                                                                                    );
-                                                                                  },
-                                                                                );
-                                                                              }
-                                                                            });
-                                                                          }
-                                                                        },
-                                                                      );
-                                                                    }
-                                                                  },
-                                                                )
+                                                                                        );
+                                                                                      }
+                                                                                    });
+                                                                                  }
+                                                                                },
+                                                                              );
+                                                                            }
+                                                                          },
+                                                                        );
+                                                                      }
+                                                                    })
                                                               ],
                                                             ),
                                                           ],

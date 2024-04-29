@@ -58,10 +58,8 @@ class UserStatementScreenState extends State<UserStatementScreen> {
   @override
   void initState() {
     super.initState();
-    //fetchStokvelTransactions();
     fetchMemberStokvelTransactions()
         .then((transactions) => groupTransactionsByMonth(transactions));
-    //fetchStokvelTransactions().then((transactions) => groupTransactionsByMonth(transactions));
   }
 
   Future<List<dynamic>> fetchMemberStokvelTransactions() async {
@@ -119,9 +117,7 @@ class UserStatementScreenState extends State<UserStatementScreen> {
     setState(() {
       isExpanded[index] = !isExpanded[index];
       if (isExpanded[index]) {
-        // Fetch transactions for the expanded month
         fetchMemberStokvelTransactions().then((transactions) {
-          // Update _groupedTransactions with filtered transactions for the month
           groupedTransactions = groupTransactionsByMonth(transactions);
         });
       }
@@ -150,9 +146,7 @@ class UserStatementScreenState extends State<UserStatementScreen> {
           } else {
             return null;
           }
-        } else {
-          // ... handle other status codes
-        }
+        } else {}
       } else {
         throw Exception('Failed to fetch phone: ${response.statusCode}');
       }
@@ -232,6 +226,7 @@ class UserStatementScreenState extends State<UserStatementScreen> {
                       children: [
                         if (isExpanded[(index)] && groupedTransactions != null)
                           ListView.builder(
+                            reverse: true,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: groupedTransactions![
@@ -256,7 +251,6 @@ class UserStatementScreenState extends State<UserStatementScreen> {
                                     '${DateTime.now().year}-${(index).toString().padLeft(2, '0')}']!) {
                                   totalAmount +=
                                       double.parse(innerTransaction['Amount']);
-                                  print(totalAmount);
 
                                   if (innerTransaction['Description'] !=
                                       description3) {

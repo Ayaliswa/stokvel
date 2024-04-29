@@ -16,7 +16,13 @@ class StokvelStatementScreen extends StatefulWidget {
 }
 
 class StokvelStatementScreenState extends State<StokvelStatementScreen> {
+  final _formKey = GlobalKey<FormState>();
   int selectedItem = 0;
+  bool _isLoading = false;
+  bool _obscureText = true;
+  Future<String>? codeResult;
+  Future<String>? deleteResult;
+  final TextEditingController codeController = TextEditingController();
   final TextStyle greenTextStyle = const TextStyle(color: Colors.green);
   final TextStyle redTextStyle = const TextStyle(color: Colors.red);
   List<bool> isExpanded = List.generate(12, (_) => false);
@@ -55,10 +61,8 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
   @override
   void initState() {
     super.initState();
-    //fetchStokvelTransactions();
     fetchStokvelTransactions()
         .then((transactions) => groupTransactionsByMonth(transactions));
-    //fetchStokvelTransactions().then((transactions) => groupTransactionsByMonth(transactions));
   }
 
   Future<List<dynamic>> fetchStokvelTransactions() async {
@@ -99,97 +103,11 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
     return groupedTransactions;
   }
 
-  Map<String, double> groupTransactionsByMonthWithTotal(
-      List<dynamic> transactions) {
-    Map<String, double> groupedTotals = {};
-    for (var transaction in transactions) {
-      String dateString = transaction['Date'];
-      DateTime date = DateTime.parse(dateString);
-      String monthKey =
-          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
-
-      if (!groupedTotals.containsKey(monthKey)) {
-        groupedTotals[monthKey] = 0.0;
-      }
-
-      double? amount = transaction['Amount']?.toDouble();
-      groupedTotals[monthKey] = amount!;
-    }
-    return groupedTotals;
-  }
-
-  Map<String, Map<String, double>> calculateMonthlyTotalsByDescription(
-    List<dynamic> transactions,
-  ) {
-    Map<String, Map<String, double>> groupedTotals = {};
-    for (var transaction in transactions) {
-      String dateString = transaction['Date'];
-      DateTime date = DateTime.parse(dateString);
-      String monthKey =
-          "${date.year}-${(date.month - 1).toString().padLeft(2, '0')}";
-
-      if (!groupedTotals.containsKey(monthKey)) {
-        groupedTotals[monthKey] = {
-          'Requested': 0.0,
-          'Contributed': 0.0,
-          'PendingRequest': 0.0,
-        };
-      }
-
-      String description = transaction['Description'];
-      double amount = transaction['Amount'];
-
-      if (description == 'description3') {
-        groupedTotals[monthKey]?['Requested'] =
-            (groupedTotals[monthKey]?['Requested'] ?? 0.0) + amount;
-      } else {
-        groupedTotals[monthKey]?['Contributed'] =
-            (groupedTotals[monthKey]?['Contributed'] ?? 0.0) + amount;
-        if (description == 'description2') {
-          groupedTotals[monthKey]?['PendingRequest'] =
-              (groupedTotals[monthKey]?['PendingRequest'] ?? 0.0) + amount;
-        }
-      }
-    }
-
-    for (var monthKey in groupedTotals.keys) {
-      Map<String, double> monthTotals = groupedTotals[monthKey]!;
-      monthTotals['PendingRequest'] =
-          monthTotals['Requested']! - monthTotals['PendingRequest']!;
-    }
-
-    return groupedTotals;
-  }
-
-  Map<String, double> calculateMonthlyTotalDeposits(
-      String description, Map<String, List<dynamic>> groupedTransactions) {
-    Map<String, double> monthlyTotals = {};
-
-    groupedTransactions.forEach((key, transactions) {
-      double monthTotal = 0.0;
-      bool isApril = key == "2024-04" || key.endsWith(" (Expanded)");
-
-      if (isApril) {
-        for (var transaction in transactions) {
-          if (transaction['Description'] == description) {
-            monthTotal += double.parse(transaction['Amount']);
-          }
-        }
-        monthlyTotals[key] =
-            monthTotal; // Update total for "2024-04" or its expanded form
-      }
-    });
-
-    return monthlyTotals;
-  }
-
   void toggleExpansion(int index) {
     setState(() {
       isExpanded[index] = !isExpanded[index];
       if (isExpanded[index]) {
-        // Fetch transactions for the expanded month
         fetchStokvelTransactions().then((transactions) {
-          // Update _groupedTransactions with filtered transactions for the month
           groupedTransactions = groupTransactionsByMonth(transactions);
         });
       }
@@ -210,6 +128,54 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
     "November",
     "December"
   ];
+
+  Future<String>? adminCodeAuth() async {
+    try {
+      String username = await getUsername();
+      String url = "http://127.0.0.1/stokvel_api/adminCodeAuth.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "username": username,
+        "code": codeController.text,
+      });
+      var data = json.decode(response.body);
+      if (data == "Error") {
+        return "Error";
+      } else {
+        return "Success";
+      }
+    } catch (e) {
+      return 'Login failed: $e';
+      //return 'Login failed: ${e.toString()}';
+    }
+  }
+
+  Future<String> deleteStokvelTransaction(
+      Map<String, dynamic> transaction, int selectedTabIndex) async {
+    try {
+      String url = "http://127.0.0.1/stokvel_api/deleteStokvelTransaction.php";
+      dynamic response = await http.post(Uri.parse(url), body: {
+        "phone": transaction['Phone'],
+        "name": transaction['Name'],
+        "amount": transaction['Amount'],
+        "repay": transaction['Repay'],
+        "description": transaction['Description'],
+        "source": transaction['Source'],
+        "timestamp": transaction['Date'],
+      });
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (data == "Error") {
+          return 'Error';
+        } else {
+          return 'Success';
+        }
+      } else {
+        return 'Request failed with status: ${response.statusCode}';
+      }
+    } catch (e) {
+      return 'Failed to delete transaction: $e';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -281,6 +247,7 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                       children: [
                         if (isExpanded[(index)] && groupedTransactions != null)
                           ListView.builder(
+                            reverse: true,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: groupedTransactions![
@@ -309,32 +276,24 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                                       description3) {
                                     totalAmountContributed += double.parse(
                                         innerTransaction['Amount']);
-                                    print(
-                                        "Total Amount Contributed: E $totalAmountContributed");
                                   }
 
                                   if (innerTransaction['Description'] ==
                                       description3) {
                                     totalAmountRequested += double.parse(
                                         innerTransaction['Amount']);
-                                    print(
-                                        "Total Amount Requested: E $totalAmountRequested");
                                   }
 
                                   if (innerTransaction['Description'] ==
                                       description2) {
                                     totalRequestAmountPaid += double.parse(
                                         innerTransaction['Amount']);
-                                    print(
-                                        "Total Amount Request Paid: E $totalRequestAmountPaid");
                                   }
 
                                   if (innerTransaction['Description'] ==
                                       description3) {
                                     totalAmountRequestedWithInterest +=
                                         double.parse(innerTransaction['Repay']);
-                                    print(
-                                        "Total Amount Request Not Paid: E $totalAmountRequestedWithInterest");
                                   }
 
                                   if (totalRequestAmountPaid != 0 &&
@@ -347,74 +306,392 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
                                         totalAmountRequestedWithInterest;
                                   }
 
-                                  totalAmountAvailable = totalAmountContributed;
-                                  print(
-                                      "Total Amount Available: E $totalAmountAvailable");
+                                  totalAmountAvailable =
+                                      (totalAmountContributed -
+                                          totalAmountRequested);
                                 }
                               }
 
-                              return ListTile(
-                                title: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Expanded(
-                                      child: Text(
-                                        transaction['Name'] +
-                                            "\n" +
-                                            transaction['Phone'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.start,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  'E ${transaction['Amount']}.00',
-                                              style: (transaction[
-                                                              'Description'] ==
-                                                          'Monthly Contribution' ||
-                                                      transaction[
-                                                              'Description'] ==
-                                                          'Loan Repayment')
-                                                  ? const TextStyle(
-                                                      color: Colors.green)
-                                                  : const TextStyle(
-                                                      color: Colors.red),
+                              int selectedTabIndex = 1;
+                              return GestureDetector(
+                                child: ListTile(
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title: const Row(
+                                            children: [
+                                              Icon(Icons.delete,
+                                                  color: Colors.green),
+                                              Text(
+                                                "Delete Transaction",
+                                                style: TextStyle(
+                                                    color: Colors.green),
+                                              ),
+                                            ],
+                                          ),
+                                          content: const Text(
+                                            "NOTE: Only admin can delete transaction if amount not received",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          actions: <Widget>[
+                                            Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.end,
+                                              children: [
+                                                TextButton(
+                                                  child: const Text(
+                                                    "Back",
+                                                    style: TextStyle(
+                                                        color: Colors.red),
+                                                  ),
+                                                  onPressed: () {
+                                                    Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              const StokvelStatementScreen()),
+                                                    );
+                                                  },
+                                                ),
+                                                TextButton(
+                                                  child: const Text(
+                                                    "Continue",
+                                                    style: TextStyle(
+                                                        color: Colors.green),
+                                                  ),
+                                                  onPressed: () {
+                                                    showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                          context) {
+                                                        return AlertDialog(
+                                                          title: const Text(
+                                                            "Enter Code",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .green),
+                                                          ),
+                                                          content: Form(
+                                                            key: _formKey,
+                                                            child: Row(
+                                                              children: [
+                                                                Flexible(
+                                                                  child:
+                                                                      TextFormField(
+                                                                    controller:
+                                                                        codeController,
+                                                                    obscureText:
+                                                                        _obscureText,
+                                                                    enableSuggestions:
+                                                                        false,
+                                                                    autocorrect:
+                                                                        false,
+                                                                    decoration:
+                                                                        InputDecoration(
+                                                                      hintText:
+                                                                          "enter stokvel code",
+                                                                      hintStyle: const TextStyle(
+                                                                          color: Colors
+                                                                              .grey,
+                                                                          fontSize:
+                                                                              16),
+                                                                      labelText:
+                                                                          "Stokvel Code",
+                                                                      labelStyle: const TextStyle(
+                                                                          color: Colors
+                                                                              .black,
+                                                                          fontSize:
+                                                                              18),
+                                                                      prefixIcon: const Icon(
+                                                                          Icons
+                                                                              .code,
+                                                                          color:
+                                                                              Colors.black),
+                                                                      border:
+                                                                          const OutlineInputBorder(),
+                                                                      suffixIcon:
+                                                                          IconButton(
+                                                                        icon:
+                                                                            Icon(
+                                                                          _obscureText
+                                                                              ? Icons.visibility
+                                                                              : Icons.visibility_off,
+                                                                        ),
+                                                                        onPressed:
+                                                                            () {
+                                                                          setState(
+                                                                              () {
+                                                                            _obscureText =
+                                                                                !_obscureText;
+                                                                          });
+                                                                        },
+                                                                      ),
+                                                                    ),
+                                                                    validator:
+                                                                        (value) {
+                                                                      if (value!
+                                                                          .isEmpty) {
+                                                                        return "Please enter stokvel code";
+                                                                      }
+                                                                      return null;
+                                                                    },
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          actions: <Widget>[
+                                                            Row(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .end,
+                                                              children: [
+                                                                TextButton(
+                                                                  child:
+                                                                      const Text(
+                                                                    "Cancel",
+                                                                    style: TextStyle(
+                                                                        color: Colors
+                                                                            .red),
+                                                                  ),
+                                                                  onPressed:
+                                                                      () async {
+                                                                    Navigator
+                                                                        .push(
+                                                                      context,
+                                                                      MaterialPageRoute(
+                                                                          builder: (context) =>
+                                                                              const StokvelStatementScreen()),
+                                                                    );
+                                                                  },
+                                                                ),
+                                                                TextButton(
+                                                                    child:
+                                                                        const Text(
+                                                                      "Approve",
+                                                                      style: TextStyle(
+                                                                          color:
+                                                                              Colors.green),
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      if (_formKey
+                                                                          .currentState!
+                                                                          .validate()) {
+                                                                        setState(
+                                                                            () {
+                                                                          _isLoading =
+                                                                              true;
+                                                                        });
+                                                                        codeResult =
+                                                                            adminCodeAuth();
+                                                                        codeResult
+                                                                            ?.then(
+                                                                          (result) async {
+                                                                            setState(() {
+                                                                              _isLoading = false;
+                                                                            });
+                                                                            if (result !=
+                                                                                'Success') {
+                                                                              showDialog(
+                                                                                context: context,
+                                                                                builder: (BuildContext context) {
+                                                                                  return AlertDialog(
+                                                                                    title: const Text(
+                                                                                      "Error",
+                                                                                      style: TextStyle(color: Colors.red),
+                                                                                    ),
+                                                                                    content: const Row(
+                                                                                      children: [
+                                                                                        Icon(Icons.error_outline, color: Colors.red),
+                                                                                        Text(
+                                                                                          "Code rejected",
+                                                                                          style: TextStyle(color: Colors.red),
+                                                                                        ),
+                                                                                      ],
+                                                                                    ),
+                                                                                    actions: <Widget>[
+                                                                                      TextButton(
+                                                                                        child: const Text("Try again"),
+                                                                                        onPressed: () {
+                                                                                          Navigator.of(context).pop();
+                                                                                          codeController.clear();
+                                                                                        },
+                                                                                      ),
+                                                                                    ],
+                                                                                  );
+                                                                                },
+                                                                              );
+                                                                            } else {
+                                                                              deleteResult = deleteStokvelTransaction(transaction, selectedTabIndex);
+                                                                              deleteResult?.then(
+                                                                                (result) async {
+                                                                                  setState(() {
+                                                                                    _isLoading = false;
+                                                                                  });
+                                                                                  if (result != 'Success') {
+                                                                                    showDialog(
+                                                                                      context: context,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return AlertDialog(
+                                                                                          title: const Text(
+                                                                                            "Error",
+                                                                                            style: TextStyle(color: Colors.red),
+                                                                                          ),
+                                                                                          content: const Row(
+                                                                                            children: [
+                                                                                              Icon(Icons.error_outline, color: Colors.red),
+                                                                                              Text(
+                                                                                                "Failed to delete transaction\nTry again",
+                                                                                                style: TextStyle(color: Colors.red),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          actions: <Widget>[
+                                                                                            TextButton(
+                                                                                              child: const Text("Try again"),
+                                                                                              onPressed: () {
+                                                                                                codeController.clear();
+                                                                                                Navigator.of(context).push(
+                                                                                                  MaterialPageRoute(
+                                                                                                    builder: (BuildContext context) {
+                                                                                                      return const StokvelStatementScreen();
+                                                                                                    },
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                            ),
+                                                                                          ],
+                                                                                        );
+                                                                                      },
+                                                                                    );
+                                                                                  } else {
+                                                                                    showDialog(
+                                                                                      context: context,
+                                                                                      builder: (BuildContext context) {
+                                                                                        return AlertDialog(
+                                                                                          title: const Text(
+                                                                                            "Deleted",
+                                                                                            style: TextStyle(color: Colors.red),
+                                                                                          ),
+                                                                                          content: const Row(
+                                                                                            children: [
+                                                                                              Icon(Icons.check, color: Colors.amber),
+                                                                                              Text(
+                                                                                                "Transaction deleted successfully",
+                                                                                                style: TextStyle(color: Colors.red),
+                                                                                              ),
+                                                                                            ],
+                                                                                          ),
+                                                                                          actions: <Widget>[
+                                                                                            TextButton(
+                                                                                              child: const Text("OK"),
+                                                                                              onPressed: () {
+                                                                                                codeController.clear();
+                                                                                                Navigator.of(context).push(
+                                                                                                  MaterialPageRoute(
+                                                                                                    builder: (BuildContext context) {
+                                                                                                      return const StokvelStatementScreen();
+                                                                                                    },
+                                                                                                  ),
+                                                                                                );
+                                                                                              },
+                                                                                            ),
+                                                                                          ],
+                                                                                        );
+                                                                                      },
+                                                                                    );
+                                                                                  }
+                                                                                },
+                                                                              );
+                                                                            }
+                                                                          },
+                                                                        );
+                                                                      }
+                                                                    })
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        );
+                                                      },
+                                                    );
+                                                  },
+                                                ),
+                                              ],
                                             ),
                                           ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  title: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          transaction['Name'] +
+                                              "\n" +
+                                              transaction['Phone'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
                                         ),
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: false,
-                                        maxLines: 1,
-                                        textAlign: TextAlign.start,
                                       ),
-                                    ),
-                                    Expanded(
-                                      child: Text(
-                                        transaction['Description'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.start,
+                                      Expanded(
+                                        child: Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    'E ${transaction['Amount']}.00',
+                                                style: (transaction[
+                                                                'Description'] ==
+                                                            'Monthly Contribution' ||
+                                                        transaction[
+                                                                'Description'] ==
+                                                            'Loan Repayment')
+                                                    ? const TextStyle(
+                                                        color: Colors.green)
+                                                    : const TextStyle(
+                                                        color: Colors.red),
+                                              ),
+                                            ],
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: false,
+                                          maxLines: 1,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ),
-                                    ),
-                                    Flexible(
-                                      child: Text(
-                                        transaction['Date'],
-                                        overflow: TextOverflow.ellipsis,
-                                        softWrap: true,
-                                        maxLines: 2,
-                                        textAlign: TextAlign.start,
+                                      Expanded(
+                                        child: Text(
+                                          transaction['Description'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                      Flexible(
+                                        child: Text(
+                                          transaction['Date'],
+                                          overflow: TextOverflow.ellipsis,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               );
                             },
@@ -727,6 +1004,19 @@ class StokvelStatementScreenState extends State<StokvelStatementScreen> {
             ],
           ),
         ),
+        if (_isLoading)
+          Container(
+            color: Colors.black.withOpacity(0.5),
+            child: const Center(
+              child: SizedBox(
+                height: 50.0,
+                width: 50.0,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
       ],
     );
   }

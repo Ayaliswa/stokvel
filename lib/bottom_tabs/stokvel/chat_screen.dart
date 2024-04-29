@@ -68,70 +68,6 @@ class ChatScreenState extends State<ChatScreen> {
     }
   }
 
-/*Future<List<Message>> displayMessages() async {
-  try {
-    String url = "http://127.0.0.1/stokvel_api/displayMessages.php"; // Assuming separate endpoint
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
-      if (responseData['success'] == true) { // Check for success (adjust based on server response)
-        List<dynamic> data = responseData['messages']; // Assuming messages are in a nested key
-        List<Message> messages = data
-            .map((item) => Message(
-                item['text'],
-                item['isMine'] == '1',
-                item['username'],
-                DateTime.parse(item['timestamp']),
-            ))
-            .toList();
-        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-        return messages;
-      } else {
-        // Handle empty messages case (check for 'no_messages' key in response)
-        if (responseData['error'] == 'no_messages') {
-          return []; // Return empty list
-        } else {
-          throw Exception('Failed to load messages: ${responseData['error']}'); // More specific error
-        }
-      }
-    } else {
-      throw Exception('Request failed with status: ${response.statusCode}');
-    }
-  } catch (e) {
-    print('Error getting messages: $e');
-    throw Exception('Failed to load messages'); // Consider more user-friendly message
-  }
-}
-*/
-
-  /*Future<List<Message>> fetchStokvelMessages() async {
-    try {
-      String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
-      dynamic response = await http.get(Uri.parse(url));
-      if (response.statusCode == 200) {
-        dynamic data = json.decode(response.body);
-        List<dynamic> dataList = data as List;
-        List<Message> messages = dataList
-            .map((item) => Message(
-                  item['Text'],
-                  item['isMine'] == '1',
-                  item['Username'],
-                  DateTime.parse(item['Timestamp']),
-                ))
-            .toList();
-        // Sort the messages by timestamp in ascending order
-        messages.sort((a, b) => a.timestamp.compareTo(b.timestamp));
-
-        return messages;
-      } else {
-        throw Exception('Failed to load messages');
-      }
-    } catch (e) {
-      throw ("No Chats to display");
-    }
-  }*/
-
   Future<List<Message>> fetchStokvelMessages() async {
     try {
       String url = "http://127.0.0.1/stokvel_api/fetchStokvelMessages.php";
@@ -165,36 +101,23 @@ class ChatScreenState extends State<ChatScreen> {
   Future<String?> getPhoneByUsername() async {
     try {
       String username = await getUsername();
-      print(username);
-      print('get one');
       String url =
           "http://127.0.0.1/stokvel_api/getPhoneByUsername.php?username=$username";
-      print('get two');
       Map<String, String> body = {"username": username};
       dynamic response = await http.post(Uri.parse(url), body: body);
-      print('get three');
-
-      print('get four');
       if (response.statusCode == 200 && response.body.isNotEmpty) {
-        print(response.body);
-        print('get five');
         var data = json.decode(response.body);
         if (response.statusCode == 200) {
           if (data.isNotEmpty) {
-            return data; // Return the phone number as a string
+            return data;
           } else {
-            print('Empty phone number received');
             return null;
           }
-        } else {
-          // ... handle other status codes
-        }
+        } else {}
       } else {
-        print('Error fetching phone: ${response.statusCode}');
         throw Exception('Failed to fetch phone: ${response.statusCode}');
       }
     } catch (e) {
-      print('Exception in getPhoneByUsername: $e');
       rethrow;
     }
     return null;

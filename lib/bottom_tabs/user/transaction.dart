@@ -451,7 +451,7 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                   hintStyle: TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 16),
-                                                  labelText: "Phone",
+                                                  labelText: "Deposit from",
                                                   labelStyle: TextStyle(
                                                       color: Colors.black,
                                                       fontSize: 18),
@@ -826,7 +826,7 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                                 hintStyle: TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 16),
-                                                labelText: "Phone",
+                                                labelText: "Deposit from",
                                                 labelStyle: TextStyle(
                                                     color: Colors.black,
                                                     fontSize: 18),

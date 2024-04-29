@@ -115,12 +115,12 @@ class SignUpScreenState extends State<SignUpScreen> {
   }
 
   String validatePhoneNumber(String phoneNumber) {
-    final RegExp phoneRegExp = RegExp(r'^[7689]\d{7}$');
+    final RegExp phoneRegExp = RegExp(r'^[(76)/(78)/(79)]\d{7}$');
     if (!phoneRegExp.hasMatch(phoneNumber)) {
       if (phoneNumber.length < 8) {
         return 'Phone number is too short';
       } else {
-        return 'Phone number is too long or invalid format\nshould start with 7 (6/8/9) and not more than 8';
+        return 'Invalid Phone number\nshould start with 7 (6/8/9)';
       }
     }
     return 'Valid';
