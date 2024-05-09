@@ -352,6 +352,8 @@ class UserTransactionScreenState extends State<UserTransactionScreen> {
                                               ),
                                               TextFormField(
                                                 controller: amountController,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 decoration:
                                                     const InputDecoration(
                                                   hintText:

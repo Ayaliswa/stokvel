@@ -317,7 +317,7 @@ class LoginScreenState extends State<LoginScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             const Text(
-                              "Are you Admin/Tressurer?",
+                              "Are you the Tressurer?",
                               style:
                                   TextStyle(color: Colors.black, fontSize: 16),
                             ),

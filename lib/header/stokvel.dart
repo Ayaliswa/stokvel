@@ -116,7 +116,7 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                                 mainAxisAlignment:
                                                     MainAxisAlignment.center,
                                                 crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
+                                                    CrossAxisAlignment.center,
                                                 children: [
                                                   Column(
                                                     children: [
@@ -172,16 +172,6 @@ class StokvelHeaderState extends State<StokvelHeader> {
                                                 ],
                                               ),
                                               const Spacer(),
-                                              TextButton(
-                                                onPressed: () async {},
-                                                child: const Icon(
-                                                  Icons.refresh,
-                                                  color: Colors.black,
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 15,
-                                              ),
                                               PopupMenuButton(
                                                 itemBuilder:
                                                     (BuildContext context) =>

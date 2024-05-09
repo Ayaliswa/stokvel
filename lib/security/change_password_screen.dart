@@ -133,7 +133,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           hintText: "Password",
                           hintStyle:
                               const TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Password",
+                          labelText: "Current Password",
                           labelStyle: const TextStyle(
                               color: Colors.black, fontSize: 18),
                           prefixIcon:
@@ -177,7 +177,7 @@ class ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           hintText: "create password",
                           hintStyle:
                               const TextStyle(color: Colors.grey, fontSize: 16),
-                          labelText: "Password",
+                          labelText: "New Password",
                           labelStyle: const TextStyle(
                               color: Colors.black, fontSize: 18),
                           prefixIcon:

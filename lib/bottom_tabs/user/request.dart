@@ -363,6 +363,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                               const SizedBox(height: 20),
                               TextFormField(
                                 controller: amountController,
+                                keyboardType: TextInputType.number,
                                 decoration: const InputDecoration(
                                   hintText: "enter request amount",
                                   hintStyle: TextStyle(
@@ -379,7 +380,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                     return 'Please enter an amount';
                                   }
                                   if (double.tryParse(value) == null) {
-                                    return 'Please enter a valid number';
+                                    return 'Please enter a valid amount';
                                   }
                                   return null;
                                 },
@@ -394,7 +395,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                   hintText: "76/78/79......",
                                   hintStyle: TextStyle(
                                       color: Colors.grey, fontSize: 16),
-                                  labelText: "Send Amount To",
+                                  labelText: "Receive Amount Through",
                                   labelStyle: TextStyle(
                                       color: Colors.black, fontSize: 18),
                                   prefixIcon:
@@ -437,7 +438,7 @@ class UserRequestScreenState extends State<UserRequestScreen> {
                                               Icon(Icons.error_outline,
                                                   color: Colors.red),
                                               Text(
-                                                "Please enter amount to calculate intrest from",
+                                                "Please enter amount to calculate interest from",
                                                 overflow: TextOverflow.ellipsis,
                                                 softWrap: true,
                                                 maxLines: 2,

@@ -130,7 +130,7 @@ class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
                         hintText: "enter current password",
                         hintStyle:
                             const TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: "Password",
+                        labelText: "Current Password",
                         labelStyle:
                             const TextStyle(color: Colors.black, fontSize: 18),
                         prefixIcon: const Icon(Icons.key, color: Colors.black),
@@ -167,7 +167,7 @@ class AdminChangePasswordScreenState extends State<AdminChangePasswordScreen> {
                         hintText: "create password",
                         hintStyle:
                             const TextStyle(color: Colors.grey, fontSize: 16),
-                        labelText: "Password",
+                        labelText: "New Password",
                         labelStyle:
                             const TextStyle(color: Colors.black, fontSize: 18),
                         prefixIcon:
